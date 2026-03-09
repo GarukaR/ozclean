@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Star, ShieldCheck, CalendarCheck, ArrowRight, Sparkles } from "lucide-react";
@@ -163,11 +164,12 @@ export default function Hero() {
             <div className="relative w-full max-w-sm sm:max-w-md lg:max-w-full">
               {/* Image frame with decorative border */}
               <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-brand/20 aspect-[4/5] bg-gradient-to-br from-brand/20 to-brand-accent/20">
-                {/* Placeholder image — replace with next/image in production */}
-                <img
+                {/* Optimized image using next/image */}
+                <Image
                   src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=800&q=80"
                   alt="Professional cleaner at work in a bright modern home"
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover"
                 />
                 {/* Subtle overlay for depth */}
                 <div className="absolute inset-0 bg-gradient-to-t from-brand-text/20 to-transparent" />

@@ -119,7 +119,7 @@ export default function Pricing() {
         {/* ── Section Header ── */}
         <div className="text-center max-w-2xl mx-auto mb-16">
           <p className="text-brand text-sm font-semibold uppercase tracking-widest mb-3">
-            Pricing & Offers
+            Our Plans
           </p>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-brand-text leading-tight tracking-tight">
             Simple pricing,{" "}

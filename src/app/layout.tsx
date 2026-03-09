@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { BASE_METADATA } from "@/lib/seo";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,11 +15,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Home | AusClean Commercial Cleaning Services",
-  description:
-    "Home page of AusClean Commercial Cleaning Services, a leading provider of commercial cleaning services in Australia. We offer a wide range of cleaning services for businesses of all sizes, including office cleaning, retail cleaning, and industrial cleaning. Our team of experienced cleaners is dedicated to providing high-quality cleaning services that meet the unique needs of each client.",
-};
+export const metadata: Metadata = BASE_METADATA;
 
 export default function RootLayout({
   children,
@@ -26,10 +23,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col justify-between min-h-screen`}>
         <Navbar />
         <main className="pt-16">{children}</main>
         <Footer />

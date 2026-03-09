@@ -142,7 +142,18 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    scrollbar-gutter: stable;
+  }
   body {
     @apply bg-background text-foreground;
+    overflow-y: scroll; /* forces scrollbar to always reserve space */
+  }
+
+    /* Prevent Radix from injecting padding-right compensation — 
+     we handle scrollbar space with overflow-y: scroll instead */
+  [data-scroll-locked] {
+    padding-right: 0 !important;
+    margin-right: 0 !important;
   }
 }

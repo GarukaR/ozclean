@@ -16,11 +16,11 @@ const FOOTER_LINKS = {
   Company: [
     { label: "About Us", href: "/about" },
     { label: "Our Team", href: "/about#team" },
-    { label: "Pricing", href: "/pricing" },
   ],
   Support: [
     { label: "Contact Us", href: "/contact" },
     { label: "FAQ", href: "/faq" },
+    { label: "Get a Quote", href: "/quote" },
   ],
 };
 
