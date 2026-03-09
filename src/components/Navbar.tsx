@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu, Sparkles } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -21,20 +22,26 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 
-// ─── Config: update links here ───────────────────────────────────────────────
+// ─── Nav links config — edit here to add/remove links ────────────────────────
 const NAV_LINKS = [
   { label: "Services", href: "/services" },
   { label: "About", href: "/about" },
-  { label: "Pricing", href: "/pricing" },
+  { label: "FAQ", href: "/faq" },
   { label: "Contact", href: "/contact" },
 ];
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
+  const [scrolled, setScrolled] = useState(() =>
+    typeof window !== "undefined" ? window.scrollY > 10 : false
+  );
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
 
-  // Adds background + shadow when user scrolls past 10px
+  // Homepage: transparent until scrolled. All other pages: always solid.
+  const isHome = pathname === "/";
+  const showBg = scrolled || !isHome;
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener("scroll", onScroll);
@@ -45,24 +52,21 @@ export default function Navbar() {
     <header
       className={`
         fixed top-0 left-0 right-0 z-50 transition-all duration-300
-        ${
-          scrolled
-            ? "bg-white/90 backdrop-blur-md border-b border-brand-border shadow-sm"
-            : "bg-transparent"
+        ${showBg
+          ? "bg-white/90 backdrop-blur-md border-b border-brand-border shadow-sm"
+          : "bg-transparent"
         }
       `}
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+
         {/* ── Logo ── */}
         <Link href="/" className="flex items-center gap-2 shrink-0">
-          <div className="w-8 h-8 rounded-lg bg-brand flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center">
             <Sparkles className="w-4 h-4 text-white" />
           </div>
-          <span className="text-lg tracking-tight text-slate-900">
-            Aus
-            <span className="text-lg font-bold tracking-tight text-slate-900">
-              Clean
-            </span>
+          <span className="text-lg font-bold tracking-tight text-slate-900">
+            SparkClean
           </span>
         </Link>
 
@@ -73,7 +77,13 @@ export default function Navbar() {
               <NavigationMenuItem key={label}>
                 <NavigationMenuLink
                   asChild
-                  className={navigationMenuTriggerStyle()}
+                  className={`
+                    ${navigationMenuTriggerStyle()}
+                    ${pathname === href || pathname.startsWith(href + "/")
+                      ? "text-brand font-semibold"
+                      : ""
+                    }
+                  `}
                 >
                   <Link href={href}>{label}</Link>
                 </NavigationMenuLink>
@@ -82,12 +92,12 @@ export default function Navbar() {
           </NavigationMenuList>
         </NavigationMenu>
 
-        {/* ── Desktop CTA (hidden on mobile) ── */}
+        {/* ── Desktop CTAs ── */}
         <div className="hidden md:flex items-center gap-3">
-          <Button
-            asChild
-            className="bg-brand hover:bg-brand-dark text-white shadow-sm"
-          >
+          <Button asChild variant="ghost" className="text-brand-muted hover:text-brand-text">
+            <Link href="/quote">Get a Quote</Link>
+          </Button>
+          <Button asChild className="bg-brand hover:bg-brand-dark text-white shadow-sm shadow-brand/25">
             <Link href="/book">Book Now</Link>
           </Button>
         </div>
@@ -112,10 +122,10 @@ export default function Navbar() {
             <div className="flex flex-col h-full">
               {/* Sheet Header */}
               <div className="flex items-center gap-2 px-6 py-5">
-                <div className="w-7 h-7 rounded-lg bg-brand flex items-center justify-center">
+                <div className="w-7 h-7 rounded-lg bg-sky-500 flex items-center justify-center">
                   <Sparkles className="w-3.5 h-3.5 text-white" />
                 </div>
-                <span className="font-bold text-slate-900">AusKlean</span>
+                <span className="font-bold text-slate-900">SparkClean</span>
               </div>
 
               <Separator />
@@ -126,7 +136,13 @@ export default function Navbar() {
                   <SheetClose asChild key={label}>
                     <Link
                       href={href}
-                      className="px-4 py-3 rounded-lg text-sm font-medium text-slate-600 hover:text-brand-text hover:bg-brand-bg transition-colors"
+                      className={`
+                        px-4 py-3 rounded-lg text-sm font-medium transition-colors
+                        ${pathname === href || pathname.startsWith(href + "/")
+                          ? "bg-brand/10 text-brand font-semibold"
+                          : "text-brand-text hover:text-brand hover:bg-brand/5"
+                        }
+                      `}
                     >
                       {label}
                     </Link>
@@ -138,18 +154,17 @@ export default function Navbar() {
 
               {/* Mobile CTA */}
               <div className="p-4 flex flex-col gap-2">
-                <Button
-                  asChild
-                  className="w-full bg-brand hover:bg-brand-dark text-white"
-                >
-                  <Link href="/book" onClick={() => setOpen(false)}>
-                    Book Now
-                  </Link>
+                <Button asChild variant="outline" className="w-full border-brand-border">
+                  <Link href="/quote">Get a Free Quote</Link>
+                </Button>
+                <Button asChild className="w-full bg-brand hover:bg-brand-dark text-white">
+                  <Link href="/book">Book Now</Link>
                 </Button>
               </div>
             </div>
           </SheetContent>
         </Sheet>
+
       </div>
     </header>
   );
