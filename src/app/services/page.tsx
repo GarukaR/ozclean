@@ -18,15 +18,17 @@ const SERVICES = [
     href: "/services/commercial",
     highlights: ["After-hours available", "Dedicated team", "Weekly or daily"],
     featured: true,
+    priceLabel: "per session",
   },
   {
     icon: Home,
     title: "Residential Cleaning",
     desc: "Regular home cleaning tailored to your schedule. Weekly, fortnightly, or one-off.",
-    price: "From $80",
+    price: "From $55",
     href: "/services/residential",
     highlights: ["Same cleaner each visit", "Eco-friendly products", "Flexible scheduling"],
     featured: false,
+    priceLabel: "per hour",
   },
   {
     icon: Sparkles,
@@ -36,6 +38,7 @@ const SERVICES = [
     href: "/services/deep-clean",
     highlights: ["Inside all appliances", "Grout & tile scrubbing", "Ideal for spring cleans"],
     featured: false,
+    priceLabel: "per session",
   },
   {
     icon: ArrowLeftRight,
@@ -45,15 +48,27 @@ const SERVICES = [
     href: "/services/move",
     highlights: ["Bond clean guarantee", "Real estate checklist", "Re-clean guarantee"],
     featured: false,
+    priceLabel: "per session",
   },
   {
     icon: Wind,
     title: "Window Cleaning",
     desc: "Streak-free windows inside and out for homes and businesses.",
-    price: "From $60",
+    price: "From $250",
     href: "/services/windows",
     highlights: ["Streak-free guarantee", "Multi-storey available", "Inside & outside"],
     featured: false,
+    priceLabel: "per storey",
+  },
+  {
+    icon: Sparkles,
+    title: "Wheely Bin Cleaning",
+    desc: "Keep your bins fresh and clean with our specialized wheely bin cleaning service. We use high-pressure washing and eco-friendly disinfectants to eliminate grime, odors, and bacteria, leaving your bins spotless and hygienic.",
+    price: "From $35",
+    href: "/services/wheely-bin",
+    highlights: ["High-pressure washing", "Eco-friendly disinfectants", "Odor elimination"],
+    featured: false,
+    priceLabel: "per bin",
   },
 ];
 
@@ -71,7 +86,7 @@ export default function ServicesPage() {
               <span className="text-brand">all in one place.</span>
             </h1>
             <p className="text-brand-muted text-lg leading-relaxed mb-6">
-              From regular home cleans to full commercial contracts — SparkClean has the right service for every space.
+              From regular home cleans to full commercial contracts, We have the right service for every space.
             </p>
             <div className="flex flex-wrap gap-3">
               <Button asChild className="bg-brand hover:bg-brand-dark text-white font-semibold gap-2">
@@ -88,14 +103,13 @@ export default function ServicesPage() {
       {/* ── Services List ── */}
       <section className="py-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col gap-6">
-          {SERVICES.map(({ icon: Icon, title, desc, price, href, highlights, featured }) => (
+          {SERVICES.map(({ icon: Icon, title, desc, price, href, highlights, featured, priceLabel }) => (
             <div
               key={title}
-              className={`rounded-3xl border p-8 flex flex-col sm:flex-row gap-6 items-start justify-between transition-all duration-200 hover:shadow-lg ${
-                featured
+              className={`rounded-3xl border p-8 flex flex-col sm:flex-row gap-6 items-start justify-between transition-all duration-200 hover:shadow-lg ${featured
                   ? "bg-brand border-brand shadow-lg shadow-brand/20"
                   : "bg-white border-brand-border hover:border-brand/40"
-              }`}
+                }`}
             >
               <div className="flex gap-5 items-start flex-1">
                 <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${featured ? "bg-white/20" : "bg-brand/10"}`}>
@@ -120,7 +134,7 @@ export default function ServicesPage() {
               <div className="flex flex-col items-start sm:items-end gap-3 shrink-0">
                 <div>
                   <p className={`text-2xl font-black ${featured ? "text-white" : "text-brand-text"}`}>{price}</p>
-                  <p className={`text-xs ${featured ? "text-white/60" : "text-brand-muted"}`}>per visit</p>
+                  <p className={`text-xs ${featured ? "text-white/60" : "text-brand-muted"}`}>{priceLabel}</p>
                 </div>
                 <Button
                   asChild

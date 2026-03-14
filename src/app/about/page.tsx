@@ -99,7 +99,7 @@ export default function AboutPage() {
               </p>
               <div className="flex flex-wrap gap-3">
                 <Button asChild className="bg-brand hover:bg-brand-dark text-white font-semibold gap-2 shadow-lg shadow-brand/25">
-                  <Link href="/book">Book a Clean <ArrowRight className="w-4 h-4" /></Link>
+                  <Link href="/quote">Get a Quote <ArrowRight className="w-4 h-4" /></Link>
                 </Button>
                 <Button asChild variant="outline" className="border-brand-border hover:border-brand text-brand-text font-semibold">
                   <Link href="/contact">Get in Touch</Link>

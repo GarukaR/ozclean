@@ -106,7 +106,7 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
 
       {/* Review text */}
       <p className="text-brand-text text-sm leading-relaxed flex-1">
-        "{testimonial.text}"
+        &quot;{testimonial.text}&quot;
       </p>
 
       {/* Footer */}
@@ -143,11 +143,11 @@ export default function Testimonials() {
           </p>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-brand-text leading-tight tracking-tight">
             Loved by{" "}
-            <span className="text-brand">thousands</span>
-            {" "}of customers.
+            <span className="text-brand">Victorians</span>
+            {""}.
           </h2>
           <p className="mt-4 text-brand-muted text-lg leading-relaxed">
-            Don't just take our word for it — here's what our customers say
+            Don&apos;t just take our word for it, here&apos;s what our customers say
             about their SparkClean experience.
           </p>
 
@@ -159,9 +159,9 @@ export default function Testimonials() {
               ))}
             </div>
             <div className="w-px h-5 bg-brand-border" />
-            <p className="text-sm font-bold text-brand-text">4.9 / 5</p>
+            <p className="text-sm font-bold text-brand-text">4.75 / 5</p>
             <div className="w-px h-5 bg-brand-border" />
-            <p className="text-sm text-brand-muted">2,000+ reviews</p>
+            <p className="text-sm text-brand-muted">500+ reviews</p>
           </div>
         </div>
       </div>

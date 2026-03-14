@@ -11,8 +11,8 @@ type Service = {
     features: string[];
     href: string;
     featured: boolean;
-    price: string;
-    priceLabel: string;
+    price: string | null;
+    priceLabel: string | null;
 };
 
 const SERVICES: Service[] = [
@@ -25,7 +25,7 @@ const SERVICES: Service[] = [
     href: "/services/commercial",
     featured: true, // ← only one card should have featured: true
     price: "From $150",
-    priceLabel: "per visit",
+    priceLabel: "per session",
   },
   {
     icon: Home,
@@ -68,8 +68,8 @@ const SERVICES: Service[] = [
     features: ["Inside & outside", "Streak-free finish", "Multi-storey available"],
     href: "/services/windows",
     featured: false,
-    price: "From $60",
-    priceLabel: "per visit",
+    price: "From $250",
+    priceLabel: "per storey",
   },
 ];
 // ─────────────────────────────────────────────────────────────────────────────
@@ -124,7 +124,7 @@ function FeaturedCard({ service }: { service: Service }) {
             className="bg-white text-brand hover:bg-brand-bg font-semibold shadow-lg gap-1.5 shrink-0"
           >
             <Link href={service.href}>
-              Book Now <ArrowRight className="w-3.5 h-3.5" />
+              Get Quote <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </Button>
         </div>

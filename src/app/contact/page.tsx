@@ -31,7 +31,7 @@ const CONTACT_DETAILS = [
     label: "Based in",
     value: "Melbourne, VIC",
     href: "#map",
-    sub: "Serving greater Melbourne",
+    sub: "Melbourne CBD, inner and south-east suburbs",
   },
 ];
 
@@ -170,25 +170,54 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* ── Map ── */}
-      <section id="map" className="pb-20">
+      {/* Service Areas */}
+      <section id="map" className="pb-24">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <p className="text-sm font-semibold text-brand-muted uppercase tracking-widest mb-5">Service Area</p>
-          <div className="rounded-3xl overflow-hidden border border-brand-border shadow-sm" style={{ height: "400px" }}>
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d201754.59039748546!2d144.7851573!3d-37.9716858!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad646b5d2ba4df7%3A0x4045675218ccd90!2sMelbourne%20VIC%2C%20Australia!5e0!3m2!1sen!2sau!4v1699999999999"
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              title="SparkClean Melbourne service area"
-            />
+          <div className="bg-white rounded-3xl border border-brand-border p-8 shadow-sm">
+            <h2 className="text-2xl font-bold text-brand-text mb-2">Service Areas</h2>
+            <p className="text-brand-muted mb-6">
+              We proudly serve Melbourne CBD, inner suburbs, and the south-east. If you&apos;re unsure if we cover your area, just ask!
+            </p>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+              {[
+                "Melbourne CBD",
+                "Southbank",
+                "Docklands",
+                "St Kilda",
+                "South Yarra",
+                "Prahran & Windsor",
+                "Richmond",
+                "Hawthorn",
+                "Toorak",
+                "Malvern",
+                "Caulfield",
+                "Camberwell",
+                "Brighton",
+                "Elwood & Elsternwick",
+                "Glen Iris",
+                "Bentleigh",
+                "Carnegie",
+                "Oakleigh",
+                "Chadstone",
+                "Clayton",
+                "Murrumbeena",
+                "Burwood",
+                "Box Hill",
+                "Surrey Hills",
+                "Balwyn",
+              ].map((area) => (
+                <li
+                  key={area}
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg bg-brand-bg text-brand-text"
+                >
+                  <MapPin className="w-4 h-4 text-brand" />
+                  <span className="text-sm">{area}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>
-
     </main>
   );
 }

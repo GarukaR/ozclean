@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Phone, FileText, CalendarCheck, Sparkles, ArrowRight } from "lucide-react";
+import { Phone , CalendarCheck, Sparkles, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 // ─── Steps config ─────────────────────────────────────────────────────────────
@@ -30,7 +30,7 @@ const STEPS = [
     icon: Sparkles,
     title: "We Clean, You Relax",
     description:
-      "Our vetted professionals arrive on time and get to work. You'll come back to a spotless, fresh space — guaranteed.",
+      "Our vetted professionals arrive on time and get to work. You'll come back to a spotless & fresh space, guaranteed.",
     cta: null,
     alt: null,
   },
@@ -52,7 +52,7 @@ export default function HowItWorks() {
             <span className="text-brand">3 simple steps.</span>
           </h2>
           <p className="mt-4 text-brand-muted text-lg leading-relaxed">
-            Whether you know exactly what you need or want to chat first —
+            Whether you know exactly what you need or want to chat first, 
             getting started takes just a few minutes.
           </p>
         </div>
@@ -127,7 +127,7 @@ export default function HowItWorks() {
                         </svg>
                       </div>
                       <p className="text-xs font-medium text-brand">
-                        100% satisfaction guarantee — or we re-clean for free
+                        100% satisfaction guarantee or we re-clean for free
                       </p>
                     </div>
                   )}

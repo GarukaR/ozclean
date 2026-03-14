@@ -39,28 +39,37 @@ type BookingFormData = z.infer<typeof bookingSchema>;
 const PLANS = new Set(["Essential Plan", "Standard Plan", "Premium Plan"]);
 
 const SERVICE_GROUPS = [
+  // {
+  //   label: "Plans",
+  //   options: ["Essential Plan", "Standard Plan", "Premium Plan"],
+  // },
   {
-    label: "Plans",
-    options: ["Essential Plan", "Standard Plan", "Premium Plan"],
-  },
-  {
-    label: "Individual Services",
+    label: "Residential Cleaning Services - flat rates",
     options: [
-      "Residential Cleaning",
-      "Commercial Cleaning",
-      "Deep Cleaning",
-      "Move In / Move Out",
-      "Window Cleaning",
+      "1 Bedroom Apartment/House Cleaning = 150 AUD",
+      "2 Bedroom Apartment/House Cleaning = 175 AUD",
+      "3 Bedroom Apartment/House Cleaning = 205 AUD",
+      "3 Bedroom Apartment/House Cleaning 2-Storey House = 220 AUD",
+      "4 Bedroom Apartment/House Cleaning = 250 AUD",
+      "4 Bedroom Apartment/House Cleaning 2-Storey House = 280 AUD",
     ],
   },
+  // {
+  //   label: "Individual Services - hourly rates",
+  //   options: [
+  //     // "Hourly Cleaning - 55AUD/hr",
+  //     "Commercial Cleaning - 65AUD/hr",
+  //     "Deep Cleaning - 75AUD/hr",
+  //     "Move In / Move Out - 85AUD/hr",
+  //     "Wheely Bin Cleaning - 35AUD/hr",
+  //   ],
+  // },
 ];
 
 const TIME_SLOTS = [
-  "8:00 AM – 10:00 AM",
-  "10:00 AM – 12:00 PM",
-  "12:00 PM – 2:00 PM",
-  "2:00 PM – 4:00 PM",
-  "4:00 PM – 6:00 PM",
+  "9:00 AM – 11:30 AM",
+  "12:00 PM – 2:30 PM",
+  "3:00 PM – 5:30 PM",
 ];
 
 function FieldWrapper({ label, icon: Icon, error, children }: {
@@ -112,8 +121,9 @@ export default function BookingForm({
   tierLabel?: string;
   preselectedService?: string;
 }) {
-  const [submitted, setSubmitted] = useState(false);
+  // const [submitted, setSubmitted] = useState(false);
   const [selectedService, setSelectedService] = useState(preselectedService ?? "");
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
   const {
     register,
@@ -126,12 +136,28 @@ export default function BookingForm({
   });
 
   const onSubmit = async (data: BookingFormData) => {
-    await new Promise((r) => setTimeout(r, 1000));
-    console.log("Booking submitted:", data);
-    setSubmitted(true);
+    setCheckoutError(null);
+    try {
+      const res = await fetch("/api/create-checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const json = await res.json();
+
+      if (!res.ok) throw new Error(json.error ?? "Something went wrong");
+
+      // Redirect to Square hosted payment page
+      window.location.href = json.url;
+
+    } catch (error) {
+      console.error("Checkout error:", error);
+      setCheckoutError("Something went wrong creating your booking. Please try again or call us on +61 3 9123 4567.");
+    }
   };
 
-  if (submitted) return <SuccessState />;
+  // if (submitted) return <SuccessState />;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-8 flex flex-col gap-6">
@@ -192,7 +218,8 @@ export default function BookingForm({
         <p className="text-xs font-semibold text-brand-muted uppercase tracking-widest mb-4">
           Service & Schedule
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4">
+          
           <FieldWrapper label="Service Type" icon={Sparkles} error={errors.service?.message}>
             <Select defaultValue={preselectedService} onValueChange={(v) => { setValue("service", v, { shouldValidate: true }); setSelectedService(v); }}>
               <SelectTrigger className="border-brand-border focus:border-brand focus:ring-brand">
@@ -210,6 +237,9 @@ export default function BookingForm({
               </SelectContent>
             </Select>
           </FieldWrapper>
+          <p className="bg-yellow-50 border border-yellow-200 text-yellow-800 rounded-lg px-4 py-2 text-sm font-medium">
+            For any service not listed, please contact us directly or get a quote.
+          </p>
           <FieldWrapper label="Preferred Date" icon={CalendarCheck} error={errors.date?.message}>
             <Input
               {...register("date")}
@@ -218,6 +248,7 @@ export default function BookingForm({
               className="border-brand-border focus:border-brand focus:ring-brand"
             />
           </FieldWrapper>
+          
           <FieldWrapper label="Preferred Time" icon={Clock} error={errors.time?.message}>
             <Select onValueChange={(v) => setValue("time", v, { shouldValidate: true })}>
               <SelectTrigger className="border-brand-border focus:border-brand focus:ring-brand">
@@ -230,6 +261,7 @@ export default function BookingForm({
               </SelectContent>
             </Select>
           </FieldWrapper>
+        
         </div>
       </div>
 
@@ -246,12 +278,17 @@ export default function BookingForm({
       </FieldWrapper>
 
       {/* Submit */}
+      {checkoutError && (
+        <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+          <p className="text-sm text-red-600 leading-relaxed">{checkoutError}</p>
+        </div>
+      )}
       <Button
         type="submit"
         disabled={isSubmitting}
         className="w-full bg-brand hover:bg-brand-dark text-white font-semibold h-12 text-base shadow-md shadow-brand/20 transition-all"
       >
-        {isSubmitting ? "Submitting..." : "Confirm Booking →"}
+        {isSubmitting ? "Redirecting to payment..." : "Confirm Booking →"}
       </Button>
 
       <p className="text-center text-xs text-brand-muted">

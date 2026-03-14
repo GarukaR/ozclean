@@ -3,6 +3,7 @@ import { Sparkles, Phone, Mail, MapPin, Facebook, Instagram, Twitter } from "luc
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import CTA_banner from "./CTA_banner";
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 const FOOTER_LINKS = {
@@ -40,22 +41,8 @@ const CONTACT_INFO = [
 export default function Footer() {
   return (
     <footer className="bg-brand-text text-white">
-
-      {/* ── Top CTA Banner ── */}
-      <div className="bg-brand border-b border-white/10">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div>
-            <p className="text-white font-semibold text-lg">Ready for a spotless home?</p>
-            <p className="text-white/80 text-sm">Book your first clean today — 20% off for new customers.</p>
-          </div>
-          <Button
-            asChild
-            className="bg-white text-brand hover:bg-brand-bg font-semibold shrink-0 shadow-lg"
-          >
-            <Link href="/book">Book Now →</Link>
-          </Button>
-        </div>
-      </div>
+      {/* Footer banner place - currently commented out*/}
+      {/* <CTA_banner /> */}
 
       {/* ── Main Footer Grid ── */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-14">

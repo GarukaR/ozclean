@@ -5,33 +5,34 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Star, ShieldCheck, CalendarCheck, ArrowRight, Sparkles } from "lucide-react";
+import CTA_banner from "./CTA_banner";
 
 // ─── Trust badge data ─────────────────────────────────────────────────────────
-const TRUST_BADGES = [
-  {
-    icon: Star,
-    text: "4.9/5 rating",
-    sub: "from 2,000+ reviews",
-    filled: true,
-  },
-  {
-    icon: CalendarCheck,
-    text: "5+ years",
-    sub: "in business",
-    filled: false,
-  },
-  {
-    icon: ShieldCheck,
-    text: "100% guarantee",
-    sub: "or we re-clean free",
-    filled: false,
-  },
-];
+// const TRUST_BADGES = [
+//   {
+//     icon: Star,
+//     text: "4.75/5 rating",
+//     sub: "from 500+ reviews",
+//     filled: true,
+//   },
+//   {
+//     icon: CalendarCheck,
+//     text: "7+ years",
+//     sub: "in business",
+//     filled: false,
+//   },
+//   {
+//     icon: ShieldCheck,
+//     text: "100% guarantee",
+//     sub: "or we re-clean free",
+//     filled: false,
+//   },
+// ];
 
 // ─── Floating stat cards that appear over the image ───────────────────────────
 const STAT_CARDS = [
   {
-    value: "10,000+",
+    value: "500+",
     label: "Homes Cleaned",
     position: "top-6 -left-5 sm:-left-10",
     delay: "animation-delay-300",
@@ -58,6 +59,10 @@ export default function Hero() {
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full bg-brand/10 blur-3xl" />
         <div className="absolute -bottom-32 -left-32 w-[500px] h-[500px] rounded-full bg-brand-accent/10 blur-3xl" />
+        
+        {/* CTA Banner */}
+        <CTA_banner />
+        
         {/* Subtle dot grid */}
         <div
           className="absolute inset-0 opacity-[0.03]"
@@ -140,7 +145,7 @@ export default function Hero() {
             </div>
 
             {/* Trust Badges */}
-            <div className="flex flex-wrap gap-x-6 gap-y-3 pt-2">
+            {/* <div className="flex flex-wrap gap-x-6 gap-y-3 pt-2">
               {TRUST_BADGES.map(({ icon: Icon, text, sub, filled }) => (
                 <div key={text} className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center shrink-0">
@@ -154,7 +159,7 @@ export default function Hero() {
                   </div>
                 </div>
               ))}
-            </div>
+            </div> */}
           </div>
 
           {/* ── Right: Image + Floating Cards ── */}

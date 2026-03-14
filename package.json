@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
+    "@react-email/components": "^1.0.8",
+    "@react-email/render": "^2.0.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.34.4",
@@ -19,6 +21,8 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-hook-form": "^7.71.2",
+    "resend": "^6.9.3",
+    "square": "^44.0.0",
     "tailwind-merge": "^3.5.0",
     "zod": "^4.3.6"
   },

@@ -166,14 +166,6 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
                     </li>
                   ))}
                 </ul>
-                <Button
-                  asChild
-                  className="bg-white text-brand hover:bg-brand-bg font-semibold gap-2 w-full mt-2"
-                >
-                  <Link href={`/book?service=${service.slug}`}>
-                    Book This Service <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </Button>
               </div>
             </div>
           </div>
