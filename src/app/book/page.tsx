@@ -64,55 +64,16 @@ export default async function BookPage({
           {/* ── Sidebar ── */}
           <div className="flex flex-col gap-5">
 
-
-            {/* Booking Fee card */}
-            <div className="bg-white rounded-3xl border-2 border-brand/30 p-6 flex flex-col gap-4 shadow-sm relative overflow-hidden">
-              <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full bg-brand/6 pointer-events-none" />
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center shrink-0">
-                  <ShieldCheck className="w-4 h-4 text-brand" />
-                </div>
-                <p className="font-bold text-brand-text text-sm">Secure Your Booking</p>
-              </div>
-              <div className="bg-brand-bg rounded-2xl px-4 py-3 flex items-center justify-between">
-                <div>
-                  <p className="text-xs text-brand-muted">Due today</p>
-                  <p className="text-xl font-black text-brand-text">10% deposit</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-xs text-brand-muted">Balance due</p>
-                  <p className="text-sm font-bold text-brand-text">24hrs before</p>
-                </div>
-              </div>
-              <ul className="flex flex-col gap-2.5">
-                {[
-                  { icon: CheckCircle2, text: "Deposit credited to your total — not an extra charge" },
-                  { icon: CheckCircle2, text: "Balance payment link sent 24hrs before your clean" },
-                  { icon: CheckCircle2, text: "100% refunded if cancelled 48hrs before" },
-                  { icon: CheckCircle2, text: "Reserves your time slot exclusively" },
-                  { icon: Lock, text: "Secure payment via encrypted checkout" },
-                ].map(({ icon: Icon, text }) => (
-                  <li key={text} className="flex items-start gap-2">
-                    <Icon className="w-3.5 h-3.5 text-brand shrink-0 mt-0.5" />
-                    <span className="text-xs text-brand-muted leading-relaxed">{text}</span>
-                  </li>
-                ))}
-              </ul>
-              <div className="flex items-center gap-1.5 border-t border-brand-border pt-3">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                <p className="text-xs text-emerald-600 font-medium">Protected by SparkClean&apos;s booking guarantee</p>
-              </div>
-            </div>
-
             {/* What Happens Next card */}
             <div className="bg-white rounded-3xl border border-brand-border p-6 flex flex-col gap-4 shadow-sm">
               <p className="font-bold text-brand-text text-sm">What happens next?</p>
               <ol className="flex flex-col gap-3">
                 {[
-                  { step: "1", title: "We confirm within 2hrs", desc: "You'll receive an email confirmation with your booking details." },
-                  { step: "2", title: "Deposit collected today", desc: "A secure payment link is sent to collect your 10% deposit." },
-                  { step: "3", title: "Balance due 24hrs before", desc: "We send a payment link for the remaining 90% the day before your clean." },
+                  { step: "1", title: "Deposit collected today", desc: "A secure payment link is sent to collect payment 100% securely." },
+                  { step: "2", title: "Confirmation Email", desc: "You'll receive an email confirmation with your booking details." },
+                  { step: "3", title: "We'll contact you via email or call", desc: "We want to ensure everything is set for your clean." },
                   { step: "4", title: "Cleaner arrives on time", desc: "Your vetted cleaner shows up at the agreed time, fully equipped." },
+                  { step: "5", title: "Enjoy your sparkling space!", desc: "Sit back and relax while we make your space shine." },
                 ].map(({ step, title, desc }) => (
                   <li key={step} className="flex items-start gap-3">
                     <div className="w-5 h-5 rounded-full bg-brand/10 text-brand text-[10px] font-black flex items-center justify-center shrink-0 mt-0.5">
