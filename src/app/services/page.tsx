@@ -32,7 +32,7 @@ const SERVICES = [
   },
   {
     icon: Sparkles,
-    title: "Deep Cleaning",
+    title: "Spring Deep Cleaning",
     desc: "A thorough top-to-bottom clean. Inside appliances, grout lines, every corner.",
     price: "From $200",
     href: "/services/deep-clean",

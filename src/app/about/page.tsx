@@ -66,9 +66,9 @@ const SERVICE_AREAS = [
 
 const STATS = [
   { value: "2019", label: "Founded" },
-  { value: "10,000+", label: "Cleans completed" },
-  { value: "2,000+", label: "Happy customers" },
-  { value: "4.9★", label: "Average rating" },
+  { value: "500+", label: "Cleans completed" },
+  { value: "500+", label: "Happy customers" },
+  { value: "4.75★", label: "Average rating" },
 ];
 // ─────────────────────────────────────────────────────────────────────────────
 

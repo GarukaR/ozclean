@@ -38,6 +38,7 @@ export const SERVICES: Record<string, Service> = {
       "Glass partitions & windows wiped",
       "Bins emptied & replaced",
       "High-touch surfaces disinfected",
+      "Common Areas like stairs, lift, lobby, bin area and parking cleaned & sanitised",
     ],
     highlights: [
       { icon: "🕐", label: "After-hours available" },
@@ -69,8 +70,7 @@ export const SERVICES: Record<string, Service> = {
     related: [
       { slug: "deep-clean", title: "Deep Cleaning", desc: "A thorough one-off clean for any space." },
       { slug: "windows", title: "Window Cleaning", desc: "Crystal-clear windows inside and out." },
-      { slug: "residential", title: "Residential Cleaning", desc: "Regular home cleaning done right." },
-    ],
+   ],
   },
 
   residential: {
@@ -132,7 +132,7 @@ export const SERVICES: Record<string, Service> = {
   "deep-clean": {
     slug: "deep-clean",
     icon: Sparkles,
-    title: "Deep Cleaning",
+    title: "Spring Deep Cleaning",
     tagline: "The clean your home actually needs.",
     description:
       "We go where regular cleaners don't. Inside the oven, behind the fridge, into every grout line — a true reset for your home or office.",

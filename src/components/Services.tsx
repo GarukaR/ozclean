@@ -40,7 +40,7 @@ const SERVICES: Service[] = [
   },
   {
     icon: Sparkles,
-    title: "Deep Cleaning",
+    title: "Spring Deep Cleaning",
     description:
       "A thorough top-to-bottom clean for homes or offices that need extra attention. Perfect for spring cleans or before a big event.",
     features: ["Inside appliances", "Grout & tile scrubbing", "Ceiling to floor"],
