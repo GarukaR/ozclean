@@ -4,12 +4,11 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import Link from "next/link";
 import {
-  CalendarCheck, CheckCircle2,
+  CalendarCheck,
   User, Mail, Phone, MapPin, Clock, Sparkles, FileText
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,12 +22,29 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import {
+  BOOKING_ADDONS,
+  BOOKING_FLAT_RATE_OPTIONS,
+  BOOKING_HOURLY_OPTIONS,
+  BOOKING_WHEELY_BIN_SERVICE,
+} from "@/lib/services";
+
 const bookingSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Please enter a valid email address"),
   phone: z.string().min(8, "Please enter a valid phone number"),
   address: z.string().min(5, "Please enter your address or suburb"),
+  addressLine2: z.string().optional(),
+  suburb: z.string().min(1, "Please enter your suburb"),
+  state: z.string().min(1, "Please enter your state"),
+  postcode: z.string().min(4, "Please enter a valid postcode"),
   service: z.string().min(1, "Please select a service"),
+  addOns: z.array(z.string()).optional(),
+  hours: z.string().optional(),
+  binCount: z.string().optional(),
+  hourlyRate: z.string().optional(),
   date: z.string().min(1, "Please select a preferred date"),
   time: z.string().min(1, "Please select a preferred time"),
   instructions: z.string().optional(),
@@ -38,32 +54,25 @@ type BookingFormData = z.infer<typeof bookingSchema>;
 
 const PLANS = new Set(["Essential Plan", "Standard Plan", "Premium Plan"]);
 
+const FLAT_RATE_LOOKUP = new Map(
+  BOOKING_FLAT_RATE_OPTIONS.map((option) => [option.value, option.price])
+);
+
+const ADDON_LOOKUP = new Map(BOOKING_ADDONS.map((addon) => [addon.id, addon.price]));
+
 const SERVICE_GROUPS = [
-  // {
-  //   label: "Plans",
-  //   options: ["Essential Plan", "Standard Plan", "Premium Plan"],
-  // },
   {
-    label: "Residential Cleaning Services - flat rates",
-    options: [
-      "1 Bedroom Apartment/House Cleaning = 150 AUD",
-      "2 Bedroom Apartment/House Cleaning = 175 AUD",
-      "3 Bedroom Apartment/House Cleaning = 205 AUD",
-      "3 Bedroom Apartment/House Cleaning 2-Storey House = 220 AUD",
-      "4 Bedroom Apartment/House Cleaning = 250 AUD",
-      "4 Bedroom Apartment/House Cleaning 2-Storey House = 280 AUD",
-    ],
+    label: "Residential Cleaning - Flat Rate",
+    options: BOOKING_FLAT_RATE_OPTIONS.map((option) => option.value),
   },
-  // {
-  //   label: "Individual Services - hourly rates",
-  //   options: [
-  //     // "Hourly Cleaning - 55AUD/hr",
-  //     "Commercial Cleaning - 65AUD/hr",
-  //     "Deep Cleaning - 75AUD/hr",
-  //     "Move In / Move Out - 85AUD/hr",
-  //     "Wheely Bin Cleaning - 35AUD/hr",
-  //   ],
-  // },
+  {
+    label: "Residential Cleaning - Hourly Rate",
+    options: BOOKING_HOURLY_OPTIONS.map((opt) => opt.value),
+  },
+  {
+    label: "Additional Services",
+    options: [BOOKING_WHEELY_BIN_SERVICE.value],
+  },
 ];
 
 const TIME_SLOTS = [
@@ -90,31 +99,6 @@ function FieldWrapper({ label, icon: Icon, error, children }: {
   );
 }
 
-function SuccessState() {
-  return (
-    <div className="flex flex-col items-center justify-center text-center py-16 px-6 gap-6">
-      <div className="w-20 h-20 rounded-full bg-brand/10 flex items-center justify-center">
-        <CheckCircle2 className="w-10 h-10 text-brand" />
-      </div>
-      <div className="flex flex-col gap-2">
-        <h2 className="text-2xl font-bold text-brand-text">Booking Request Sent!</h2>
-        <p className="text-brand-muted text-sm max-w-sm leading-relaxed">
-          Thanks for booking with SparkClean. We&apos;ll confirm your appointment
-          via email within 2 hours.
-        </p>
-      </div>
-      <div className="flex flex-col sm:flex-row gap-3 mt-2">
-        <Button asChild className="bg-brand hover:bg-brand-dark text-white">
-          <Link href="/">Back to Home</Link>
-        </Button>
-        <Button asChild variant="outline" className="border-brand-border">
-          <Link href="/services">Browse Services</Link>
-        </Button>
-      </div>
-    </div>
-  );
-}
-
 export default function BookingForm({
   preselectedService,
 }: {
@@ -123,7 +107,35 @@ export default function BookingForm({
 }) {
   // const [submitted, setSubmitted] = useState(false);
   const [selectedService, setSelectedService] = useState(preselectedService ?? "");
+  const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
+  const [hours, setHours] = useState("2");
+  const [binCount, setBinCount] = useState("1");
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
+
+  const isHourlyService = selectedService.toLowerCase().includes("hourly");
+  const isWheelyBinService = selectedService.includes("Wheely Bin Cleaning");
+  
+  // Extract hourly rate from the selected service string
+  const getHourlyRate = () => {
+    const match = selectedService.match(/=\s*\$(\d+)\/hr/);
+    return match ? parseInt(match[1]) : 0;
+  };
+
+  const hourlyRate = isHourlyService ? getHourlyRate() : 0;
+  const totalHours = parseFloat(hours) || 0;
+  const totalBins = parseInt(binCount) || 0;
+  const baseServiceTotal = isHourlyService
+    ? hourlyRate * totalHours
+    : isWheelyBinService
+      ? BOOKING_WHEELY_BIN_SERVICE.rate * totalBins
+      : FLAT_RATE_LOOKUP.get(selectedService) ?? null;
+
+  const addOnTotal = selectedAddOns.reduce((sum, addOnId) => {
+    return sum + (ADDON_LOOKUP.get(addOnId) ?? 0);
+  }, 0);
+
+  const estimatedTotal = baseServiceTotal;
+  const grandTotal = baseServiceTotal !== null ? baseServiceTotal + addOnTotal : null;
 
   const {
     register,
@@ -137,11 +149,18 @@ export default function BookingForm({
 
   const onSubmit = async (data: BookingFormData) => {
     setCheckoutError(null);
+    const payload = {
+      ...data,
+      addOns: selectedAddOns,
+      ...(isHourlyService ? { hours, hourlyRate: String(hourlyRate) } : {}),
+      ...(isWheelyBinService ? { binCount } : {}),
+    };
+
     try {
       const res = await fetch("/api/create-checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
 
       const json = await res.json();
@@ -221,7 +240,13 @@ export default function BookingForm({
         <div className="grid grid-cols-1 gap-4">
           
           <FieldWrapper label="Service Type" icon={Sparkles} error={errors.service?.message}>
-            <Select defaultValue={preselectedService} onValueChange={(v) => { setValue("service", v, { shouldValidate: true }); setSelectedService(v); }}>
+            <Select
+              defaultValue={preselectedService}
+              onValueChange={(v) => {
+                setValue("service", v, { shouldValidate: true });
+                setSelectedService(v);
+              }}
+            >
               <SelectTrigger className="border-brand-border focus:border-brand focus:ring-brand">
                 <SelectValue placeholder="Select a service" />
               </SelectTrigger>
@@ -237,6 +262,120 @@ export default function BookingForm({
               </SelectContent>
             </Select>
           </FieldWrapper>
+
+          {selectedService && (
+            <div className="space-y-2">
+              <p className="text-xs font-semibold text-brand-muted uppercase tracking-widest">
+                Optional Add-ons
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {BOOKING_ADDONS.map((addon) => {
+                  const checked = selectedAddOns.includes(addon.id);
+                  return (
+                    <label
+                      key={addon.id}
+                      className="flex items-center justify-between gap-3 rounded-lg border border-brand-border bg-white px-3 py-2 cursor-pointer hover:border-brand/40"
+                    >
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedAddOns((prev) => [...prev, addon.id]);
+                              return;
+                            }
+                            setSelectedAddOns((prev) => prev.filter((id) => id !== addon.id));
+                          }}
+                          className="h-4 w-4 accent-brand"
+                        />
+                        <span className="text-sm text-brand-text">{addon.label}</span>
+                      </div>
+                      <span className="text-sm font-semibold text-brand">+${addon.price}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Hourly/bin booking: show quantity input and estimated total */}
+          {(isHourlyService || isWheelyBinService) && (
+            <div className="bg-brand/8 border border-brand/20 rounded-xl p-4 space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {isHourlyService && (
+                  <FieldWrapper label="Number of Hours" icon={Clock} error={errors.hours?.message}>
+                    <Input
+                      type="number"
+                      min="2"
+                      step="0.5"
+                      value={hours}
+                      onChange={(e) => setHours(e.target.value)}
+                      placeholder="2"
+                      className="border-brand-border focus:border-brand focus:ring-brand"
+                    />
+                    <p className="text-xs text-brand-muted mt-1">Minimum 2 hours</p>
+                  </FieldWrapper>
+                )}
+
+                {isWheelyBinService && (
+                  <FieldWrapper label="Number of Bins" icon={Sparkles} error={errors.binCount?.message}>
+                    <Input
+                      type="number"
+                      min="1"
+                      step="1"
+                      value={binCount}
+                      onChange={(e) => setBinCount(e.target.value)}
+                      placeholder="1"
+                      className="border-brand-border focus:border-brand focus:ring-brand"
+                    />
+                    <p className="text-xs text-brand-muted mt-1">Minimum 1 bin</p>
+                  </FieldWrapper>
+                )}
+              </div>
+
+              {estimatedTotal !== null && (
+                <div className="bg-white rounded-lg p-3 border border-brand-border">
+                  <p className="text-xs text-brand-muted uppercase tracking-wide font-semibold mb-1">Estimated Total</p>
+                  <p className="text-2xl font-bold text-brand">
+                    ${estimatedTotal.toFixed(0)} AUD
+                  </p>
+                  {isHourlyService && (
+                    <p className="text-xs text-brand-muted mt-1">
+                      {totalHours} hours × ${hourlyRate}/hr
+                    </p>
+                  )}
+                  {isWheelyBinService && (
+                    <p className="text-xs text-brand-muted mt-1">
+                      {totalBins} bins × ${BOOKING_WHEELY_BIN_SERVICE.rate}/bin
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {grandTotal !== null && (
+            <div className="bg-brand-accent-bg border border-brand-accent-border rounded-xl p-4 space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-widest text-brand-accent-dark">
+                Booking Total Preview
+              </p>
+              <div className="flex items-center justify-between text-sm text-brand-text">
+                <span>Service total</span>
+                <span>${baseServiceTotal?.toFixed(0)} AUD</span>
+              </div>
+              <div className="flex items-center justify-between text-sm text-brand-text">
+                <span>Add-ons total</span>
+                <span>${addOnTotal.toFixed(0)} AUD</span>
+              </div>
+              <div className="h-px bg-brand-accent-border" />
+              <div className="flex items-center justify-between">
+                <span className="font-semibold text-brand-text">Estimated total</span>
+                <span className="text-xl font-black text-brand-accent-dark">${grandTotal.toFixed(0)} AUD</span>
+              </div>
+            </div>
+          )}
+
           <p className="bg-yellow-50 border border-yellow-200 text-yellow-800 rounded-lg px-4 py-2 text-sm font-medium">
             For any service not listed, please contact us directly or get a quote.
           </p>

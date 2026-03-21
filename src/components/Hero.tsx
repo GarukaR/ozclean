@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, ShieldCheck, CalendarCheck, ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import CTA_banner from "./CTA_banner";
 
 // ─── Trust badge data ─────────────────────────────────────────────────────────
@@ -82,7 +82,7 @@ export default function Hero() {
             {/* Eyebrow badge */}
             <div className="flex">
               <Badge
-                className="bg-brand/10 text-brand border-brand/20 font-medium px-3 py-1 text-xs tracking-wide uppercase gap-1.5"
+                className="bg-brand-accent-bg text-brand-accent-dark border-brand-accent-border font-medium px-3 py-1 text-xs tracking-wide uppercase gap-1.5"
                 variant="outline"
               >
                 <Sparkles className="w-3 h-3" />
@@ -95,7 +95,7 @@ export default function Hero() {
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-brand-text leading-[1.1] tracking-tight">
                 A Spotless Space,{" "}
                 <span className="relative inline-block">
-                  <span className="relative z-10 text-brand">Every Time.</span>
+                  <span className="relative z-10 text-brand-accent-dark">Every Time.</span>
                   {/* Underline accent */}
                   <svg
                     className="absolute -bottom-2 left-0 w-full"
@@ -106,7 +106,7 @@ export default function Hero() {
                   >
                     <path
                       d="M2 6C40 2 100 1 198 4"
-                      stroke="#0EA5E9"
+                      stroke="#14B8A6"
                       strokeWidth="3"
                       strokeLinecap="round"
                       opacity="0.4"
@@ -138,7 +138,7 @@ export default function Hero() {
                 asChild
                 size="lg"
                 variant="outline"
-                className="border-brand-border text-brand-text hover:bg-brand/5 hover:border-brand font-semibold px-6 transition-all duration-200"
+                className="border-brand-accent-border text-brand-accent-dark hover:bg-brand-accent-bg hover:border-brand-accent font-semibold px-6 transition-all duration-200"
               >
                 <Link href="/quote">Get a Free Quote</Link>
               </Button>
@@ -177,21 +177,21 @@ export default function Hero() {
                   className="object-cover"
                 />
                 {/* Subtle overlay for depth */}
-                <div className="absolute inset-0 bg-gradient-to-t from-brand-text/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-brand-text/20 via-transparent to-brand-accent/10" />
               </div>
 
               {/* Decorative ring behind image */}
-              <div className="absolute -inset-4 rounded-3xl border-2 border-brand/15 -z-10" />
+              <div className="absolute -inset-4 rounded-3xl border-2 border-brand-accent/20 -z-10" />
               <div className="absolute -inset-8 rounded-3xl border border-brand/8 -z-10" />
 
               {/* Floating Stat Cards */}
               {STAT_CARDS.map(({ value, label, position }) => (
                 <div
                   key={label}
-                  className={`absolute ${position} bg-white rounded-xl shadow-lg shadow-brand-text/10 border border-brand-border px-4 py-3 min-w-[130px]`}
+                  className={`absolute ${position} bg-white rounded-xl shadow-lg shadow-brand-text/10 border border-brand-accent-border px-4 py-3 min-w-[130px]`}
                 >
                   <p className="text-brand-text font-bold text-sm leading-none">{value}</p>
-                  <p className="text-brand-muted text-xs mt-1">{label}</p>
+                  <p className="text-brand-accent-dark text-xs mt-1">{label}</p>
                 </div>
               ))}
             </div>

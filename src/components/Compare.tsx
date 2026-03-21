@@ -9,9 +9,7 @@ const SERVICES = [
     slug:     "residential",
     name:     "General Cleaning",
     tagline:  "Regular home maintenance",
-    price:    "From $80",
-    period:   "per visit",
-    href:     "/book?service=residential",
+    href:     "/quote",
     featured: false,
     badge:    null,
   },
@@ -19,9 +17,7 @@ const SERVICES = [
     slug:     "deep-clean",
     name:     "Deep Cleaning",
     tagline:  "Complete top-to-bottom reset",
-    price:    "From $200",
-    period:   "per session",
-    href:     "/book?service=deep-clean",
+    href:     "/quote",
     featured: true,
     badge:    "Most Thorough",
   },
@@ -29,9 +25,7 @@ const SERVICES = [
     slug:     "move",
     name:     "Move In / Move Out",
     tagline:  "Bond-back end of lease clean",
-    price:    "From $180",
-    period:   "per property",
-    href:     "/book?service=move",
+    href:     "/quote",
     featured: false,
     badge:    null,
   },
@@ -151,7 +145,7 @@ export default function Compare() {
             </div>
 
             {/* Service columns */}
-            {SERVICES.map(({ slug, name, tagline, price, period, href, featured, badge }, i) => (
+            {SERVICES.map(({ slug, name, tagline, href, featured, badge }, i) => (
               <div
                 key={slug}
                 className={`p-5 flex flex-col gap-3 relative pt-8
@@ -179,27 +173,6 @@ export default function Compare() {
                     {tagline}
                   </p>
                 </div>
-
-                <div>
-                  <p className={`text-xl font-black ${featured ? "text-white" : "text-brand-text"}`}>
-                    {price}
-                  </p>
-                  <p className={`text-[11px] mt-0.5 ${featured ? "text-white/60" : "text-brand-muted"}`}>
-                    {period}
-                  </p>
-                </div>
-
-                <Button
-                  asChild
-                  size="sm"
-                  className={`w-full text-xs font-semibold mt-1
-                    ${featured
-                      ? "bg-white text-brand hover:bg-brand-bg shadow-lg"
-                      : "bg-brand hover:bg-brand-dark text-white shadow-md shadow-brand/20"
-                    }`}
-                >
-                  <Link href={href}>Book Now</Link>
-                </Button>
               </div>
             ))}
           </div>
@@ -278,7 +251,7 @@ export default function Compare() {
                     }`}
                 >
                   <Link href={href}>
-                    Book Now <ArrowRight className="w-3 h-3" />
+                    Quote Now <ArrowRight className="w-3 h-3" />
                   </Link>
                 </Button>
               </div>

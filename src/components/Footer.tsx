@@ -1,9 +1,6 @@
 import Link from "next/link";
 import { Sparkles, Phone, Mail, MapPin, Facebook, Instagram, Twitter } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import CTA_banner from "./CTA_banner";
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 const FOOTER_LINKS = {
@@ -13,6 +10,7 @@ const FOOTER_LINKS = {
     { label: "Deep Cleaning", href: "/services/deep-clean" },
     { label: "Move In / Move Out", href: "/services/move" },
     { label: "Window Cleaning", href: "/services/windows" },
+    { label: "Wheely Bin Cleaning", href: "/services/wheely-bin" },
   ],
   Company: [
     { label: "About Us", href: "/about" },

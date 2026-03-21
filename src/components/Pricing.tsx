@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Clock, Home, ChevronUp, ChevronDown, Tag, Users, Gift, Sun, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { HOME_PRICING_ADDONS, HOME_PROMO_OFFERS } from "@/lib/services";
 
 // ─── Hourly rates ─────────────────────────────────────────────────────────────
 const HOURLY_RATES = [
@@ -33,58 +34,14 @@ const FLAT_PERFECT_FOR =
 
 const FLAT_MORE = `The flat-rate option is perfect for having your entire home professionally cleaned from top to bottom. Pricing is based on the number of bedrooms in your home and our team will complete a full general clean following our detailed checklist. Additional services such as inside oven, fridge, and window cleaning can be added on. If your home hasn't had a deep or thorough clean in over a month, we recommend booking a deep clean first for the best results.`;
 
-// ─── Add-ons ──────────────────────────────────────────────────────────────────
-const ADD_ONS = [
-  { label: "Inside oven",            price: "+$45" },
-  { label: "Inside fridge",          price: "+$35" },
-  { label: "Interior windows",       price: "+$60" },
-  { label: "Exterior windows",       price: "+$80" },
-  { label: "Balcony / outdoor area", price: "+$50" },
-  { label: "Garage",                 price: "+$65" },
-  { label: "Flyscreen cleaning",     price: "+$40" },
-  { label: "Carpet steam clean",     price: "From $80" },
-];
-
-// ─── Promos ───────────────────────────────────────────────────────────────────
-const PROMOS = [
-  {
-    icon: Sparkles,
-    label: "First Clean",
-    deal: "20% off",
-    description: "New customers get 20% off their first booking.",
-    code: "FIRST20",
-    color: "bg-brand/10 text-brand border-brand/20",
-    iconBg: "bg-brand/15",
-  },
-  {
-    icon: Gift,
-    label: "Bundle Deal",
-    deal: "Book 3, Get 1 Free",
-    description: "Book any 3 cleans and get the 4th completely free.",
-    code: "BUNDLE4",
-    color: "bg-emerald-50 text-emerald-700 border-emerald-200",
-    iconBg: "bg-emerald-100",
-  },
-  {
-    icon: Users,
-    label: "Referral",
-    deal: "$30 credit",
-    description: "Refer a friend — both of you get $30 off your next clean.",
-    code: "REFER30",
-    color: "bg-violet-50 text-violet-700 border-violet-200",
-    iconBg: "bg-violet-100",
-  },
-  {
-    icon: Sun,
-    label: "Spring Special",
-    deal: "15% off deep cleans",
-    description: "Book a deep clean this spring and save 15%. Limited slots.",
-    code: "SPRING15",
-    color: "bg-amber-50 text-amber-700 border-amber-200",
-    iconBg: "bg-amber-100",
-  },
-];
 // ─────────────────────────────────────────────────────────────────────────────
+
+const PROMO_ICONS = {
+  sparkles: Sparkles,
+  gift: Gift,
+  users: Users,
+  sun: Sun,
+};
 
 export default function Pricing() {
   const [hourlyOpen, setHourlyOpen] = useState(false);
@@ -140,11 +97,11 @@ export default function Pricing() {
             </div>
 
             {/* Perfect for */}
-            <div className="mx-6 my-5 rounded-xl bg-amber-50 border border-amber-200 px-4 py-3">
-              <p className="text-xs font-bold text-amber-700 uppercase tracking-wide mb-1">
+            <div className="mx-6 my-5 rounded-xl bg-brand-bg border border-brand-border px-4 py-3">
+              <p className="text-xs font-bold text-brand uppercase tracking-wide mb-1">
                 Perfect For
               </p>
-              <p className="text-sm text-amber-800 leading-relaxed">{HOURLY_PERFECT_FOR}</p>
+              <p className="text-sm text-brand-text leading-relaxed">{HOURLY_PERFECT_FOR}</p>
             </div>
 
             {/* Read more toggle */}
@@ -172,17 +129,17 @@ export default function Pricing() {
                 asChild
                 className="w-full bg-brand hover:bg-brand-dark text-white font-semibold h-11 shadow-md shadow-brand/20"
               >
-                <Link href="/quote">Get a Quote</Link>
+                <Link href="/book">Book Now</Link>
               </Button>
             </div>
           </div>
 
           {/* ── Flat Rate Panel ── */}
-          <div className="rounded-2xl border border-emerald-200 bg-white flex flex-col overflow-hidden">
+          <div className="rounded-2xl border border-brand-accent-border bg-white flex flex-col overflow-hidden shadow-sm shadow-brand-accent/10">
             {/* Panel header */}
-            <div className="px-7 pt-7 pb-5 border-b border-emerald-100">
+            <div className="px-7 pt-7 pb-5 border-b border-brand-accent-border bg-brand-accent-bg/40">
               <div className="flex items-center gap-2 mb-3">
-                <Home className="w-5 h-5 text-emerald-600" />
+                <Home className="w-5 h-5 text-brand-accent" />
                 <h3 className="text-xl font-bold text-brand-text">Flat-Rate House Cleaning</h3>
               </div>
               <p className="text-sm text-brand-muted leading-relaxed">
@@ -192,7 +149,7 @@ export default function Pricing() {
             </div>
 
             {/* Price grid */}
-            <div className="grid grid-cols-2 gap-px bg-emerald-100 flex-1">
+            <div className="grid grid-cols-2 gap-px bg-brand-accent-border flex-1">
               {FLAT_RATES.map(({ label, price }, i) => {
                 // 5 bed spans full width on last odd item
                 const isLast = i === FLAT_RATES.length - 1;
@@ -204,25 +161,25 @@ export default function Pricing() {
                       ${isLast && isOdd ? "col-span-2" : ""}`}
                   >
                     <p className="text-sm text-brand-muted">{label}</p>
-                    <p className="text-3xl font-black text-emerald-600">{price}</p>
+                    <p className="text-3xl font-black text-brand-accent-dark">{price}</p>
                   </div>
                 );
               })}
             </div>
 
             {/* Perfect for */}
-            <div className="mx-6 my-5 rounded-xl bg-amber-50 border border-amber-200 px-4 py-3">
-              <p className="text-xs font-bold text-amber-700 uppercase tracking-wide mb-1">
+            <div className="mx-6 my-5 rounded-xl bg-brand-accent-bg border border-brand-accent-border px-4 py-3">
+              <p className="text-xs font-bold text-brand-accent-dark uppercase tracking-wide mb-1">
                 Perfect For
               </p>
-              <p className="text-sm text-amber-800 leading-relaxed">{FLAT_PERFECT_FOR}</p>
+              <p className="text-sm text-brand-text leading-relaxed">{FLAT_PERFECT_FOR}</p>
             </div>
 
             {/* Read more toggle */}
             <div className="px-6 pb-2">
               <button
                 onClick={() => setFlatOpen((v) => !v)}
-                className="flex items-center gap-1.5 text-sm text-emerald-600 font-semibold hover:underline underline-offset-2 mb-3"
+                className="flex items-center gap-1.5 text-sm text-brand-accent-dark font-semibold hover:underline underline-offset-2 mb-3"
               >
                 {flatOpen ? "Read less" : "Read more"}
                 {flatOpen
@@ -241,9 +198,9 @@ export default function Pricing() {
             <div className="px-6 pb-7 mt-auto">
               <Button
                 asChild
-                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold h-11 shadow-md shadow-emerald-600/20"
+                className="w-full bg-brand-accent hover:bg-brand-accent-dark text-white font-semibold h-11 shadow-md shadow-brand-accent/20"
               >
-                <Link href="/quote">Get a Quote</Link>
+                <Link href="/book">Book Now</Link>
               </Button>
             </div>
           </div>
@@ -256,13 +213,13 @@ export default function Pricing() {
             Optional Add-ons
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {ADD_ONS.map(({ label, price }) => (
+            {HOME_PRICING_ADDONS.map(({ id, label, displayPrice }) => (
               <div
-                key={label}
+                key={id}
                 className="bg-brand-bg border border-brand-border rounded-xl px-4 py-3 flex items-center justify-between gap-2 hover:border-brand/40 transition-colors"
               >
                 <span className="text-sm text-brand-text">{label}</span>
-                <span className="text-sm font-bold text-brand shrink-0">{price}</span>
+                <span className="text-sm font-bold text-brand shrink-0">{displayPrice}</span>
               </div>
             ))}
           </div>
@@ -278,34 +235,37 @@ export default function Pricing() {
             Current Offers
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {PROMOS.map(({ icon: Icon, label, deal, description, code, color, iconBg }) => (
-              <div
-                key={code}
-                className={`rounded-2xl border p-5 flex flex-col gap-3 hover:shadow-md transition-all duration-200 ${color}`}
-              >
-                <div className="flex items-start justify-between">
-                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${iconBg}`}>
-                    <Icon className="w-4 h-4" />
+            {HOME_PROMO_OFFERS.map(({ id, icon, label, deal, description, code, color, iconBg }) => {
+              const Icon = PROMO_ICONS[icon];
+              return (
+                <div
+                  key={id}
+                  className={`rounded-2xl border p-5 flex flex-col gap-3 hover:shadow-md transition-all duration-200 ${color}`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${iconBg}`}>
+                      <Icon className="w-4 h-4" />
+                    </div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider opacity-60">{label}</span>
                   </div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider opacity-60">{label}</span>
+                  <div>
+                    <p className="font-bold text-lg leading-tight">{deal}</p>
+                    <p className="text-xs opacity-75 leading-relaxed mt-1">{description}</p>
+                  </div>
+                  <div className="mt-auto flex items-center justify-between border-t border-current/10 pt-3">
+                    <code className="text-xs font-mono font-bold tracking-widest opacity-80 bg-white/40 px-2 py-1 rounded-md">
+                      {code}
+                    </code>
+                    <Link
+                      href="/book"
+                      className="text-xs font-semibold hover:underline underline-offset-2 opacity-90"
+                    >
+                      Claim →
+                    </Link>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-bold text-lg leading-tight">{deal}</p>
-                  <p className="text-xs opacity-75 leading-relaxed mt-1">{description}</p>
-                </div>
-                <div className="mt-auto flex items-center justify-between border-t border-current/10 pt-3">
-                  <code className="text-xs font-mono font-bold tracking-widest opacity-80 bg-white/40 px-2 py-1 rounded-md">
-                    {code}
-                  </code>
-                  <Link
-                    href="/book"
-                    className="text-xs font-semibold hover:underline underline-offset-2 opacity-90"
-                  >
-                    Claim →
-                  </Link>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 

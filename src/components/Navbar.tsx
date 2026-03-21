@@ -95,7 +95,7 @@ export default function Navbar() {
 
         {/* ── Desktop CTAs ── */}
         <div className="hidden md:flex items-center gap-3">
-          <Button asChild variant="ghost" className="text-brand-muted hover:text-brand-text">
+          <Button asChild className="bg-brand-accent hover:bg-brand-accent-dark text-white shadow-sm shadow-brand-accent/25">
             <Link href="/quote">Get a Quote</Link>
           </Button>
           <Button asChild className="bg-brand hover:bg-brand-dark text-white shadow-sm shadow-brand/25">
@@ -155,7 +155,7 @@ export default function Navbar() {
 
               {/* Mobile CTA */}
               <div className="p-4 flex flex-col gap-2">
-                <Button asChild variant="outline" className="w-full border-brand-border">
+                <Button asChild className="w-full bg-brand-accent hover:bg-brand-accent-dark text-white shadow-sm shadow-brand-accent/25">
                   <Link href="/quote">Get a Free Quote</Link>
                 </Button>
                 <Button asChild className="w-full bg-brand hover:bg-brand-dark text-white">

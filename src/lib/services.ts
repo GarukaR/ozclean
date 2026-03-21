@@ -1,4 +1,4 @@
-import { Building2, Home, Sparkles, ArrowLeftRight, Wind, LucideIcon } from "lucide-react";
+import { Building2, Home, Sparkles, ArrowLeftRight, Wind, Trash2, LucideIcon } from "lucide-react";
 
 export type Service = {
   slug: string;
@@ -9,12 +9,108 @@ export type Service = {
   price: string;
   priceLabel: string;
   priceNote: string;
+  bookable: boolean;
   heroImage: string;
   included: string[];
   highlights: { icon: string; label: string }[];
   faqs: { q: string; a: string }[];
   related: { slug: string; title: string; desc: string }[];
 };
+
+export type PricingAddOn = {
+  id: string;
+  label: string;
+  price: number;
+  displayPrice: string;
+};
+
+export type PromoOffer = {
+  id: string;
+  icon: "sparkles" | "gift" | "users" | "sun";
+  label: string;
+  deal: string;
+  description: string;
+  code: string;
+  color: string;
+  iconBg: string;
+};
+
+export const HOME_PRICING_ADDONS: PricingAddOn[] = [
+  { id: "inside-oven", label: "Inside oven", price: 45, displayPrice: "+$45" },
+  { id: "inside-fridge", label: "Inside fridge", price: 35, displayPrice: "+$35" },
+  { id: "interior-windows", label: "Interior windows", price: 60, displayPrice: "+$60" },
+  { id: "exterior-windows", label: "Exterior windows", price: 80, displayPrice: "+$80" },
+  { id: "balcony-outdoor", label: "Balcony / outdoor area", price: 50, displayPrice: "+$50" },
+  { id: "garage", label: "Garage", price: 65, displayPrice: "+$65" },
+  { id: "flyscreen-cleaning", label: "Flyscreen cleaning", price: 40, displayPrice: "+$40" },
+  { id: "carpet-steam-clean", label: "Carpet steam clean", price: 80, displayPrice: "From $80" },
+];
+
+export const HOME_PROMO_OFFERS: PromoOffer[] = [
+  {
+    id: "first-clean",
+    icon: "sparkles",
+    label: "First Clean",
+    deal: "20% off",
+    description: "New customers get 20% off their first booking.",
+    code: "FIRST20",
+    color: "bg-brand/10 text-brand border-brand/20",
+    iconBg: "bg-brand/15",
+  },
+  {
+    id: "bundle-deal",
+    icon: "gift",
+    label: "Bundle Deal",
+    deal: "Book 3, Get 1 Free",
+    description: "Book any 3 cleans and get the 4th completely free.",
+    code: "BUNDLE4",
+    color: "bg-brand-accent-bg text-brand-accent-dark border-brand-accent-border",
+    iconBg: "bg-brand-accent/10",
+  },
+  {
+    id: "referral",
+    icon: "users",
+    label: "Referral",
+    deal: "$30 credit",
+    description: "Refer a friend — both of you get $30 off your next clean.",
+    code: "REFER30",
+    color: "bg-brand-bg text-brand-dark border-brand-border",
+    iconBg: "bg-brand/10",
+  },
+  {
+    id: "spring-special",
+    icon: "sun",
+    label: "Spring Special",
+    deal: "15% off deep cleans",
+    description: "Book a deep clean this spring and save 15%. Limited slots.",
+    code: "SPRING15",
+    color: "bg-amber-50 text-amber-700 border-amber-200",
+    iconBg: "bg-amber-100",
+  },
+];
+
+export const BOOKING_HOURLY_OPTIONS = [
+  { label: "Hourly - One-off", value: "Hourly Cleaning (One-off) = $60/hr", rate: 60 },
+  { label: "Hourly - Weekly", value: "Hourly Cleaning (Weekly) = $50/hr", rate: 50 },
+  { label: "Hourly - Fortnightly", value: "Hourly Cleaning (Fortnightly) = $55/hr", rate: 55 },
+  { label: "Hourly - Monthly", value: "Hourly Cleaning (Monthly) = $55/hr", rate: 55 },
+];
+
+export const BOOKING_FLAT_RATE_OPTIONS = [
+  { value: "1 Bedroom Apartment/House Cleaning = 150 AUD", price: 150 },
+  { value: "2 Bedroom Apartment/House Cleaning = 175 AUD", price: 175 },
+  { value: "3 Bedroom Apartment/House Cleaning = 205 AUD", price: 205 },
+  { value: "3 Bedroom Apartment/House Cleaning 2-Storey House = 220 AUD", price: 220 },
+  { value: "4 Bedroom Apartment/House Cleaning = 250 AUD", price: 250 },
+  { value: "4 Bedroom Apartment/House Cleaning 2-Storey House = 280 AUD", price: 280 },
+];
+
+export const BOOKING_WHEELY_BIN_SERVICE = {
+  value: "Wheely Bin Cleaning = $35/bin",
+  rate: 35,
+};
+
+export const BOOKING_ADDONS = HOME_PRICING_ADDONS.filter((addon) => addon.id !== "carpet-steam-clean");
 
 export const SERVICES: Record<string, Service> = {
   commercial: {
@@ -27,6 +123,7 @@ export const SERVICES: Record<string, Service> = {
     price: "From $150",
     priceLabel: "per visit",
     priceNote: "No lock-in contracts. Cancel or change anytime.",
+    bookable: false,
     heroImage:
       "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80",
     included: [
@@ -79,10 +176,11 @@ export const SERVICES: Record<string, Service> = {
     title: "Residential Cleaning",
     tagline: "Your home, spotless. Every time.",
     description:
-      "Reliable, friendly home cleaning tailored to your schedule. Whether weekly, fortnightly, or one-off — we treat your home like our own.",
-    price: "From $80",
-    priceLabel: "per visit",
-    priceNote: "No commitment required. Cancel anytime.",
+      "Reliable, friendly home cleaning tailored to your schedule. Choose hourly rates for flexibility or flat-rates based on your home size. Weekly, fortnightly, or one-off — we treat your home like our own.",
+    price: "$50–60/hr or $150–280",
+    priceLabel: "hourly or flat-rate",
+    priceNote: "Hourly rates from $50–60/hr (depending on frequency). Flat-rates from $150–280 based on bedrooms. No commitment required.",
+    bookable: true,
     heroImage:
       "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=800&q=80",
     included: [
@@ -139,6 +237,7 @@ export const SERVICES: Record<string, Service> = {
     price: "From $200",
     priceLabel: "per session",
     priceNote: "Exact quote provided upfront based on property size.",
+    bookable: false,
     heroImage:
       "https://images.unsplash.com/photo-1585771724684-38269d6639fd?auto=format&fit=crop&w=800&q=80",
     included: [
@@ -197,6 +296,7 @@ export const SERVICES: Record<string, Service> = {
     price: "From $180",
     priceLabel: "per property",
     priceNote: "Exact quote based on number of rooms and property condition.",
+    bookable: false,
     heroImage:
       "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80",
     included: [
@@ -249,10 +349,11 @@ export const SERVICES: Record<string, Service> = {
     title: "Window Cleaning",
     tagline: "See the world crystal clear.",
     description:
-      "Streak-free, sparkling windows for homes and businesses. We use professional-grade tools and purified water — no smears, no residue, guaranteed.",
-    price: "From $60",
-    priceLabel: "per visit",
-    priceNote: "Priced based on number of windows and property type.",
+      "Streak-free, sparkling windows for homes and businesses. Our pricing is based on the number of storeys. We use professional-grade tools and purified water — no smears, no residue, guaranteed.",
+    price: "From $250",
+    priceLabel: "per storey",
+    priceNote: "Pricing calculated based on your property's storeys and window count. Multi-storey access available.",
+    bookable: false,
     heroImage:
       "https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?auto=format&fit=crop&w=800&q=80",
     included: [
@@ -296,6 +397,61 @@ export const SERVICES: Record<string, Service> = {
       { slug: "residential", title: "Residential Cleaning", desc: "Keep your whole home spotless." },
       { slug: "deep-clean", title: "Deep Cleaning", desc: "A thorough clean for every surface." },
       { slug: "commercial", title: "Commercial Cleaning", desc: "Office and shopfront cleaning." },
+    ],
+  },
+
+  "wheely-bin": {
+    slug: "wheely-bin",
+    icon: Trash2,
+    title: "Wheely Bin Cleaning",
+    tagline: "Fresh bins. Cleaner property.",
+    description:
+      "High-pressure wheely bin cleaning and sanitising for homes and small businesses. We remove grime, bacteria, and bad odours so your bins stay hygienic.",
+    price: "From $35",
+    priceLabel: "per bin",
+    priceNote: "Final price is calculated by number of bins.",
+    bookable: true,
+    heroImage:
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=800&q=80",
+    included: [
+      "High-pressure internal wash",
+      "External scrub and rinse",
+      "Eco-friendly disinfectant treatment",
+      "Lid, rims and handles cleaned",
+      "Odour treatment and deodorising",
+      "Quick dry finish",
+    ],
+    highlights: [
+      { icon: "🧼", label: "Hygiene focused" },
+      { icon: "🌿", label: "Eco-friendly products" },
+      { icon: "💨", label: "Odour reduction" },
+    ],
+    faqs: [
+      {
+        q: "How is wheely bin cleaning priced?",
+        a: "Pricing is per bin. Add the number of bins during booking and we'll calculate your total instantly.",
+      },
+      {
+        q: "What type of bins do you clean?",
+        a: "We clean standard household wheely bins including general waste, recycling, and green waste bins.",
+      },
+      {
+        q: "Do you use harsh chemicals?",
+        a: "No. We use eco-friendly disinfectants designed to remove bacteria and odours while being safe for residential areas.",
+      },
+      {
+        q: "How often should bins be cleaned?",
+        a: "Most households book every 4-8 weeks. If you have pets, kids, or high usage, monthly cleaning works best.",
+      },
+      {
+        q: "Do I need to be home?",
+        a: "No. As long as bins are accessible outside, we can complete the clean and notify you once done.",
+      },
+    ],
+    related: [
+      { slug: "residential", title: "Residential Cleaning", desc: "Keep your whole home spotless." },
+      { slug: "windows", title: "Window Cleaning", desc: "Crystal-clear windows inside and out." },
+      { slug: "deep-clean", title: "Deep Cleaning", desc: "A thorough clean for every surface." },
     ],
   },
 };

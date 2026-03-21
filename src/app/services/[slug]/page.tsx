@@ -59,23 +59,24 @@ export default async function ServicePage({
       {/* ── Hero ── */}
       <section className="bg-brand-bg pt-32 pb-20 overflow-hidden relative">
         <div className="absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full bg-brand/8 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-24 -left-24 w-[420px] h-[420px] rounded-full bg-brand-accent/10 blur-3xl pointer-events-none" />
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left — text */}
             <div className="flex flex-col gap-6">
-              <Badge className="bg-brand/10 text-brand border-brand/20 w-fit gap-1.5">
+              <Badge className="bg-brand-accent-bg text-brand-accent-dark border-brand-accent-border w-fit gap-1.5">
                 <Icon className="w-3.5 h-3.5" />
                 {service.title}
               </Badge>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-brand-text leading-[1.1] tracking-tight">
                 {service.tagline.split(".")[0]}.{" "}
                 {service.tagline.split(".")[1] && (
-                  <span className="text-brand">
+                  <span className="text-brand-accent-dark">
                     {service.tagline.split(".")[1].trim()}.
                   </span>
                 )}
               </h1>
-              <p className="text-brand-muted text-lg leading-relaxed max-w-md">
+                <p className="text-brand-accent-dark text-lg leading-relaxed max-w-md">
                 {service.description}
               </p>
 
@@ -96,11 +97,11 @@ export default async function ServicePage({
 
               {/* CTAs */}
               <div className="flex flex-wrap gap-3 pt-1">
-                {service.title === "Residential Cleaning" && (
+                {service.bookable && (
                   <Button
                     asChild
                     size="lg"
-                    className="bg-brand hover:bg-brand-dark text-white font-semibold gap-2 shadow-lg shadow-brand/25"
+                      className="bg-brand-accent hover:bg-brand-accent-dark text-white font-semibold gap-2 shadow-lg shadow-brand-accent/25"
                   >
                     <Link href={`/book?service=${service.slug}`}>
                       Book Now <ArrowRight className="w-4 h-4" />
@@ -112,7 +113,7 @@ export default async function ServicePage({
                   asChild
                   size="lg"
                   variant="outline"
-                  className="border-brand-border text-brand-text hover:border-brand hover:text-brand font-semibold"
+                    className="border-brand-accent-border text-brand-text hover:border-brand-accent hover:text-brand-accent-dark font-semibold"
                 >
                   <Link href="/quote">Get a Free Quote</Link>
                 </Button>
@@ -129,7 +130,7 @@ export default async function ServicePage({
               />
               {/* Floating price card */}
               <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm rounded-2xl px-5 py-3 shadow-lg border border-brand-border">
-                <p className="text-2xl font-black text-brand-text leading-none">
+                  <p className="text-2xl font-black text-brand-accent-dark leading-none">
                   {service.price}
                 </p>
                 <p className="text-xs text-brand-muted mt-1">
@@ -165,7 +166,7 @@ export default async function ServicePage({
             </div>
 
             {/* Pricing card */}
-            <div className="bg-brand rounded-3xl p-8 flex flex-col gap-5 relative overflow-hidden">
+            <div className="bg-gradient-to-br from-brand to-brand-accent rounded-3xl p-8 flex flex-col gap-5 relative overflow-hidden">
               <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/10 pointer-events-none" />
               <div className="relative flex flex-col gap-4">
                 <p className="text-white/70 text-xs font-semibold uppercase tracking-widest">
@@ -222,7 +223,7 @@ export default async function ServicePage({
             <Button
               asChild
               variant="outline"
-              className="border-brand text-brand hover:bg-brand/5 gap-2"
+              className="border-brand-accent text-brand-accent-dark hover:bg-brand-accent-bg gap-2"
             >
               <Link href="/contact">
                 <Phone className="w-3.5 h-3.5" /> Contact our team
@@ -243,9 +244,9 @@ export default async function ServicePage({
               <Link
                 key={slug}
                 href={`/services/${slug}`}
-                className="group bg-brand-bg rounded-2xl border border-brand-border p-5 hover:border-brand/40 hover:shadow-md transition-all duration-200 flex flex-col gap-2"
+                className="group bg-brand-bg rounded-2xl border border-brand-border p-5 hover:border-brand-accent/40 hover:shadow-md transition-all duration-200 flex flex-col gap-2"
               >
-                <p className="font-semibold text-brand-text group-hover:text-brand transition-colors">
+                <p className="font-semibold text-brand-text group-hover:text-brand-accent-dark transition-colors">
                   {title}
                 </p>
                 <p className="text-sm text-brand-muted">{desc}</p>

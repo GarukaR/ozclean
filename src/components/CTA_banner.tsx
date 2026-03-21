@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 
 export default function CTA_banner() {
     return(
-        <div className="bg-brand border-b border-white/10">
+        <div className="bg-gradient-to-r from-brand to-brand-accent border-b border-white/10">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div>
                     <p className="text-white font-semibold text-lg">Ready for a spotless home?</p>
@@ -11,7 +11,7 @@ export default function CTA_banner() {
                 </div>
                 <Button
                     asChild
-                    className="bg-white text-brand hover:bg-brand-bg font-semibold shrink-0 shadow-lg"
+                    className="bg-white text-brand-accent-dark hover:bg-brand-accent-bg font-semibold shrink-0 shadow-lg"
                 >
                     <Link href="/book">Claim Now →</Link>
                 </Button>

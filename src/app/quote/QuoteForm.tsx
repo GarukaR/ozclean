@@ -32,9 +32,10 @@ type QuoteFormData = z.infer<typeof quoteSchema>;
 const SERVICES = [
   "Residential Cleaning",
   "Commercial Cleaning",
-  "Deep Cleaning",
+  "Spring Deep Cleaning",
   "Move In / Move Out",
   "Window Cleaning",
+  "Wheely Bin Cleaning",
   "Not sure — need advice",
 ];
 

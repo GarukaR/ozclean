@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { ArrowLeft, CheckCircle2, Phone } from "lucide-react";
+import { ArrowLeft, Phone } from "lucide-react";
 import { CalendarCheck } from "lucide-react";
 import { generatePageMeta } from "@/lib/seo";
 import BookingForm from "./BookingForm";
-import { ShieldCheck, Lock } from "lucide-react";
+import { BOOKING_WHEELY_BIN_SERVICE } from "@/lib/services";
 
 export const metadata = generatePageMeta({
   title: "Book a Clean",
@@ -17,13 +17,18 @@ const TIER_MAP: Record<string, { label: string; service: string }> = {
   premium: { label: "Premium Plan", service: "Premium Plan" },
 };
 
+const SERVICE_SLUG_MAP: Record<string, string> = {
+  "wheely-bin": BOOKING_WHEELY_BIN_SERVICE.value,
+};
+
 export default async function BookPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tier?: string }>;
+  searchParams: Promise<{ tier?: string; service?: string }>;
 }) {
-  const { tier: tierParam } = await searchParams;
+  const { tier: tierParam, service: serviceSlug } = await searchParams;
   const tier = TIER_MAP[tierParam ?? ""] ?? null;
+  const preselected = tier?.service ?? SERVICE_SLUG_MAP[serviceSlug ?? ""] ?? undefined;
   return (
     <main className="min-h-screen bg-brand-bg pt-24 pb-16">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
@@ -58,7 +63,7 @@ export default async function BookPage({
 
           {/* ── Form ── */}
           <div className="lg:col-span-2 bg-white rounded-3xl border border-brand-border shadow-sm overflow-hidden">
-            <BookingForm tierLabel={tier?.label} preselectedService={tier?.service} />
+            <BookingForm tierLabel={tier?.label} preselectedService={preselected} />
           </div>
 
           {/* ── Sidebar ── */}

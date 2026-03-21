@@ -131,7 +131,7 @@ export default function FAQPage() {
           <p className="text-brand text-sm font-semibold uppercase tracking-widest mb-3">FAQ</p>
           <h1 className="text-4xl sm:text-5xl font-bold text-brand-text leading-tight tracking-tight mb-4">
             Frequently asked{" "}
-            <span className="text-brand">questions.</span>
+            <span className="text-brand-accent-dark">questions.</span>
           </h1>
           <p className="text-brand-muted text-lg leading-relaxed">
             Everything you need to know about booking, our team, products, and our guarantee. Can&apos;t find your answer? We&apos;re happy to help.
@@ -145,7 +145,7 @@ export default function FAQPage() {
           {FAQ_CATEGORIES.map(({ category, faqs }) => (
             <div key={category} className="flex flex-col gap-4">
               <h2 className="text-lg font-bold text-brand-text flex items-center gap-3">
-                <span className="w-1 h-5 rounded-full bg-brand inline-block" />
+                <span className="w-1 h-5 rounded-full bg-brand-accent inline-block" />
                 {category}
               </h2>
               <div className="flex flex-col gap-2">
@@ -161,13 +161,13 @@ export default function FAQPage() {
       {/* ── Still have questions ── */}
       <section className="pb-20">
         <div className="max-w-3xl mx-auto px-4 sm:px-6">
-          <div className="bg-brand rounded-3xl p-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="bg-gradient-to-r from-brand to-brand-accent rounded-3xl p-8 flex flex-col sm:flex-row items-center justify-between gap-6">
             <div>
               <h3 className="text-xl font-bold text-white">Still have a question?</h3>
               <p className="text-white/70 text-sm mt-1">Our team is happy to help — reach out any time.</p>
             </div>
             <div className="flex flex-wrap gap-3">
-              <Button asChild className="bg-white text-brand hover:bg-brand-bg font-semibold gap-2">
+              <Button asChild className="bg-white text-brand-accent-dark hover:bg-brand-accent-bg font-semibold gap-2">
                 <Link href="tel:+61391234567">
                   <Phone className="w-4 h-4" /> Call Us
                 </Link>
