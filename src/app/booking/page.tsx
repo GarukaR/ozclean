@@ -3,22 +3,19 @@ import { ArrowLeft, Phone } from "lucide-react";
 import { CalendarCheck } from "lucide-react";
 import { generatePageMeta } from "@/lib/seo";
 import BookingForm from "./BookingForm";
-import { BOOKING_WHEELY_BIN_SERVICE } from "@/lib/services";
+import { ROUTES } from "@/lib/routes";
+import { prisma } from "@/lib/prisma";
 
 export const metadata = generatePageMeta({
   title: "Book a Clean",
   description: "Book your SparkClean service online in minutes. Choose your service, pick a date and time, and we'll confirm within 2 hours.",
-  path: "/book",
+  path: ROUTES.BOOKING,
 });
 
 const TIER_MAP: Record<string, { label: string; service: string }> = {
   essential: { label: "Essential Plan", service: "Essential Plan" },
   standard: { label: "Standard Plan", service: "Standard Plan" },
   premium: { label: "Premium Plan", service: "Premium Plan" },
-};
-
-const SERVICE_SLUG_MAP: Record<string, string> = {
-  "wheely-bin": BOOKING_WHEELY_BIN_SERVICE.value,
 };
 
 export default async function BookPage({
@@ -28,14 +25,28 @@ export default async function BookPage({
 }) {
   const { tier: tierParam, service: serviceSlug } = await searchParams;
   const tier = TIER_MAP[tierParam ?? ""] ?? null;
-  const preselected = tier?.service ?? SERVICE_SLUG_MAP[serviceSlug ?? ""] ?? undefined;
+
+  let preselectedServiceFromSlug: string | undefined;
+  if (serviceSlug === "wheely-bin") {
+    const wheelyBinService = await prisma.service.findFirst({
+      where: {
+        isActive: true,
+        code: { contains: "/bin" },
+      },
+      select: { code: true },
+      orderBy: { basePriceCents: "asc" },
+    });
+    preselectedServiceFromSlug = wheelyBinService?.code;
+  }
+
+  const preselected = tier?.service ?? preselectedServiceFromSlug ?? undefined;
   return (
     <main className="min-h-screen bg-brand-bg pt-24 pb-16">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
 
         {/* ── Back link ── */}
         <Link
-          href="/"
+          href={ROUTES.HOME}
           className="inline-flex items-center gap-1.5 text-sm text-brand-muted hover:text-brand transition-colors mb-8"
         >
           <ArrowLeft className="w-3.5 h-3.5" /> Back to home
@@ -74,7 +85,7 @@ export default async function BookPage({
               <p className="font-bold text-brand-text text-sm">What happens next?</p>
               <ol className="flex flex-col gap-3">
                 {[
-                  { step: "1", title: "Deposit collected today", desc: "A secure payment link is sent to collect payment 100% securely." },
+                  { step: "1", title: "Full payment collected now", desc: "A secure payment link is sent and the full amount is paid when you book." },
                   { step: "2", title: "Confirmation Email", desc: "You'll receive an email confirmation with your booking details." },
                   { step: "3", title: "We'll contact you via email or call", desc: "We want to ensure everything is set for your clean." },
                   { step: "4", title: "Cleaner arrives on time", desc: "Your vetted cleaner shows up at the agreed time, fully equipped." },
@@ -106,7 +117,7 @@ export default async function BookPage({
             {/* Quote link */}
             <p className="text-center text-xs text-brand-muted">
               Not ready to book?{" "}
-              <Link href="/quote" className="text-brand font-semibold hover:underline underline-offset-2">
+              <Link href={ROUTES.QUOTE} className="text-brand font-semibold hover:underline underline-offset-2">
                 Get a free quote instead →
               </Link>
             </p>

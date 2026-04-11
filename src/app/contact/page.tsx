@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Phone, Mail, MapPin, Clock, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { generatePageMeta } from "@/lib/seo";
+import { ROUTES } from "@/lib/routes";
 import ContactForm from "./ContactForm";
 
 export const metadata = generatePageMeta({
@@ -66,7 +67,7 @@ const CONNECT_OPTIONS = [
     title: "Book Online",
     desc: "Know what you need? Skip the back-and-forth and book your clean directly.",
     action: "Book a Clean",
-    href: "/book",
+    href: ROUTES.BOOKING,
     style: "bg-brand-bg border border-brand-border",
     btnStyle: "bg-brand-accent hover:bg-brand-accent-dark text-white",
   },

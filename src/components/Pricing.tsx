@@ -1,33 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Clock, Home, ChevronUp, ChevronDown, Tag, Users, Gift, Sun, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { HOME_PRICING_ADDONS, HOME_PROMO_OFFERS } from "@/lib/services";
+import { HOME_PROMO_OFFERS } from "@/lib/services";
+import { ROUTES } from "@/lib/routes";
 
-// ─── Hourly rates ─────────────────────────────────────────────────────────────
-const HOURLY_RATES = [
-  { label: "One-off",     price: "$60/hr" },
-  { label: "Weekly",      price: "$50/hr" },
-  { label: "Fortnightly", price: "$55/hr" },
-  { label: "Monthly",     price: "$55/hr" },
-];
+type ApiServiceOption = {
+  id: string;
+  code: string;
+  name: string;
+  basePriceCents: number;
+};
+
+type ApiAddonOption = {
+  id: string;
+  code: string;
+  name: string;
+  priceCents: number;
+};
 
 const HOURLY_PERFECT_FOR =
   "Cleaning specific areas of your home, quick and flexible cleaning sessions.";
 
 const HOURLY_MORE = `Our hourly service is time-based — your cleaner will perform any cleaning task you direct them to, working as efficiently as possible while maintaining quality. This is ideal if you need specific areas cleaned such as bathrooms, kitchen, or living areas. You provide the checklist or we can suggest one. Minimum booking is 2 hours.`;
-
-// ─── Flat rate prices ─────────────────────────────────────────────────────────
-const FLAT_RATES = [
-  { label: "1 bedroom", price: "$150" },
-  { label: "2 bedrooms", price: "$175" },
-  { label: "3 bedrooms", price: "$205" },
-  { label: "3 bedrooms - 2 storey", price: "$220" },
-  { label: "4 bedrooms", price: "$250" },
-  { label: "4 bedrooms - 2 storey", price: "$280" },
-];
 
 const FLAT_PERFECT_FOR =
   "A full clean of your entire home. Our satisfaction guarantee applies.";
@@ -46,6 +43,64 @@ const PROMO_ICONS = {
 export default function Pricing() {
   const [hourlyOpen, setHourlyOpen] = useState(false);
   const [flatOpen, setFlatOpen]     = useState(false);
+  const [services, setServices] = useState<ApiServiceOption[]>([]);
+  const [addons, setAddons] = useState<ApiAddonOption[]>([]);
+  const [catalogError, setCatalogError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadCatalog() {
+      setCatalogError(null);
+      try {
+        const [servicesRes, addonsRes] = await Promise.all([
+          fetch("/api/services", { cache: "no-store" }),
+          fetch("/api/addons", { cache: "no-store" }),
+        ]);
+
+        if (!servicesRes.ok || !addonsRes.ok) {
+          throw new Error("Unable to load pricing data");
+        }
+
+        const [servicesData, addonsData] = await Promise.all([
+          servicesRes.json() as Promise<{ services?: ApiServiceOption[] }>,
+          addonsRes.json() as Promise<{ addons?: ApiAddonOption[] }>,
+        ]);
+
+        if (!mounted) return;
+        setServices(servicesData.services ?? []);
+        setAddons(addonsData.addons ?? []);
+      } catch (error) {
+        console.error("[Pricing] Failed to load pricing catalog:", error);
+        if (!mounted) return;
+        setCatalogError("Live pricing is temporarily unavailable. Please refresh shortly.");
+      }
+    }
+
+    void loadCatalog();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const { hourlyRates, flatRates } = useMemo(() => {
+    const hourly = services
+      .filter((service) => service.code.includes("/hr"))
+      .map((service) => {
+        const label = service.name.replace("Hourly Cleaning", "").replace(/[()]/g, "").trim() || service.name;
+        const price = `$${(service.basePriceCents / 100).toFixed(0)}/hr`;
+        return { label, price };
+      });
+
+    const flat = services
+      .filter((service) => !service.code.includes("/"))
+      .map((service) => ({
+        label: service.name.replace("Apartment/House Cleaning", "").trim(),
+        price: `$${(service.basePriceCents / 100).toFixed(0)}`,
+      }));
+
+    return { hourlyRates: hourly, flatRates: flat };
+  }, [services]);
 
   return (
     <section className="bg-white py-24 sm:py-32">
@@ -85,7 +140,7 @@ export default function Pricing() {
 
             {/* Rate grid */}
             <div className="grid grid-cols-2 gap-px bg-brand-border flex-1">
-              {HOURLY_RATES.map(({ label, price }) => (
+              {hourlyRates.map(({ label, price }) => (
                 <div
                   key={label}
                   className="bg-white px-6 py-5 flex flex-col gap-1"
@@ -129,7 +184,7 @@ export default function Pricing() {
                 asChild
                 className="w-full bg-brand hover:bg-brand-dark text-white font-semibold h-11 shadow-md shadow-brand/20"
               >
-                <Link href="/book">Book Now</Link>
+                <Link href={ROUTES.BOOKING}>Book Now</Link>
               </Button>
             </div>
           </div>
@@ -150,10 +205,10 @@ export default function Pricing() {
 
             {/* Price grid */}
             <div className="grid grid-cols-2 gap-px bg-brand-accent-border flex-1">
-              {FLAT_RATES.map(({ label, price }, i) => {
+              {flatRates.map(({ label, price }, i) => {
                 // 5 bed spans full width on last odd item
-                const isLast = i === FLAT_RATES.length - 1;
-                const isOdd  = FLAT_RATES.length % 2 !== 0;
+                const isLast = i === flatRates.length - 1;
+                const isOdd  = flatRates.length % 2 !== 0;
                 return (
                   <div
                     key={label}
@@ -200,7 +255,7 @@ export default function Pricing() {
                 asChild
                 className="w-full bg-brand-accent hover:bg-brand-accent-dark text-white font-semibold h-11 shadow-md shadow-brand-accent/20"
               >
-                <Link href="/book">Book Now</Link>
+                <Link href={ROUTES.BOOKING}>Book Now</Link>
               </Button>
             </div>
           </div>
@@ -213,19 +268,22 @@ export default function Pricing() {
             Optional Add-ons
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {HOME_PRICING_ADDONS.map(({ id, label, displayPrice }) => (
+            {addons.map(({ id, name, priceCents }) => (
               <div
                 key={id}
                 className="bg-brand-bg border border-brand-border rounded-xl px-4 py-3 flex items-center justify-between gap-2 hover:border-brand/40 transition-colors"
               >
-                <span className="text-sm text-brand-text">{label}</span>
-                <span className="text-sm font-bold text-brand shrink-0">{displayPrice}</span>
+                <span className="text-sm text-brand-text">{name}</span>
+                <span className="text-sm font-bold text-brand shrink-0">+${(priceCents / 100).toFixed(0)}</span>
               </div>
             ))}
           </div>
           <p className="text-xs text-brand-muted mt-3">
             Add-ons can be selected when booking online or mentioned when requesting a quote.
           </p>
+          {catalogError && (
+            <p className="text-xs text-red-600 mt-2">{catalogError}</p>
+          )}
         </div>
 
         {/* ── Promos ── */}
@@ -257,7 +315,7 @@ export default function Pricing() {
                       {code}
                     </code>
                     <Link
-                      href="/book"
+                      href={ROUTES.BOOKING}
                       className="text-xs font-semibold hover:underline underline-offset-2 opacity-90"
                     >
                       Claim →

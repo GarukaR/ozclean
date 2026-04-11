@@ -36,7 +36,7 @@ const SECTIONS = [
   },
   {
     title: "Payment",
-    content: `Payment is due upon completion of the service unless otherwise agreed in writing. For recurring bookings, payment is processed after each completed clean. All prices are in Australian Dollars (AUD) and include GST. We reserve the right to change our pricing at any time, with notice provided to existing recurring customers.`,
+    content: `Payment is collected in full when you complete your booking, unless otherwise agreed in writing. For recurring bookings, each clean is paid in full at the time of booking. All prices are in Australian Dollars (AUD) and include GST. We reserve the right to change our pricing at any time, with notice provided to existing recurring customers.`,
   },
   {
     title: "Privacy",

@@ -2,7 +2,6 @@
 
 import { prisma } from '@/lib/prisma'
 import { validateBookingPrice } from '@/lib/validators'
-import { sendBookingConfirmationEmail, sendOwnerNotificationEmail } from '@/lib/resend'
 import { createPaymentLink } from '@/lib/square'
 import { nanoid } from 'nanoid'
 
@@ -19,15 +18,17 @@ export async function createBookingAndPaymentLink(params: {
   postcode: string
   instructions?: string
   addonIds: string[]
+  serviceCount?: number
+  serviceCountUnit?: string
 }) {
   try {
     // Validate prices from database
-    const { basePrice, addonsTotal, total } = await validateBookingPrice({
+    const { addonsTotal, total, serviceSubtotal, serviceCount } = await validateBookingPrice({
       serviceCode: params.serviceCode,
       addonIds: params.addonIds,
+      serviceCount: params.serviceCount,
     })
 
-    const depositCents = Math.round(total * 0.1) // 10% deposit
     const bookingRef = `SC-${nanoid(8).toUpperCase()}`
 
     // Get service name for email
@@ -41,6 +42,22 @@ export async function createBookingAndPaymentLink(params: {
     const addons = await prisma.addon.findMany({
       where: { code: { in: params.addonIds } },
     })
+
+    const addonsSnapshot = {
+      serviceSelection: {
+        count: serviceCount,
+        unitLabel: params.serviceCountUnit ?? 'service',
+        unitPriceCents: service.basePriceCents,
+        subtotalCents: serviceSubtotal,
+      },
+      addons: addons.map((a) => ({
+        code: a.code,
+        name: a.name,
+        unitPriceCents: a.priceCents,
+        quantity: 1,
+        lineTotalCents: a.priceCents,
+      })),
+    }
 
     // Create booking in database
     const booking = await prisma.booking.create({
@@ -59,30 +76,31 @@ export async function createBookingAndPaymentLink(params: {
         state: params.state,
         postcode: params.postcode,
         instructions: params.instructions,
-        addons: addons.map(a => ({
-          code: a.code,
-          name: a.name,
-          priceCents: a.priceCents,
-        })),
+        addons: addonsSnapshot,
+        serviceCount,
+        serviceCountUnit: params.serviceCountUnit ?? 'service',
+        serviceUnitPriceCents: service.basePriceCents,
+        serviceSubtotalCents: serviceSubtotal,
         addonsSubtotalCents: addonsTotal,
         totalCents: total,
-        depositCents,
+        totalPaidCents: 0,
       },
     })
-
-    // Format address for emails
-    const fullAddress = `${params.addressLine1}${
-      params.addressLine2 ? `, ${params.addressLine2}` : ''
-    }, ${params.suburb}, ${params.state} ${params.postcode}`
 
     // Create Square payment link
     const paymentUrl = await createPaymentLink({
       bookingId: booking.id,
       totalCents: total,
-      depositCents,
       customerName: params.customerName,
       customerEmail: params.customerEmail,
       service: service.name,
+      serviceCount,
+      serviceCountUnit: params.serviceCountUnit ?? 'service',
+      serviceUnitPriceCents: service.basePriceCents,
+      addons: addons.map((addon) => ({
+        name: addon.name,
+        priceCents: addon.priceCents,
+      })),
       date: new Date(params.scheduledAt).toLocaleDateString('en-AU'),
       time: new Date(params.scheduledAt).toLocaleTimeString('en-AU'),
     })

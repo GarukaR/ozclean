@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { ROUTES } from "@/lib/routes";
 
 export default function CTA_banner() {
     return(
@@ -13,7 +14,7 @@ export default function CTA_banner() {
                     asChild
                     className="bg-white text-brand-accent-dark hover:bg-brand-accent-bg font-semibold shrink-0 shadow-lg"
                 >
-                    <Link href="/book">Claim Now →</Link>
+                    <Link href={ROUTES.BOOKING}>Claim Now →</Link>
                 </Button>
             </div>
         </div>

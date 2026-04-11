@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, Sparkles } from "lucide-react";
+import { ROUTES } from "@/lib/routes";
+import { SERVICES } from "@/lib/services";
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -21,13 +23,32 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 // ─── Nav links config — edit here to add/remove links ────────────────────────
 const NAV_LINKS = [
-  { label: "Services", href: "/services" },
-  { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
+  { label: "Services", href: ROUTES.SERVICES },
+  { label: "About", href: ROUTES.ABOUT },
+  { label: "Contact", href: ROUTES.CONTACT },
 ];
+
+const SERVICE_LINKS = Object.values(SERVICES).map(({ slug, title }) => ({
+  slug,
+  label: title,
+  href: `${ROUTES.SERVICES}/${slug}`,
+}));
+
+const HOME_SERVICE_SLUGS = new Set(["residential", "deep-clean", "move"]);
+
+const GROUPED_SERVICE_LINKS = {
+  home: SERVICE_LINKS.filter((service) => HOME_SERVICE_SLUGS.has(service.slug)),
+  specialty: SERVICE_LINKS.filter((service) => !HOME_SERVICE_SLUGS.has(service.slug)),
+};
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function Navbar() {
@@ -35,9 +56,10 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const isServicesPath = pathname === ROUTES.SERVICES || pathname.startsWith(`${ROUTES.SERVICES}/`);
 
   // Homepage: transparent until scrolled. All other pages: always solid.
-  const isHome = pathname === "/";
+  const isHome = pathname === ROUTES.HOME;
   const showBg = scrolled || !isHome;
 
   useEffect(() => {
@@ -62,7 +84,7 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
 
         {/* ── Logo ── */}
-        <Link href="/" className="flex items-center gap-2 shrink-0">
+        <Link href={ROUTES.HOME} className="flex items-center gap-2 shrink-0">
           <div className="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center">
             <Sparkles className="w-4 h-4 text-white" />
           </div>
@@ -96,10 +118,10 @@ export default function Navbar() {
         {/* ── Desktop CTAs ── */}
         <div className="hidden md:flex items-center gap-3">
           <Button asChild className="bg-brand-accent hover:bg-brand-accent-dark text-white shadow-sm shadow-brand-accent/25">
-            <Link href="/quote">Get a Quote</Link>
+            <Link href={ROUTES.QUOTE}>Get a Quote</Link>
           </Button>
           <Button asChild className="bg-brand hover:bg-brand-dark text-white shadow-sm shadow-brand/25">
-            <Link href="/book">Book Now</Link>
+            <Link href={ROUTES.BOOKING}>Book Now</Link>
           </Button>
         </div>
 
@@ -134,20 +156,110 @@ export default function Navbar() {
               {/* Mobile Links */}
               <nav className="flex flex-col gap-1 p-4 flex-1">
                 {NAV_LINKS.map(({ label, href }) => (
-                  <SheetClose asChild key={label}>
-                    <Link
-                      href={href}
-                      className={`
-                        px-4 py-3 rounded-lg text-sm font-medium transition-colors
-                        ${pathname === href || pathname.startsWith(href + "/")
-                          ? "bg-brand/10 text-brand font-semibold"
-                          : "text-brand-text hover:text-brand hover:bg-brand/5"
-                        }
-                      `}
+                  label === "Services" ? (
+                    <Accordion
+                      type="single"
+                      collapsible
+                      defaultValue={isServicesPath ? "mobile-services" : undefined}
+                      key={label}
+                      className="px-1"
                     >
-                      {label}
-                    </Link>
-                  </SheetClose>
+                      <AccordionItem value="mobile-services" className="border-0">
+                        <AccordionTrigger
+                          className={`
+                            px-3 py-3 rounded-lg text-sm font-semibold no-underline hover:no-underline
+                            ${(pathname === href || pathname.startsWith(href + "/"))
+                              ? "bg-brand/10 text-brand"
+                              : "text-brand-text hover:text-brand hover:bg-brand/5"
+                            }
+                          `}
+                        >
+                          Services
+                        </AccordionTrigger>
+                        <AccordionContent className="pb-1">
+                          <div className="mt-1 ml-2 pl-3 border-l border-brand/15 flex flex-col gap-2">
+                            <SheetClose asChild>
+                              <Link
+                                href={ROUTES.SERVICES}
+                                className={`
+                                  px-3 py-2 rounded-md text-sm transition-colors
+                                  ${pathname === ROUTES.SERVICES
+                                    ? "bg-brand/10 text-brand font-semibold"
+                                    : "text-brand-text/90 hover:text-brand hover:bg-brand/5"
+                                  }
+                                `}
+                              >
+                                All services
+                              </Link>
+                            </SheetClose>
+
+                            <div className="mt-1 px-3">
+                              <p className="text-[11px] font-semibold uppercase tracking-wide text-brand/70">
+                                Home Cleaning
+                              </p>
+                              <div className="mt-1 flex flex-col gap-1">
+                                {GROUPED_SERVICE_LINKS.home.map(({ label: serviceLabel, href: serviceHref }) => (
+                                  <SheetClose asChild key={serviceHref}>
+                                    <Link
+                                      href={serviceHref}
+                                      className={`
+                                        px-3 py-2 rounded-md text-sm transition-colors
+                                        ${(pathname === serviceHref || pathname.startsWith(serviceHref + "/"))
+                                          ? "bg-brand/10 text-brand font-semibold"
+                                          : "text-brand-text/90 hover:text-brand hover:bg-brand/5"
+                                        }
+                                      `}
+                                    >
+                                      {serviceLabel}
+                                    </Link>
+                                  </SheetClose>
+                                ))}
+                              </div>
+                            </div>
+
+                            <div className="mt-1 px-3">
+                              <p className="text-[11px] font-semibold uppercase tracking-wide text-brand/70">
+                                Specialty Cleaning
+                              </p>
+                              <div className="mt-1 flex flex-col gap-1">
+                                {GROUPED_SERVICE_LINKS.specialty.map(({ label: serviceLabel, href: serviceHref }) => (
+                                  <SheetClose asChild key={serviceHref}>
+                                    <Link
+                                      href={serviceHref}
+                                      className={`
+                                        px-3 py-2 rounded-md text-sm transition-colors
+                                        ${(pathname === serviceHref || pathname.startsWith(serviceHref + "/"))
+                                          ? "bg-brand/10 text-brand font-semibold"
+                                          : "text-brand-text/90 hover:text-brand hover:bg-brand/5"
+                                        }
+                                      `}
+                                    >
+                                      {serviceLabel}
+                                    </Link>
+                                  </SheetClose>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+                  ) : (
+                    <SheetClose asChild key={label}>
+                      <Link
+                        href={href}
+                        className={`
+                          px-4 py-3 rounded-lg text-sm font-medium transition-colors
+                          ${pathname === href || pathname.startsWith(href + "/")
+                            ? "bg-brand/10 text-brand font-semibold"
+                            : "text-brand-text hover:text-brand hover:bg-brand/5"
+                          }
+                        `}
+                      >
+                        {label}
+                      </Link>
+                    </SheetClose>
+                  )
                 ))}
               </nav>
 
@@ -156,10 +268,10 @@ export default function Navbar() {
               {/* Mobile CTA */}
               <div className="p-4 flex flex-col gap-2">
                 <Button asChild className="w-full bg-brand-accent hover:bg-brand-accent-dark text-white shadow-sm shadow-brand-accent/25">
-                  <Link href="/quote">Get a Free Quote</Link>
+                  <Link href={ROUTES.QUOTE}>Get a Free Quote</Link>
                 </Button>
                 <Button asChild className="w-full bg-brand hover:bg-brand-dark text-white">
-                  <Link href="/book">Book Now</Link>
+                  <Link href={ROUTES.BOOKING}>Book Now</Link>
                 </Button>
               </div>
             </div>

@@ -5,26 +5,42 @@ import {
 
 export type BookingConfirmationProps = {
   customerName: string;
+  customerEmail: string;
+  customerPhone: string;
   service: string;
   date: string;
   time: string;
   address: string;
-  depositAmount: string;
+  instructions?: string;
+  paidAmount: string;
+  serviceAmount: string;
+  serviceCount: number;
+  serviceCountUnit: string;
+  addonsTotal: string;
   totalAmount: string;
-  balanceDue: string;
+  addons: { name: string; quantity: number; unitPrice: string; lineTotal: string }[];
   bookingId: string;
+  squarePaymentId: string;
 };
 
 export default function BookingConfirmation({
   customerName = "Jane Smith",
+  customerEmail = "jane@email.com",
+  customerPhone = "+61 400 000 000",
   service = "Residential Cleaning",
   date = "Monday, 20 January 2025",
   time = "10:00 AM – 12:00 PM",
   address = "Richmond, VIC",
-  depositAmount = "$16.00",
+  instructions = "",
+  paidAmount = "$160.00",
+  serviceAmount = "$120.00",
+  serviceCount = 1,
+  serviceCountUnit = "service",
+  addonsTotal = "$40.00",
   totalAmount = "$160.00",
-  balanceDue = "$144.00",
+  addons = [{ name: "Inside oven", quantity: 1, unitPrice: "$40.00", lineTotal: "$40.00" }],
   bookingId = "SC-00123",
+  squarePaymentId = "sq_abc123",
 }: BookingConfirmationProps) {
   return (
     <Html>
@@ -69,6 +85,62 @@ export default function BookingConfirmation({
 
           <Hr style={divider} />
 
+          <Section style={detailsSection}>
+            <Heading style={sectionHeading}>Contact On File</Heading>
+            {[
+              { label: "Name", value: customerName },
+              { label: "Email", value: customerEmail },
+              { label: "Phone", value: customerPhone },
+            ].map(({ label, value }) => (
+              <Row key={label} style={detailRow}>
+                <Column style={detailLabel}>{label}</Column>
+                <Column style={detailValue}>{value}</Column>
+              </Row>
+            ))}
+          </Section>
+
+          <Hr style={divider} />
+
+          <Section style={detailsSection}>
+            <Heading style={sectionHeading}>Service Scope</Heading>
+            <Row style={detailRow}>
+              <Column style={detailLabel}>Service Count</Column>
+              <Column style={detailValue}>{serviceCount} {serviceCountUnit}</Column>
+            </Row>
+            <Row style={detailRow}>
+              <Column style={detailLabel}>Base Service</Column>
+              <Column style={detailValue}>{serviceAmount}</Column>
+            </Row>
+            <Row style={detailRow}>
+              <Column style={detailLabel}>Add-ons</Column>
+              <Column style={detailValue}>{addonsTotal}</Column>
+            </Row>
+            {addons.length > 0 ? (
+              <Section style={addonListBox}>
+                {addons.map((addon) => (
+                  <Row key={addon.name} style={detailRow}>
+                    <Column style={detailLabel}>+ {addon.name} ({addon.quantity} x {addon.unitPrice})</Column>
+                    <Column style={detailValue}>{addon.lineTotal}</Column>
+                  </Row>
+                ))}
+              </Section>
+            ) : (
+              <Text style={subtleNote}>No optional add-ons were selected.</Text>
+            )}
+          </Section>
+
+          {instructions && (
+            <>
+              <Hr style={divider} />
+              <Section style={detailsSection}>
+                <Heading style={sectionHeading}>Your Instructions</Heading>
+                <Text style={instructionText}>{instructions}</Text>
+              </Section>
+            </>
+          )}
+
+          <Hr style={divider} />
+
           {/* Payment summary */}
           <Section style={detailsSection}>
             <Heading style={sectionHeading}>Payment Summary</Heading>
@@ -77,16 +149,18 @@ export default function BookingConfirmation({
               <Column style={detailValue}>{totalAmount}</Column>
             </Row>
             <Row style={detailRow}>
-              <Column style={detailLabel}>Deposit Paid</Column>
-              <Column style={{ ...detailValue, color: "#16a34a" }}>{depositAmount} ✓</Column>
+              <Column style={detailLabel}>Amount Paid Today</Column>
+              <Column style={{ ...detailValue, color: "#16a34a" }}>{paidAmount} ✓</Column>
             </Row>
-            <Row style={{ ...detailRow, borderTop: "1px solid #BAE6FD", paddingTop: "12px" }}>
-              <Column style={{ ...detailLabel, fontWeight: "700", color: "#0C1A2E" }}>Balance Due</Column>
-              <Column style={{ ...detailValue, fontWeight: "700", color: "#0EA5E9" }}>{balanceDue}</Column>
+            <Row style={detailRow}>
+              <Column style={detailLabel}>Payment Reference</Column>
+              <Column style={{ ...detailValue, fontFamily: "monospace", fontSize: "12px", color: "#64748B" }}>
+                {squarePaymentId}
+              </Column>
             </Row>
             <Section style={balanceNotice}>
               <Text style={balanceNoticeText}>
-                💳 A payment link for the remaining balance will be sent <strong>24 hours before your clean</strong>. Please complete this to secure your slot.
+                ✅ Full payment has been received. No further payment is required before your clean.
               </Text>
             </Section>
           </Section>
@@ -98,7 +172,7 @@ export default function BookingConfirmation({
             <Heading style={sectionHeading}>What Happens Next</Heading>
             {[
               { step: "1", text: "We'll assign your dedicated cleaner and send their details closer to the date." },
-              { step: "2", text: "A payment link for the remaining balance arrives 24hrs before your clean." },
+              { step: "2", text: "Our team will confirm final service details before your clean." },
               { step: "3", text: "Your cleaner arrives on time with all equipment and eco-friendly products." },
             ].map(({ step, text }) => (
               <Row key={step} style={stepRow}>
@@ -113,7 +187,7 @@ export default function BookingConfirmation({
           {/* Cancellation policy */}
           <Section style={detailsSection}>
             <Text style={policyText}>
-              <strong>Cancellation Policy:</strong> Cancel for free up to 48 hours before your clean for a full refund. Cancellations within 48 hours may forfeit the deposit.
+              <strong>Cancellation Policy:</strong> Cancel for free up to 48 hours before your clean for a full refund. Cancellations within 48 hours may incur a fee.
             </Text>
           </Section>
 
@@ -140,27 +214,30 @@ export default function BookingConfirmation({
 }
 
 const main = { backgroundColor: "#F0F9FF", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" };
-const container = { maxWidth: "560px", margin: "0 auto", backgroundColor: "#ffffff", borderRadius: "16px", overflow: "hidden", boxShadow: "0 4px 24px rgba(14,165,233,0.08)" };
-const header = { backgroundColor: "#0EA5E9", padding: "28px 40px 24px", textAlign: "center" as const };
+const container = { maxWidth: "560px", margin: "0 auto", backgroundColor: "#ffffff", borderRadius: "18px", overflow: "hidden", boxShadow: "0 6px 28px rgba(14,165,233,0.10)" };
+const header = { backgroundColor: "#0EA5E9", padding: "32px 32px 28px", textAlign: "center" as const };
 const logo = { color: "#ffffff", fontSize: "22px", fontWeight: "800", margin: "0" };
 const headerSub = { color: "rgba(255,255,255,0.75)", fontSize: "12px", margin: "4px 0 0" };
-const heroSection = { padding: "36px 40px 28px", textAlign: "center" as const };
+const heroSection = { padding: "38px 32px 30px", textAlign: "center" as const };
 const heroEmoji = { fontSize: "40px", margin: "0 0 12px" };
 const heroHeading = { color: "#0C1A2E", fontSize: "26px", fontWeight: "800", margin: "0 0 12px" };
 const heroText = { color: "#64748B", fontSize: "15px", lineHeight: "1.6", margin: "0" };
-const divider = { borderColor: "#BAE6FD", margin: "0 40px" };
-const detailsSection = { padding: "28px 40px" };
+const divider = { borderColor: "#BAE6FD", margin: "0 32px" };
+const detailsSection = { padding: "30px 32px" };
 const sectionHeading = { color: "#0C1A2E", fontSize: "13px", fontWeight: "700", textTransform: "uppercase" as const, letterSpacing: "0.8px", margin: "0 0 16px" };
 const detailRow = { marginBottom: "10px" };
-const detailLabel = { color: "#64748B", fontSize: "13px", width: "40%" };
+const detailLabel = { color: "#64748B", fontSize: "13px", width: "42%" };
 const detailValue = { color: "#0C1A2E", fontSize: "13px", fontWeight: "600" };
-const balanceNotice = { backgroundColor: "#F0F9FF", borderRadius: "10px", padding: "12px 16px", marginTop: "16px" };
+const addonListBox = { backgroundColor: "#F8FAFC", borderRadius: "12px", padding: "14px 16px", marginTop: "14px" };
+const subtleNote = { color: "#64748B", fontSize: "12px", lineHeight: "1.7", margin: "10px 0 0" };
+const instructionText = { color: "#334155", fontSize: "13px", lineHeight: "1.7", margin: "0", backgroundColor: "#F8FAFC", borderRadius: "12px", padding: "14px 16px" };
+const balanceNotice = { backgroundColor: "#F0F9FF", borderRadius: "12px", padding: "14px 16px", marginTop: "16px" };
 const balanceNoticeText = { color: "#0369A1", fontSize: "12px", lineHeight: "1.6", margin: "0" };
-const stepRow = { marginBottom: "14px" };
+const stepRow = { marginBottom: "16px" };
 const stepBadge = { width: "24px", backgroundColor: "#F0F9FF", borderRadius: "50%", color: "#0EA5E9", fontSize: "11px", fontWeight: "800", textAlign: "center" as const, verticalAlign: "top", paddingTop: "4px" };
-const stepText = { color: "#64748B", fontSize: "13px", lineHeight: "1.6", paddingLeft: "12px" };
-const policyText = { color: "#64748B", fontSize: "12px", lineHeight: "1.6", backgroundColor: "#FFF7ED", borderRadius: "10px", padding: "12px 16px", margin: "0" };
-const footer = { backgroundColor: "#F8FAFC", padding: "24px 40px", textAlign: "center" as const, borderTop: "1px solid #BAE6FD" };
+const stepText = { color: "#64748B", fontSize: "13px", lineHeight: "1.7", paddingLeft: "12px" };
+const policyText = { color: "#64748B", fontSize: "12px", lineHeight: "1.7", backgroundColor: "#FFF7ED", borderRadius: "12px", padding: "14px 16px", margin: "0" };
+const footer = { backgroundColor: "#F8FAFC", padding: "26px 32px 30px", textAlign: "center" as const, borderTop: "1px solid #BAE6FD" };
 const footerText = { color: "#94A3B8", fontSize: "12px", margin: "0 0 4px" };
 const link = { color: "#0EA5E9", textDecoration: "none" };
-const footerMuted = { color: "#CBD5E1", fontSize: "11px", margin: "8px 0 0" };
+const footerMuted = { color: "#CBD5E1", fontSize: "11px", margin: "10px 0 0" };

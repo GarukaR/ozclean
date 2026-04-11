@@ -2,11 +2,12 @@ import Link from "next/link";
 import { Building2, Home, Sparkles, ArrowLeftRight, Wind, Trash2, ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { generatePageMeta } from "@/lib/seo";
+import { ROUTES, bookingWithService } from "@/lib/routes";
 
 export const metadata = generatePageMeta({
   title: "Our Services",
   description: "Residential, commercial, deep cleaning, move in/out, window, and wheely bin cleaning across Melbourne. Starting from $35 — book online today.",
-  path: "/services",
+  path: ROUTES.SERVICES,
 });
 
 const SERVICES = [
@@ -96,10 +97,10 @@ export default function ServicesPage() {
             </p>
             <div className="flex flex-wrap gap-3">
               <Button asChild className="bg-brand hover:bg-brand-dark text-white font-semibold gap-2">
-                <Link href="/book">Book a Service <ArrowRight className="w-4 h-4" /></Link>
+                <Link href={ROUTES.BOOKING}>Book a Service <ArrowRight className="w-4 h-4" /></Link>
               </Button>
               <Button asChild variant="outline" className="border-brand-accent-border hover:border-brand-accent text-brand-accent-dark font-semibold">
-                <Link href="/quote">Get a Free Quote</Link>
+                <Link href={ROUTES.QUOTE}>Get a Free Quote</Link>
               </Button>
             </div>
           </div>
@@ -145,7 +146,7 @@ export default function ServicesPage() {
                 <div className="flex flex-wrap gap-2 justify-end">
                   {bookable && (
                     <Button asChild className="bg-brand-accent hover:bg-brand-accent-dark text-white font-semibold gap-1.5">
-                      <Link href={`/book?service=${href.split('/').pop()}`}>Book Now <ArrowRight className="w-3.5 h-3.5" /></Link>
+                      <Link href={bookingWithService(href.split('/').pop() ?? "")}>Book Now <ArrowRight className="w-3.5 h-3.5" /></Link>
                     </Button>
                   )}
                   {!bookable && (
@@ -153,7 +154,7 @@ export default function ServicesPage() {
                       asChild
                       className={`font-semibold gap-1.5 ${featured ? "bg-white text-brand-accent-dark hover:bg-brand-accent-bg" : "bg-brand-accent hover:bg-brand-accent-dark text-white"}`}
                     >
-                      <Link href="/quote">Get a Quote <ArrowRight className="w-3.5 h-3.5" /></Link>
+                      <Link href={ROUTES.QUOTE}>Get a Quote <ArrowRight className="w-3.5 h-3.5" /></Link>
                     </Button>
                   )}
                   <Button
@@ -179,7 +180,7 @@ export default function ServicesPage() {
               <p className="text-white/60 mt-1 text-sm">Tell us about your space and we&apos;ll recommend the right service.</p>
             </div>
             <Button asChild size="lg" className="bg-white text-brand-accent-dark hover:bg-brand-accent-bg font-semibold gap-2 shrink-0 shadow-lg shadow-brand-accent/25">
-              <Link href="/quote">Get a Free Quote <ArrowRight className="w-4 h-4" /></Link>
+              <Link href={ROUTES.QUOTE}>Get a Free Quote <ArrowRight className="w-4 h-4" /></Link>
             </Button>
           </div>
         </div>

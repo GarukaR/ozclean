@@ -3,6 +3,7 @@ import Image from "next/image";
 import { ArrowRight, Sparkles, Heart, Leaf, ShieldCheck, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { generatePageMeta } from "@/lib/seo";
+import { ROUTES } from "@/lib/routes";
 
 export const metadata = generatePageMeta({
   title: "About Us",
@@ -99,10 +100,10 @@ export default function AboutPage() {
               </p>
               <div className="flex flex-wrap gap-3">
                 <Button asChild className="bg-brand hover:bg-brand-dark text-white font-semibold gap-2 shadow-lg shadow-brand/25">
-                  <Link href="/quote">Get a Quote <ArrowRight className="w-4 h-4" /></Link>
+                  <Link href={ROUTES.QUOTE}>Get a Quote <ArrowRight className="w-4 h-4" /></Link>
                 </Button>
                 <Button asChild variant="outline" className="border-brand-border hover:border-brand text-brand-text font-semibold">
-                  <Link href="/contact">Get in Touch</Link>
+                  <Link href={ROUTES.CONTACT}>Get in Touch</Link>
                 </Button>
               </div>
             </div>
@@ -160,7 +161,7 @@ export default function AboutPage() {
                 </p>
               </div>
               <Button asChild className="bg-brand hover:bg-brand-dark text-white font-semibold gap-2 w-fit">
-                <Link href="/services">See Our Services <ArrowRight className="w-4 h-4" /></Link>
+                <Link href={ROUTES.SERVICES}>See Our Services <ArrowRight className="w-4 h-4" /></Link>
               </Button>
             </div>
           </div>
@@ -267,10 +268,10 @@ export default function AboutPage() {
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             <Button asChild size="lg" className="bg-white text-brand-accent-dark hover:bg-brand-accent-bg font-semibold gap-2 shadow-lg">
-              <Link href="/book">Book a Clean <ArrowRight className="w-4 h-4" /></Link>
+              <Link href={ROUTES.BOOKING}>Book a Clean <ArrowRight className="w-4 h-4" /></Link>
             </Button>
             <Button asChild size="lg" variant="link" className="border-white/30 text-white hover:bg-white/10 font-semibold">
-              <Link href="/contact">Contact Us</Link>
+              <Link href={ROUTES.CONTACT}>Contact Us</Link>
             </Button>
           </div>
         </div>

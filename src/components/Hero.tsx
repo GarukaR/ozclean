@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Sparkles } from "lucide-react";
-import CTA_banner from "./CTA_banner";
+import { ROUTES } from "@/lib/routes";
 
 // ─── Trust badge data ─────────────────────────────────────────────────────────
 // const TRUST_BADGES = [
@@ -59,9 +59,6 @@ export default function Hero() {
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full bg-brand/10 blur-3xl" />
         <div className="absolute -bottom-32 -left-32 w-[500px] h-[500px] rounded-full bg-brand-accent/10 blur-3xl" />
-        
-        {/* CTA Banner */}
-        <CTA_banner />
         
         {/* Subtle dot grid */}
         <div
@@ -129,7 +126,7 @@ export default function Hero() {
                 size="lg"
                 className="bg-brand hover:bg-brand-dark text-white font-semibold shadow-lg shadow-brand/25 hover:shadow-brand/40 transition-all duration-200 gap-2 px-6"
               >
-                <Link href="/book">
+                <Link href={ROUTES.BOOKING}>
                   Book a Clean
                   <ArrowRight className="w-4 h-4" />
                 </Link>
@@ -140,7 +137,7 @@ export default function Hero() {
                 variant="outline"
                 className="border-brand-accent-border text-brand-accent-dark hover:bg-brand-accent-bg hover:border-brand-accent font-semibold px-6 transition-all duration-200"
               >
-                <Link href="/quote">Get a Free Quote</Link>
+                <Link href={ROUTES.QUOTE}>Get a Free Quote</Link>
               </Button>
             </div>
 

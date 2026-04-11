@@ -12,9 +12,13 @@ export type BookingNotificationProps = {
   time: string;
   address: string;
   instructions?: string;
-  depositAmount: string;
+  paidAmount: string;
+  serviceAmount: string;
+  serviceCount: number;
+  serviceCountUnit: string;
+  addonsTotal: string;
   totalAmount: string;
-  balanceDue: string;
+  addons: { name: string; quantity: number; unitPrice: string; lineTotal: string }[];
   bookingId: string;
   squarePaymentId: string;
 };
@@ -28,9 +32,13 @@ export default function BookingNotification({
   time = "10:00 AM – 12:00 PM",
   address = "Richmond, VIC",
   instructions = "Pet in the house, focus on kitchen",
-  depositAmount = "$16.00",
+  paidAmount = "$160.00",
+  serviceAmount = "$120.00",
+  serviceCount = 1,
+  serviceCountUnit = "service",
+  addonsTotal = "$40.00",
   totalAmount = "$160.00",
-  balanceDue = "$144.00",
+  addons = [{ name: "Inside oven", quantity: 1, unitPrice: "$40.00", lineTotal: "$40.00" }],
   bookingId = "SC-00123",
   squarePaymentId = "sq_abc123",
 }: BookingNotificationProps) {
@@ -44,13 +52,13 @@ export default function BookingNotification({
           {/* Header */}
           <Section style={header}>
             <Heading style={logo}>✦ SparkClean — New Booking</Heading>
-            <Text style={headerSub}>Deposit collected · Action may be required</Text>
+            <Text style={headerSub}>Payment received · Booking confirmed</Text>
           </Section>
 
           {/* Alert banner */}
           <Section style={alertBanner}>
             <Text style={alertText}>
-              🎉 A new booking has been confirmed and the 10% deposit has been collected via Square.
+              🎉 A new booking has been confirmed and full payment has been collected via Square.
             </Text>
           </Section>
 
@@ -96,6 +104,37 @@ export default function BookingNotification({
 
           <Hr style={divider} />
 
+          {/* Scope and pricing */}
+          <Section style={detailsSection}>
+            <Heading style={sectionHeading}>Scope & Pricing</Heading>
+            <Row style={detailRow}>
+              <Column style={detailLabel}>Service Count</Column>
+              <Column style={detailValue}>{serviceCount} {serviceCountUnit}</Column>
+            </Row>
+            <Row style={detailRow}>
+              <Column style={detailLabel}>Base Service</Column>
+              <Column style={detailValue}>{serviceAmount}</Column>
+            </Row>
+            <Row style={detailRow}>
+              <Column style={detailLabel}>Add-ons</Column>
+              <Column style={detailValue}>{addonsTotal}</Column>
+            </Row>
+            {addons.length > 0 ? (
+              <Section style={addonListBox}>
+                {addons.map((addon) => (
+                  <Row key={addon.name} style={detailRow}>
+                    <Column style={detailLabel}>+ {addon.name} ({addon.quantity} x {addon.unitPrice})</Column>
+                    <Column style={detailValue}>{addon.lineTotal}</Column>
+                  </Row>
+                ))}
+              </Section>
+            ) : (
+              <Text style={subtleNote}>No optional add-ons selected for this job.</Text>
+            )}
+          </Section>
+
+          <Hr style={divider} />
+
           {/* Payment */}
           <Section style={detailsSection}>
             <Heading style={sectionHeading}>Payment</Heading>
@@ -104,12 +143,8 @@ export default function BookingNotification({
               <Column style={detailValue}>{totalAmount}</Column>
             </Row>
             <Row style={detailRow}>
-              <Column style={detailLabel}>Deposit Collected</Column>
-              <Column style={{ ...detailValue, color: "#16a34a" }}>{depositAmount} ✓</Column>
-            </Row>
-            <Row style={detailRow}>
-              <Column style={{ ...detailLabel, fontWeight: "700", color: "#0C1A2E" }}>Balance to Collect</Column>
-              <Column style={{ ...detailValue, fontWeight: "700", color: "#0EA5E9" }}>{balanceDue}</Column>
+              <Column style={detailLabel}>Amount Paid Today</Column>
+              <Column style={{ ...detailValue, color: "#16a34a" }}>{paidAmount} ✓</Column>
             </Row>
             <Row style={detailRow}>
               <Column style={detailLabel}>Square Payment ID</Column>
@@ -123,9 +158,10 @@ export default function BookingNotification({
           <Section style={actionSection}>
             <Heading style={sectionHeading}>Action Required</Heading>
             {[
-              "Assign a cleaner to this booking",
-              `Send balance payment link 24hrs before (${date})`,
-              "Confirm cleaner details with customer day before",
+              "Assign cleaner and confirm availability for the exact time window",
+              "Review customer instructions and map any add-ons to cleaner checklist",
+              "Send day-before confirmation with arrival ETA and access instructions",
+              "No further payment collection needed (already fully paid)",
             ].map((item, i) => (
               <Row key={i} style={detailRow}>
                 <Column style={checkCol}>☐</Column>
@@ -147,21 +183,23 @@ export default function BookingNotification({
 }
 
 const main = { backgroundColor: "#F0F9FF", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" };
-const container = { maxWidth: "560px", margin: "0 auto", backgroundColor: "#ffffff", borderRadius: "16px", overflow: "hidden" };
-const header = { backgroundColor: "#0C1A2E", padding: "24px 40px", textAlign: "center" as const };
+const container = { maxWidth: "560px", margin: "0 auto", backgroundColor: "#ffffff", borderRadius: "18px", overflow: "hidden", boxShadow: "0 6px 28px rgba(12,26,46,0.10)" };
+const header = { backgroundColor: "#0C1A2E", padding: "28px 32px 24px", textAlign: "center" as const };
 const logo = { color: "#ffffff", fontSize: "18px", fontWeight: "800", margin: "0" };
 const headerSub = { color: "rgba(255,255,255,0.5)", fontSize: "12px", margin: "4px 0 0" };
-const alertBanner = { backgroundColor: "#f0fdf4", borderLeft: "4px solid #16a34a", padding: "14px 40px" };
-const alertText = { color: "#15803d", fontSize: "13px", lineHeight: "1.6", margin: "0" };
-const detailsSection = { padding: "24px 40px" };
+const alertBanner = { backgroundColor: "#f0fdf4", borderLeft: "4px solid #16a34a", padding: "16px 32px" };
+const alertText = { color: "#15803d", fontSize: "13px", lineHeight: "1.7", margin: "0" };
+const detailsSection = { padding: "28px 32px" };
 const sectionHeading = { color: "#0C1A2E", fontSize: "11px", fontWeight: "700", textTransform: "uppercase" as const, letterSpacing: "1px", margin: "0 0 14px" };
-const detailRow = { marginBottom: "8px" };
-const detailLabel = { color: "#64748B", fontSize: "13px", width: "40%" };
+const detailRow = { marginBottom: "10px" };
+const detailLabel = { color: "#64748B", fontSize: "13px", width: "42%" };
 const detailValue = { color: "#0C1A2E", fontSize: "13px", fontWeight: "600" };
-const divider = { borderColor: "#BAE6FD", margin: "0 40px" };
-const actionSection = { padding: "24px 40px", backgroundColor: "#FFFBEB" };
+const divider = { borderColor: "#BAE6FD", margin: "0 32px" };
+const addonListBox = { backgroundColor: "#F8FAFC", borderRadius: "12px", padding: "14px 16px", marginTop: "14px" };
+const subtleNote = { color: "#64748B", fontSize: "12px", lineHeight: "1.7", margin: "10px 0 0" };
+const actionSection = { padding: "28px 32px", backgroundColor: "#FFFBEB" };
 const checkCol = { width: "20px", color: "#D97706", fontSize: "14px", verticalAlign: "top" };
-const actionText = { color: "#92400E", fontSize: "13px", lineHeight: "1.6", paddingLeft: "8px" };
-const footer = { backgroundColor: "#F8FAFC", padding: "20px 40px", textAlign: "center" as const, borderTop: "1px solid #BAE6FD" };
+const actionText = { color: "#92400E", fontSize: "13px", lineHeight: "1.7", paddingLeft: "8px" };
+const footer = { backgroundColor: "#F8FAFC", padding: "24px 32px 28px", textAlign: "center" as const, borderTop: "1px solid #BAE6FD" };
 const footerText = { color: "#94A3B8", fontSize: "12px", margin: "0 0 4px" };
-const footerMuted = { color: "#CBD5E1", fontSize: "11px", margin: "0" };
+const footerMuted = { color: "#CBD5E1", fontSize: "11px", margin: "10px 0 0" };

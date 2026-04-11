@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Building2, Home, Sparkles, ArrowLeftRight, Wind, Trash2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { ROUTES, bookingWithService } from "@/lib/routes";
 
 // ─── Config: Add, remove or edit services here ────────────────────────────────
 type Service = {
@@ -141,7 +142,7 @@ function FeaturedCard({ service }: { service: Service }) {
             asChild
             className="bg-white text-brand-accent-dark hover:bg-brand-accent-bg font-semibold shadow-lg gap-1.5 shrink-0"
           >
-            <Link href="/quote">
+            <Link href={ROUTES.QUOTE}>
               Get Quote <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </Button>
@@ -190,14 +191,14 @@ function ServiceCard({ service }: { service: Service }) {
         <div className="mt-auto pt-4 border-t border-brand-border flex items-center gap-3 flex-wrap">
           {service.bookable && (
             <Button asChild size="sm" className="bg-brand-accent hover:bg-brand-accent-dark text-white font-semibold gap-1 h-8 px-3 text-xs">
-              <Link href={`/book?service=${service.href.split('/').pop()}`}>
+              <Link href={bookingWithService(service.href.split('/').pop() ?? "")}>
                 Book Now
               </Link>
             </Button>
           )}
           {!service.bookable && (
             <Button asChild size="sm" variant="outline" className="border-brand-accent-border text-brand-accent-dark hover:border-brand-accent hover:bg-brand-accent-bg font-semibold gap-1 h-8 px-3 text-xs">
-              <Link href="/quote">
+              <Link href={ROUTES.QUOTE}>
                 Get a Quote
               </Link>
             </Button>
@@ -238,7 +239,7 @@ export default function Services() {
             variant="outline"
             className="border-brand-accent-border text-brand-text hover:border-brand-accent hover:text-brand-accent-dark shrink-0 self-start sm:self-auto"
           >
-            <Link href="/services">View all services</Link>
+            <Link href={ROUTES.SERVICES}>View all services</Link>
           </Button>
         </div>
 

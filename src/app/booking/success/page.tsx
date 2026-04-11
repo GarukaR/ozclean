@@ -1,12 +1,13 @@
 import Link from "next/link";
-import { CheckCircle2, Calendar, Mail, Phone, ArrowRight } from "lucide-react";
+import { CheckCircle2, Mail, Phone, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { generatePageMeta } from "@/lib/seo";
+import { ROUTES } from "@/lib/routes";
 
 export const metadata = generatePageMeta({
   title: "Booking Confirmed",
   description: "Your SparkClean booking is confirmed. We'll be in touch shortly.",
-  path: "/book/success",
+  path: ROUTES.BOOKING_SUCCESS,
 });
 
 export default async function BookingSuccessPage({
@@ -48,7 +49,7 @@ export default async function BookingSuccessPage({
 
             {/* Message */}
             <p className="text-brand-muted text-base leading-relaxed max-w-sm">
-              Your deposit has been collected and your booking is confirmed. Check your inbox for a confirmation email with all the details.
+              Your payment has been processed and your booking is confirmed. Check your inbox for a confirmation email with all the details.
             </p>
 
             {/* What happens next */}
@@ -58,7 +59,6 @@ export default async function BookingSuccessPage({
               </p>
               {[
                 { icon: Mail, text: "Confirmation email sent to your inbox" },
-                { icon: Calendar, text: "Balance payment link sent 24hrs before your clean" },
                 { icon: CheckCircle2, text: "Your cleaner arrives at the agreed time, fully equipped" },
               ].map(({ icon: Icon, text }) => (
                 <div key={text} className="flex items-center gap-3">
@@ -73,12 +73,12 @@ export default async function BookingSuccessPage({
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row gap-3 w-full pt-2">
               <Button asChild className="flex-1 bg-brand hover:bg-brand-dark text-white font-semibold gap-2">
-                <Link href="/">
+                <Link href={ROUTES.HOME}>
                   Back to Home <ArrowRight className="w-4 h-4" />
                 </Link>
               </Button>
               <Button asChild variant="outline" className="flex-1 border-brand-border hover:border-brand">
-                <Link href="/services">Browse Services</Link>
+                <Link href={ROUTES.SERVICES}>Browse Services</Link>
               </Button>
             </div>
 

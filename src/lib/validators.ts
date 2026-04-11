@@ -3,7 +3,8 @@ import { prisma } from './prisma'
 export async function validateBookingPrice(params: {
   serviceCode: string
   addonIds: string[]
-}): Promise<{ basePrice: number; addonsTotal: number; total: number }> {
+  serviceCount?: number
+}): Promise<{ basePrice: number; serviceCount: number; serviceSubtotal: number; addonsTotal: number; total: number }> {
   // Get service from DB
   const service = await prisma.service.findUnique({
     where: { code: params.serviceCode },
@@ -11,6 +12,11 @@ export async function validateBookingPrice(params: {
 
   if (!service || !service.isActive) {
     throw new Error('Invalid or inactive service')
+  }
+
+  const serviceCount = params.serviceCount ?? 1
+  if (!Number.isFinite(serviceCount) || serviceCount <= 0) {
+    throw new Error('Invalid service count')
   }
 
   // Get add-ons from DB
@@ -26,8 +32,9 @@ export async function validateBookingPrice(params: {
   }
 
   const basePrice = service.basePriceCents
+  const serviceSubtotal = Math.round(basePrice * serviceCount)
   const addonsTotal = addons.reduce((sum: number, addon: { priceCents: number }) => sum + addon.priceCents, 0)
-  const total = basePrice + addonsTotal
+  const total = serviceSubtotal + addonsTotal
 
-  return { basePrice, addonsTotal, total }
+  return { basePrice, serviceCount, serviceSubtotal, addonsTotal, total }
 }

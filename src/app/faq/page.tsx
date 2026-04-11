@@ -79,7 +79,7 @@ const FAQ_CATEGORIES = [
       },
       {
         q: "How do I pay?",
-        a: "We accept all major credit and debit cards, bank transfer, and online payment. Payment is processed after your clean is completed to your satisfaction.",
+        a: "We accept all major credit and debit cards and secure online payment. Payment is collected in full when you complete your booking.",
       },
       {
         q: "Do you offer discounts?",

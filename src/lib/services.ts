@@ -17,13 +17,6 @@ export type Service = {
   related: { slug: string; title: string; desc: string }[];
 };
 
-export type PricingAddOn = {
-  id: string;
-  label: string;
-  price: number;
-  displayPrice: string;
-};
-
 export type PromoOffer = {
   id: string;
   icon: "sparkles" | "gift" | "users" | "sun";
@@ -34,17 +27,6 @@ export type PromoOffer = {
   color: string;
   iconBg: string;
 };
-
-export const HOME_PRICING_ADDONS: PricingAddOn[] = [
-  { id: "inside-oven", label: "Inside oven", price: 45, displayPrice: "+$45" },
-  { id: "inside-fridge", label: "Inside fridge", price: 35, displayPrice: "+$35" },
-  { id: "interior-windows", label: "Interior windows", price: 60, displayPrice: "+$60" },
-  { id: "exterior-windows", label: "Exterior windows", price: 80, displayPrice: "+$80" },
-  { id: "balcony-outdoor", label: "Balcony / outdoor area", price: 50, displayPrice: "+$50" },
-  { id: "garage", label: "Garage", price: 65, displayPrice: "+$65" },
-  { id: "flyscreen-cleaning", label: "Flyscreen cleaning", price: 40, displayPrice: "+$40" },
-  { id: "carpet-steam-clean", label: "Carpet steam clean", price: 80, displayPrice: "From $80" },
-];
 
 export const HOME_PROMO_OFFERS: PromoOffer[] = [
   {
@@ -88,29 +70,6 @@ export const HOME_PROMO_OFFERS: PromoOffer[] = [
     iconBg: "bg-amber-100",
   },
 ];
-
-export const BOOKING_HOURLY_OPTIONS = [
-  { label: "Hourly - One-off", value: "Hourly Cleaning (One-off) = $60/hr", rate: 60 },
-  { label: "Hourly - Weekly", value: "Hourly Cleaning (Weekly) = $50/hr", rate: 50 },
-  { label: "Hourly - Fortnightly", value: "Hourly Cleaning (Fortnightly) = $55/hr", rate: 55 },
-  { label: "Hourly - Monthly", value: "Hourly Cleaning (Monthly) = $55/hr", rate: 55 },
-];
-
-export const BOOKING_FLAT_RATE_OPTIONS = [
-  { value: "1 Bedroom Apartment/House Cleaning = 150 AUD", price: 150 },
-  { value: "2 Bedroom Apartment/House Cleaning = 175 AUD", price: 175 },
-  { value: "3 Bedroom Apartment/House Cleaning = 205 AUD", price: 205 },
-  { value: "3 Bedroom Apartment/House Cleaning 2-Storey House = 220 AUD", price: 220 },
-  { value: "4 Bedroom Apartment/House Cleaning = 250 AUD", price: 250 },
-  { value: "4 Bedroom Apartment/House Cleaning 2-Storey House = 280 AUD", price: 280 },
-];
-
-export const BOOKING_WHEELY_BIN_SERVICE = {
-  value: "Wheely Bin Cleaning = $35/bin",
-  rate: 35,
-};
-
-export const BOOKING_ADDONS = HOME_PRICING_ADDONS.filter((addon) => addon.id !== "carpet-steam-clean");
 
 export const SERVICES: Record<string, Service> = {
   commercial: {

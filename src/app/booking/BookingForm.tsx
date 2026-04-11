@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -24,12 +24,22 @@ import {
 
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import {
-  BOOKING_ADDONS,
-  BOOKING_FLAT_RATE_OPTIONS,
-  BOOKING_HOURLY_OPTIONS,
-  BOOKING_WHEELY_BIN_SERVICE,
-} from "@/lib/services";
+
+type ApiServiceOption = {
+  id: string;
+  code: string;
+  name: string;
+  basePriceCents: number;
+  isActive: boolean;
+};
+
+type ApiAddonOption = {
+  id: string;
+  code: string;
+  name: string;
+  priceCents: number;
+  isActive: boolean;
+};
 
 const bookingSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -42,9 +52,8 @@ const bookingSchema = z.object({
   postcode: z.string().min(4, "Please enter a valid postcode"),
   service: z.string().min(1, "Please select a service"),
   addOns: z.array(z.string()).optional(),
-  hours: z.string().optional(),
-  binCount: z.string().optional(),
-  hourlyRate: z.string().optional(),
+  serviceCount: z.string().optional(),
+  serviceCountUnit: z.string().optional(),
   date: z.string().min(1, "Please select a preferred date"),
   time: z.string().min(1, "Please select a preferred time"),
   instructions: z.string().optional(),
@@ -54,32 +63,67 @@ type BookingFormData = z.infer<typeof bookingSchema>;
 
 const PLANS = new Set(["Essential Plan", "Standard Plan", "Premium Plan"]);
 
-const FLAT_RATE_LOOKUP = new Map(
-  BOOKING_FLAT_RATE_OPTIONS.map((option) => [option.value, option.price])
-);
-
-const ADDON_LOOKUP = new Map(BOOKING_ADDONS.map((addon) => [addon.id, addon.price]));
-
-const SERVICE_GROUPS = [
-  {
-    label: "Residential Cleaning - Flat Rate",
-    options: BOOKING_FLAT_RATE_OPTIONS.map((option) => option.value),
-  },
-  {
-    label: "Residential Cleaning - Hourly Rate",
-    options: BOOKING_HOURLY_OPTIONS.map((opt) => opt.value),
-  },
-  {
-    label: "Additional Services",
-    options: [BOOKING_WHEELY_BIN_SERVICE.value],
-  },
-];
-
 const TIME_SLOTS = [
-  "9:00 AM – 11:30 AM",
-  "12:00 PM – 2:30 PM",
-  "3:00 PM – 5:30 PM",
+  { label: "9:00 AM – 11:30 AM", value: "09:00" },
+  { label: "12:00 PM – 2:30 PM", value: "12:00" },
+  { label: "3:00 PM – 5:30 PM", value: "15:00" },
 ];
+
+function getCountConfigFromService(serviceValue: string): {
+  label: string;
+  unit: string;
+  min: number;
+  step: string;
+  requiresInteger: boolean;
+} | null {
+  const unitRate = getServiceUnitRate(serviceValue);
+  const rawUnit = unitRate?.unit;
+
+  if (!rawUnit) {
+    return null;
+  }
+
+  if (rawUnit === "hr") {
+    return {
+      label: "Number of Hours",
+      unit: "hours",
+      min: 2,
+      step: "0.5",
+      requiresInteger: false,
+    };
+  }
+
+  const unit = rawUnit.endsWith("s") ? rawUnit : `${rawUnit}s`;
+  const label = `Number of ${unit.charAt(0).toUpperCase() + unit.slice(1)}`;
+
+  return {
+    label,
+    unit,
+    min: 1,
+    step: "1",
+    requiresInteger: true,
+  };
+}
+
+function getServiceRateFromService(serviceValue: string): number {
+  return getServiceUnitRate(serviceValue)?.rate ?? 0;
+}
+
+function getServiceUnitRate(serviceValue: string): { rate: number; unit: string } | null {
+  const match = serviceValue.match(/=\s*\$(\d+)\s*\/\s*([a-zA-Z]+)/);
+  if (!match) {
+    return null;
+  }
+
+  const rate = parseInt(match[1], 10);
+  const unit = match[2].toLowerCase();
+
+  if (!Number.isFinite(rate) || rate <= 0) {
+    return null;
+  }
+
+  return { rate, unit };
+}
 
 function FieldWrapper({ label, icon: Icon, error, children }: {
   label: string;
@@ -108,30 +152,94 @@ export default function BookingForm({
   // const [submitted, setSubmitted] = useState(false);
   const [selectedService, setSelectedService] = useState(preselectedService ?? "");
   const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
-  const [hours, setHours] = useState("2");
-  const [binCount, setBinCount] = useState("1");
+  const [serviceCount, setServiceCount] = useState("1");
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  const [services, setServices] = useState<ApiServiceOption[]>([]);
+  const [addons, setAddons] = useState<ApiAddonOption[]>([]);
+  const [catalogError, setCatalogError] = useState<string | null>(null);
+  const [isCatalogLoading, setIsCatalogLoading] = useState(true);
 
-  const isHourlyService = selectedService.toLowerCase().includes("hourly");
-  const isWheelyBinService = selectedService.includes("Wheely Bin Cleaning");
-  
-  // Extract hourly rate from the selected service string
-  const getHourlyRate = () => {
-    const match = selectedService.match(/=\s*\$(\d+)\/hr/);
-    return match ? parseInt(match[1]) : 0;
-  };
+  useEffect(() => {
+    let mounted = true;
 
-  const hourlyRate = isHourlyService ? getHourlyRate() : 0;
-  const totalHours = parseFloat(hours) || 0;
-  const totalBins = parseInt(binCount) || 0;
-  const baseServiceTotal = isHourlyService
-    ? hourlyRate * totalHours
-    : isWheelyBinService
-      ? BOOKING_WHEELY_BIN_SERVICE.rate * totalBins
-      : FLAT_RATE_LOOKUP.get(selectedService) ?? null;
+    async function loadCatalog() {
+      setCatalogError(null);
+      setIsCatalogLoading(true);
+      try {
+        const [servicesRes, addonsRes] = await Promise.all([
+          fetch("/api/services", { cache: "no-store" }),
+          fetch("/api/addons", { cache: "no-store" }),
+        ]);
+
+        if (!servicesRes.ok || !addonsRes.ok) {
+          throw new Error("Unable to load booking options");
+        }
+
+        const [servicesData, addonsData] = await Promise.all([
+          servicesRes.json() as Promise<{ services?: ApiServiceOption[] }>,
+          addonsRes.json() as Promise<{ addons?: ApiAddonOption[] }>,
+        ]);
+
+        if (!mounted) return;
+        setServices(servicesData.services ?? []);
+        setAddons(addonsData.addons ?? []);
+      } catch (error) {
+        console.error("[BookingForm] Failed to load service catalog:", error);
+        if (!mounted) return;
+        setCatalogError("Could not load live pricing options. Please refresh and try again.");
+      } finally {
+        if (mounted) setIsCatalogLoading(false);
+      }
+    }
+
+    void loadCatalog();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const { flatRateLookup, addonLookup, serviceGroups } = useMemo(() => {
+    const flatRates = services
+      .filter((service) => !getServiceUnitRate(service.code))
+      .map((service) => ({ value: service.code, price: service.basePriceCents / 100 }));
+
+    const hourly = services.filter((service) => getServiceUnitRate(service.code)?.unit === "hr");
+    const additional = services.filter((service) => {
+      const unit = getServiceUnitRate(service.code)?.unit;
+      return Boolean(unit && unit !== "hr");
+    });
+
+    const groups = [
+      {
+        label: "Residential Cleaning - Flat Rate",
+        options: flatRates.map((option) => option.value),
+      },
+      {
+        label: "Residential Cleaning - Hourly Rate",
+        options: hourly.map((service) => service.code),
+      },
+      {
+        label: "Additional Services",
+        options: additional.map((service) => service.code),
+      },
+    ].filter((group) => group.options.length > 0);
+
+    return {
+      flatRateLookup: new Map(flatRates.map((option) => [option.value, option.price])),
+      addonLookup: new Map(addons.map((addon) => [addon.code, addon.priceCents / 100])),
+      serviceGroups: groups,
+    };
+  }, [services, addons]);
+
+  const countConfig = getCountConfigFromService(selectedService);
+  const serviceRate = getServiceRateFromService(selectedService);
+  const parsedServiceCount = Number(serviceCount) || 0;
+  const baseServiceTotal = countConfig
+    ? serviceRate * parsedServiceCount
+    : flatRateLookup.get(selectedService) ?? null;
 
   const addOnTotal = selectedAddOns.reduce((sum, addOnId) => {
-    return sum + (ADDON_LOOKUP.get(addOnId) ?? 0);
+    return sum + (addonLookup.get(addOnId) ?? 0);
   }, 0);
 
   const estimatedTotal = baseServiceTotal;
@@ -152,8 +260,12 @@ export default function BookingForm({
     const payload = {
       ...data,
       addOns: selectedAddOns,
-      ...(isHourlyService ? { hours, hourlyRate: String(hourlyRate) } : {}),
-      ...(isWheelyBinService ? { binCount } : {}),
+      ...(countConfig
+        ? {
+            serviceCount,
+            serviceCountUnit: countConfig.unit,
+          }
+        : {}),
     };
 
     try {
@@ -223,7 +335,28 @@ export default function BookingForm({
           <FieldWrapper label="Address / Suburb" icon={MapPin} error={errors.address?.message}>
             <Input
               {...register("address")}
-              placeholder="Richmond, VIC"
+              placeholder="123 Main St"
+              className="border-brand-border focus:border-brand focus:ring-brand"
+            />
+          </FieldWrapper>
+          <FieldWrapper label="Suburb" icon={MapPin} error={errors.suburb?.message}>
+            <Input
+              {...register("suburb")}
+              placeholder="Richmond"
+              className="border-brand-border focus:border-brand focus:ring-brand"
+            />
+          </FieldWrapper>
+          <FieldWrapper label="State" icon={MapPin} error={errors.state?.message}>
+            <Input
+              {...register("state")}
+              placeholder="VIC"
+              className="border-brand-border focus:border-brand focus:ring-brand"
+            />
+          </FieldWrapper>
+          <FieldWrapper label="Postcode" icon={MapPin} error={errors.postcode?.message}>
+            <Input
+              {...register("postcode")}
+              placeholder="3121"
               className="border-brand-border focus:border-brand focus:ring-brand"
             />
           </FieldWrapper>
@@ -241,17 +374,22 @@ export default function BookingForm({
           
           <FieldWrapper label="Service Type" icon={Sparkles} error={errors.service?.message}>
             <Select
+              disabled={isCatalogLoading}
               defaultValue={preselectedService}
               onValueChange={(v) => {
                 setValue("service", v, { shouldValidate: true });
                 setSelectedService(v);
+                const nextConfig = getCountConfigFromService(v);
+                if (nextConfig) {
+                  setServiceCount(String(nextConfig.min));
+                }
               }}
             >
               <SelectTrigger className="border-brand-border focus:border-brand focus:ring-brand">
-                <SelectValue placeholder="Select a service" />
+                <SelectValue placeholder={isCatalogLoading ? "Loading services..." : "Select a service"} />
               </SelectTrigger>
               <SelectContent>
-                {SERVICE_GROUPS.map(({ label, options }) => (
+                {serviceGroups.map(({ label, options }) => (
                   <SelectGroup key={label}>
                     <SelectLabel>{label}</SelectLabel>
                     {options.map((s) => (
@@ -269,8 +407,9 @@ export default function BookingForm({
                 Optional Add-ons
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {BOOKING_ADDONS.map((addon) => {
-                  const checked = selectedAddOns.includes(addon.id);
+                {addons.map((addon) => {
+                  const checked = selectedAddOns.includes(addon.code);
+                  const addonPrice = addon.priceCents / 100;
                   return (
                     <label
                       key={addon.id}
@@ -282,16 +421,16 @@ export default function BookingForm({
                           checked={checked}
                           onChange={(e) => {
                             if (e.target.checked) {
-                              setSelectedAddOns((prev) => [...prev, addon.id]);
+                              setSelectedAddOns((prev) => [...prev, addon.code]);
                               return;
                             }
-                            setSelectedAddOns((prev) => prev.filter((id) => id !== addon.id));
+                            setSelectedAddOns((prev) => prev.filter((id) => id !== addon.code));
                           }}
                           className="h-4 w-4 accent-brand"
                         />
-                        <span className="text-sm text-brand-text">{addon.label}</span>
+                        <span className="text-sm text-brand-text">{addon.name}</span>
                       </div>
-                      <span className="text-sm font-semibold text-brand">+${addon.price}</span>
+                      <span className="text-sm font-semibold text-brand">+${addonPrice}</span>
                     </label>
                   );
                 })}
@@ -299,39 +438,24 @@ export default function BookingForm({
             </div>
           )}
 
-          {/* Hourly/bin booking: show quantity input and estimated total */}
-          {(isHourlyService || isWheelyBinService) && (
+          {/* Count-based services: show quantity input and estimated total */}
+          {countConfig && (
             <div className="bg-brand/8 border border-brand/20 rounded-xl p-4 space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {isHourlyService && (
-                  <FieldWrapper label="Number of Hours" icon={Clock} error={errors.hours?.message}>
-                    <Input
-                      type="number"
-                      min="2"
-                      step="0.5"
-                      value={hours}
-                      onChange={(e) => setHours(e.target.value)}
-                      placeholder="2"
-                      className="border-brand-border focus:border-brand focus:ring-brand"
-                    />
-                    <p className="text-xs text-brand-muted mt-1">Minimum 2 hours</p>
-                  </FieldWrapper>
-                )}
-
-                {isWheelyBinService && (
-                  <FieldWrapper label="Number of Bins" icon={Sparkles} error={errors.binCount?.message}>
-                    <Input
-                      type="number"
-                      min="1"
-                      step="1"
-                      value={binCount}
-                      onChange={(e) => setBinCount(e.target.value)}
-                      placeholder="1"
-                      className="border-brand-border focus:border-brand focus:ring-brand"
-                    />
-                    <p className="text-xs text-brand-muted mt-1">Minimum 1 bin</p>
-                  </FieldWrapper>
-                )}
+                <FieldWrapper label={countConfig.label} icon={countConfig.unit === "hours" ? Clock : Sparkles}>
+                  <Input
+                    type="number"
+                    min={String(countConfig.min)}
+                    step={countConfig.step}
+                    value={serviceCount}
+                    onChange={(e) => setServiceCount(e.target.value)}
+                    placeholder={String(countConfig.min)}
+                    className="border-brand-border focus:border-brand focus:ring-brand"
+                  />
+                  <p className="text-xs text-brand-muted mt-1">
+                    Minimum {countConfig.min} {countConfig.unit}
+                  </p>
+                </FieldWrapper>
               </div>
 
               {estimatedTotal !== null && (
@@ -340,16 +464,9 @@ export default function BookingForm({
                   <p className="text-2xl font-bold text-brand">
                     ${estimatedTotal.toFixed(0)} AUD
                   </p>
-                  {isHourlyService && (
-                    <p className="text-xs text-brand-muted mt-1">
-                      {totalHours} hours × ${hourlyRate}/hr
-                    </p>
-                  )}
-                  {isWheelyBinService && (
-                    <p className="text-xs text-brand-muted mt-1">
-                      {totalBins} bins × ${BOOKING_WHEELY_BIN_SERVICE.rate}/bin
-                    </p>
-                  )}
+                  <p className="text-xs text-brand-muted mt-1">
+                    {parsedServiceCount} {countConfig.unit} × ${serviceRate}/{countConfig.unit === "hours" ? "hr" : countConfig.unit.slice(0, -1)}
+                  </p>
                 </div>
               )}
             </div>
@@ -376,6 +493,12 @@ export default function BookingForm({
             </div>
           )}
 
+          {catalogError && (
+            <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-2">
+              {catalogError}
+            </p>
+          )}
+
           <p className="bg-yellow-50 border border-yellow-200 text-yellow-800 rounded-lg px-4 py-2 text-sm font-medium">
             For any service not listed, please contact us directly or get a quote.
           </p>
@@ -394,8 +517,8 @@ export default function BookingForm({
                 <SelectValue placeholder="Select a time slot" />
               </SelectTrigger>
               <SelectContent>
-                {TIME_SLOTS.map((t) => (
-                  <SelectItem key={t} value={t}>{t}</SelectItem>
+                  {TIME_SLOTS.map((slot) => (
+                    <SelectItem key={slot.value} value={slot.value}>{slot.label}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -429,6 +552,10 @@ export default function BookingForm({
       >
         {isSubmitting ? "Redirecting to payment..." : "Confirm Booking →"}
       </Button>
+
+      <p className="text-center text-xs text-brand-muted">
+        You&apos;ll pay the full amount securely at checkout to confirm this booking.
+      </p>
 
       <p className="text-center text-xs text-brand-muted">
         By submitting you agree to our{" "}

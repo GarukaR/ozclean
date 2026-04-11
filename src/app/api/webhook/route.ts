@@ -1,21 +1,34 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SquareClient, SquareEnvironment } from "square";
-import { Resend } from "resend";
-import { render } from "@react-email/render";
-import BookingConfirmation from "@/emails/BookingConfirmation";
-import BookingNotification from "@/emails/BookingNotification";
+import { prisma } from "@/lib/prisma";
+import { sendBookingEmails } from "@/lib/resend";
+import { env, isProduction } from "@/env";
 import crypto from "crypto";
 
 // ─── Clients ──────────────────────────────────────────────────────────────────
+const publicUrl = env.NEXT_PUBLIC_URL;
+
+if (!publicUrl) {
+  throw new Error("NEXT_PUBLIC_URL is missing");
+}
+
+if (!env.SQUARE_ACCESS_TOKEN) {
+  throw new Error("SQUARE_ACCESS_TOKEN is missing");
+}
+
+if (!env.SQUARE_WEBHOOK_SIGNATURE) {
+  throw new Error("SQUARE_WEBHOOK_SIGNATURE is missing");
+}
+
+const squareWebhookSignature = env.SQUARE_WEBHOOK_SIGNATURE;
+
 const square = new SquareClient({
-  token: process.env.SQUARE_ACCESS_TOKEN!,
+  token: env.SQUARE_ACCESS_TOKEN,
   environment:
-    process.env.NODE_ENV === "production"
+    isProduction
       ? SquareEnvironment.Production
       : SquareEnvironment.Sandbox,
 });
-
-const resend = new Resend(process.env.RESEND_API_KEY!);
 
 // ─── Verify Square webhook signature ─────────────────────────────────────────
 function verifySquareSignature(
@@ -23,16 +36,24 @@ function verifySquareSignature(
   signature: string,
   url: string
 ): boolean {
+  if (!signature) {
+    return false;
+  }
+
   const hmac = crypto.createHmac(
     "sha256",
-    process.env.SQUARE_WEBHOOK_SIGNATURE!
+    squareWebhookSignature
   );
   hmac.update(url + body);
   const expected = hmac.digest("base64");
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expected)
-  );
+  const received = Buffer.from(signature);
+  const expectedBuffer = Buffer.from(expected);
+
+  if (received.length !== expectedBuffer.length) {
+    return false;
+  }
+
+  return crypto.timingSafeEqual(received, expectedBuffer);
 }
 
 // ─── Format currency from cents ───────────────────────────────────────────────
@@ -51,11 +72,158 @@ function formatDate(dateStr: string): string {
   });
 }
 
+function formatTime(date: Date): string {
+  return date.toLocaleTimeString("en-AU", {
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
+
+function formatAddress(booking: {
+  addressLine1: string;
+  addressLine2: string | null;
+  suburb: string;
+  state: string;
+  postcode: string;
+}): string {
+  const addressParts = [
+    booking.addressLine1,
+    booking.addressLine2,
+    `${booking.suburb}, ${booking.state} ${booking.postcode}`,
+  ].filter(Boolean);
+
+  return addressParts.join(", ");
+}
+
+type BookingAddonSnapshot = {
+  code?: string;
+  name: string;
+  unitPriceCents: number;
+  quantity: number;
+  lineTotalCents: number;
+};
+
+type ServiceSelectionSnapshot = {
+  count: number;
+  unitLabel: string;
+  unitPriceCents: number;
+  subtotalCents: number;
+};
+
+type BookingSnapshot = {
+  serviceSelection?: ServiceSelectionSnapshot;
+  addons: BookingAddonSnapshot[];
+};
+
+function parseBookingSnapshot(addons: unknown): BookingSnapshot {
+  const parsedAddons: BookingAddonSnapshot[] = [];
+
+  const pushAddon = (item: unknown) => {
+    if (typeof item !== "object" || item === null) {
+      return;
+    }
+
+    const maybeName = "name" in item ? item.name : undefined;
+    const maybeCode = "code" in item ? item.code : undefined;
+
+    const maybeUnitPriceCents =
+      "unitPriceCents" in item
+        ? item.unitPriceCents
+        : "priceCents" in item
+          ? item.priceCents
+          : undefined;
+
+    const maybeQuantity = "quantity" in item ? item.quantity : 1;
+    const maybeLineTotalCents =
+      "lineTotalCents" in item
+        ? item.lineTotalCents
+        : typeof maybeUnitPriceCents === "number" && typeof maybeQuantity === "number"
+          ? maybeUnitPriceCents * maybeQuantity
+          : undefined;
+
+    if (
+      typeof maybeName !== "string" ||
+      typeof maybeUnitPriceCents !== "number" ||
+      typeof maybeQuantity !== "number" ||
+      typeof maybeLineTotalCents !== "number"
+    ) {
+      return;
+    }
+
+    parsedAddons.push({
+      code: typeof maybeCode === "string" ? maybeCode : undefined,
+      name: maybeName,
+      unitPriceCents: maybeUnitPriceCents,
+      quantity: maybeQuantity,
+      lineTotalCents: maybeLineTotalCents,
+    });
+  };
+
+  let serviceSelection: ServiceSelectionSnapshot | undefined;
+
+  if (!Array.isArray(addons)) {
+    if (typeof addons === "object" && addons !== null) {
+      const maybeServiceSelection =
+        "serviceSelection" in addons ? addons.serviceSelection : undefined;
+
+      if (typeof maybeServiceSelection === "object" && maybeServiceSelection !== null) {
+        const maybeQuantity =
+          "count" in maybeServiceSelection
+            ? maybeServiceSelection.count
+            : "quantity" in maybeServiceSelection
+              ? maybeServiceSelection.quantity
+              : undefined;
+        const maybeUnitLabel =
+          "unitLabel" in maybeServiceSelection ? maybeServiceSelection.unitLabel : undefined;
+        const maybeUnitPriceCents =
+          "unitPriceCents" in maybeServiceSelection
+            ? maybeServiceSelection.unitPriceCents
+            : undefined;
+        const maybeSubtotalCents =
+          "subtotalCents" in maybeServiceSelection
+            ? maybeServiceSelection.subtotalCents
+            : undefined;
+
+        if (
+          typeof maybeQuantity === "number" &&
+          typeof maybeUnitLabel === "string" &&
+          typeof maybeUnitPriceCents === "number" &&
+          typeof maybeSubtotalCents === "number"
+        ) {
+          serviceSelection = {
+            count: maybeQuantity,
+            unitLabel: maybeUnitLabel,
+            unitPriceCents: maybeUnitPriceCents,
+            subtotalCents: maybeSubtotalCents,
+          };
+        }
+      }
+
+      const maybeAddons = "addons" in addons ? addons.addons : undefined;
+      if (Array.isArray(maybeAddons)) {
+        maybeAddons.forEach(pushAddon);
+      }
+    }
+
+    return {
+      serviceSelection,
+      addons: parsedAddons,
+    };
+  }
+
+  addons.forEach(pushAddon);
+
+  return {
+    serviceSelection,
+    addons: parsedAddons,
+  };
+}
+
 export async function POST(req: NextRequest) {
   try {
     const rawBody = await req.text();
     const signature = req.headers.get("x-square-hmacsha256-signature") ?? "";
-    const url = `${process.env.NEXT_PUBLIC_URL}/api/webhook`;
+    const url = `${publicUrl}/api/webhook`;
 
     // Verify the webhook is genuinely from Square
     if (!verifySquareSignature(rawBody, signature, url)) {
@@ -63,83 +231,196 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
     }
 
-    const event = JSON.parse(rawBody);
+    let event: unknown;
+    try {
+      event = JSON.parse(rawBody);
+    } catch (error) {
+      console.error("[webhook] Invalid JSON payload:", error);
+      return NextResponse.json({ received: true, error: "Invalid payload" });
+    }
 
-    // Only process successful payments
-    if (event.type !== "payment.completed") {
+    if (
+      typeof event !== "object" ||
+      event === null ||
+      !("type" in event) ||
+      !("data" in event)
+    ) {
       return NextResponse.json({ received: true });
     }
 
-    const payment = event.data?.object?.payment;
+    const eventType = (event as { type?: string }).type;
+    if (eventType !== "payment.created" && eventType !== "payment.updated") {
+      return NextResponse.json({ received: true });
+    }
+
+    const payment = (event as {
+      data?: {
+        object?: {
+          payment?: {
+            id?: string;
+            status?: string;
+            orderId?: string;
+            order_id?: string;
+            totalMoney?: { amount?: number | string };
+            total_money?: { amount?: number | string };
+            amountMoney?: { amount?: number | string };
+            amount_money?: { amount?: number | string };
+          };
+        };
+      };
+    }).data?.object?.payment;
+
     if (!payment) {
       return NextResponse.json({ received: true });
     }
 
-    // Pull booking metadata from the Square order
-    const orderId = payment.orderId;
+    if (payment.status !== "COMPLETED") {
+      return NextResponse.json({ received: true });
+    }
+
+    const paymentId = payment.id;
+    if (!paymentId) {
+      console.error("[webhook] Missing payment id in event payload");
+      return NextResponse.json({ received: true, error: "Missing paymentId" });
+    }
+
+    let orderId = payment.orderId ?? payment.order_id;
+    let paidCents = Number(
+      payment.totalMoney?.amount ??
+        payment.total_money?.amount ??
+        payment.amountMoney?.amount ??
+        payment.amount_money?.amount ??
+        0
+    );
+
+    // Some webhook payloads are sparse. Backfill critical fields from Payments API.
+    if (!orderId || paidCents <= 0) {
+      const paymentResult = await square.payments.get({ paymentId });
+      const fullPayment = paymentResult.payment as
+        | {
+            orderId?: string;
+            order_id?: string;
+            totalMoney?: { amount?: number | string };
+            total_money?: { amount?: number | string };
+            amountMoney?: { amount?: number | string };
+            amount_money?: { amount?: number | string };
+          }
+        | undefined;
+
+      orderId = orderId ?? fullPayment?.orderId ?? fullPayment?.order_id;
+      paidCents =
+        paidCents > 0
+          ? paidCents
+          : Number(
+              fullPayment?.totalMoney?.amount ??
+                fullPayment?.total_money?.amount ??
+                fullPayment?.amountMoney?.amount ??
+                fullPayment?.amount_money?.amount ??
+                0
+            );
+    }
+
+    if (!orderId) {
+      console.error("[webhook] Missing orderId on completed payment:", paymentId);
+      return NextResponse.json({ received: true, error: "Missing orderId" });
+    }
+
     const orderResult = await square.orders.get({ orderId });
     const order = orderResult.order;
     const meta = order?.metadata ?? {};
+    const bookingId = meta.bookingId;
 
-    const {
-      bookingId,
-      customerName,
-      customerEmail,
-      customerPhone,
-      address,
-      service,
-      date,
-      time,
-      instructions,
-    } = meta;
+    if (!bookingId) {
+      console.error("[webhook] Missing bookingId in Square metadata for payment:", payment.id);
+      return NextResponse.json({ received: true, error: "Missing bookingId" });
+    }
 
-    // Calculate amounts
-    const depositCents = Number(payment.totalMoney?.amount ?? 0);
-    // Reverse-calculate total from deposit (deposit = 10% of total)
-    const totalCents = depositCents * 10;
-    const balanceCents = totalCents - depositCents;
+    const booking = await prisma.booking.findUnique({
+      where: { id: bookingId },
+    });
+
+    if (!booking) {
+      console.error("[webhook] Booking not found for bookingId:", bookingId);
+      return NextResponse.json({ received: true, error: "Booking not found" });
+    }
+
+    if (booking.status === "CONFIRMED" || booking.paymentStatus === "PAID") {
+      return NextResponse.json({ received: true, duplicate: true });
+    }
+
+    const updateResult = await prisma.booking.updateMany({
+      where: {
+        id: bookingId,
+        status: { not: "CONFIRMED" },
+        paymentStatus: { not: "PAID" },
+      },
+      data: {
+        status: "CONFIRMED",
+        paymentStatus: "PAID",
+        squarePaymentId: paymentId,
+        totalPaidCents: paidCents,
+        confirmedAt: new Date(),
+      },
+    });
+
+    if (updateResult.count === 0) {
+      return NextResponse.json({ received: true, duplicate: true });
+    }
+
+    const scheduledAt = booking.scheduledAt;
+    const totalCents = booking.totalCents;
+    const bookingPricingFields = booking as typeof booking & {
+      serviceSubtotalCents?: number;
+      serviceCount?: number;
+      serviceCountUnit?: string;
+    };
+    const snapshot = parseBookingSnapshot(booking.addons);
+    const addons = snapshot.addons;
+    const serviceAmountCents =
+      (bookingPricingFields.serviceSubtotalCents ?? 0) > 0
+        ? (bookingPricingFields.serviceSubtotalCents ?? 0)
+        : snapshot.serviceSelection?.subtotalCents ?? Math.max(totalCents - booking.addonsSubtotalCents, 0);
+    const serviceCount =
+      (bookingPricingFields.serviceCount ?? 0) > 0
+        ? (bookingPricingFields.serviceCount ?? 1)
+        : snapshot.serviceSelection?.count ?? 1;
+    const serviceCountUnit =
+      bookingPricingFields.serviceCountUnit || snapshot.serviceSelection?.unitLabel || "service";
 
     const emailProps = {
-      customerName: customerName ?? "Customer",
-      customerEmail: customerEmail ?? "",
-      customerPhone: customerPhone ?? "",
-      service: service ?? "Cleaning Service",
-      date: formatDate(date ?? new Date().toISOString()),
-      time: time ?? "",
-      address: address ?? "",
-      instructions: instructions ?? "",
-      depositAmount: formatMoney(depositCents),
+      customerName: booking.customerName,
+      customerEmail: booking.customerEmail,
+      customerPhone: booking.customerPhone,
+      service: booking.service,
+      date: formatDate(scheduledAt.toISOString()),
+      time: formatTime(scheduledAt),
+      address: formatAddress(booking),
+      instructions: booking.instructions ?? "",
+      paidAmount: formatMoney(paidCents),
+      serviceAmount: formatMoney(serviceAmountCents),
+      serviceCount,
+      serviceCountUnit,
+      addonsTotal: formatMoney(booking.addonsSubtotalCents),
       totalAmount: formatMoney(totalCents),
-      balanceDue: formatMoney(balanceCents),
-      bookingId: bookingId ?? payment.id,
-      squarePaymentId: payment.id,
+      addons: addons.map((addon) => ({
+        name: addon.name,
+        quantity: addon.quantity,
+        unitPrice: formatMoney(addon.unitPriceCents),
+        lineTotal: formatMoney(addon.lineTotalCents),
+      })),
+      bookingId: booking.bookingRef,
+      squarePaymentId: paymentId,
     };
 
-    // Send both emails in parallel
-    await Promise.all([
-      // 1. Confirmation to customer
-      resend.emails.send({
-        from: "SparkClean <bookings@sparkclean.com.au>",
-        to: emailProps.customerEmail,
-        subject: `Booking Confirmed — ${service} on ${emailProps.date}`,
-        html: await render(BookingConfirmation(emailProps)),
-      }),
+    // Keep webhook thin: all booking email rendering/sending is centralized in src/lib/resend.ts.
+    await sendBookingEmails(emailProps);
 
-      // 2. Notification to business owner
-      resend.emails.send({
-        from: "SparkClean Bookings <bookings@sparkclean.com.au>",
-        to: process.env.BOOKING_NOTIFICATION_EMAIL!,
-        subject: `New Booking — ${customerName} · ${service} · ${emailProps.date}`,
-        html: await render(BookingNotification(emailProps)),
-      }),
-    ]);
-
-    console.log(`[webhook] Booking ${bookingId} processed — emails sent to ${customerEmail} and owner`);
+    console.log(
+      `[webhook] Booking ${bookingId} processed — emails sent to ${emailProps.customerEmail} and owner`
+    );
     return NextResponse.json({ success: true });
-
   } catch (error) {
     console.error("[webhook] Error processing payment:", error);
-    // Return 200 to prevent Square from retrying — log the error instead
     return NextResponse.json({ received: true, error: String(error) });
   }
 }

@@ -5,6 +5,7 @@ import { ArrowRight, CheckCircle2, ChevronDown, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SERVICES, getAllServiceSlugs } from "@/lib/services";
+import { ROUTES, bookingWithService } from "@/lib/routes";
 
 // ─── Static params for Next.js static export ─────────────────────────────────
 export function generateStaticParams() {
@@ -103,7 +104,7 @@ export default async function ServicePage({
                     size="lg"
                       className="bg-brand-accent hover:bg-brand-accent-dark text-white font-semibold gap-2 shadow-lg shadow-brand-accent/25"
                   >
-                    <Link href={`/book?service=${service.slug}`}>
+                    <Link href={bookingWithService(service.slug)}>
                       Book Now <ArrowRight className="w-4 h-4" />
                     </Link>
                   </Button>
@@ -115,7 +116,7 @@ export default async function ServicePage({
                   variant="outline"
                     className="border-brand-accent-border text-brand-text hover:border-brand-accent hover:text-brand-accent-dark font-semibold"
                 >
-                  <Link href="/quote">Get a Free Quote</Link>
+                  <Link href={ROUTES.QUOTE}>Get a Free Quote</Link>
                 </Button>
               </div>
             </div>

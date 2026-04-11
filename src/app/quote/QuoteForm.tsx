@@ -1,9 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import Link from "next/link";
 import { CheckCircle2, User, Mail, Phone, MapPin, Sparkles, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -17,17 +16,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ROUTES } from "@/lib/routes";
+import { quoteSchema, type QuoteFormData } from "@/lib/quote";
 
-const quoteSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Please enter a valid email address"),
-  phone: z.string().min(8, "Please enter a valid phone number"),
-  address: z.string().min(3, "Please enter your address or suburb"),
-  service: z.string().min(1, "Please select a service"),
-  message: z.string().min(10, "Please give us a bit more detail (min 10 characters)"),
-});
-
-type QuoteFormData = z.infer<typeof quoteSchema>;
+type ApiServiceOption = {
+  id: string;
+  name: string;
+};
 
 const SERVICES = [
   "Residential Cleaning",
@@ -75,7 +70,7 @@ function SuccessState() {
           <Link href="/">Back to Home</Link>
         </Button>
         <Button asChild variant="outline" className="border-brand-border">
-          <Link href="/book">Book Directly Instead</Link>
+          <Link href={ROUTES.BOOKING}>Book Directly Instead</Link>
         </Button>
       </div>
     </div>
@@ -84,6 +79,41 @@ function SuccessState() {
 
 export default function QuoteForm() {
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [serviceOptions, setServiceOptions] = useState<string[]>(SERVICES);
+  const [isServiceLoading, setIsServiceLoading] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadServices() {
+      setIsServiceLoading(true);
+      try {
+        const response = await fetch("/api/services", { cache: "no-store" });
+        if (!response.ok) {
+          throw new Error("Failed to fetch services");
+        }
+
+        const data = (await response.json()) as { services?: ApiServiceOption[] };
+        if (!mounted) return;
+
+        const dynamicServices = (data.services ?? []).map((service) => service.name);
+        const mergedServices = Array.from(new Set([...dynamicServices, "Not sure — need advice"]));
+        if (mergedServices.length > 0) {
+          setServiceOptions(mergedServices);
+        }
+      } catch (error) {
+        console.error("[QuoteForm] Failed to load service options:", error);
+      } finally {
+        if (mounted) setIsServiceLoading(false);
+      }
+    }
+
+    void loadServices();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const {
     register,
@@ -95,8 +125,22 @@ export default function QuoteForm() {
   });
 
   const onSubmit = async (data: QuoteFormData) => {
-    await new Promise((r) => setTimeout(r, 1000));
-    console.log("Quote submitted:", data);
+    setSubmitError(null);
+
+    const response = await fetch("/api/quote", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const body = await response.json().catch(() => null);
+      setSubmitError(body?.error ?? "Failed to submit quote request. Please try again.");
+      return;
+    }
+
     setSubmitted(true);
   };
 
@@ -155,10 +199,10 @@ export default function QuoteForm() {
           <FieldWrapper label="Service Interested In" icon={Sparkles} error={errors.service?.message}>
             <Select onValueChange={(v) => setValue("service", v, { shouldValidate: true })}>
               <SelectTrigger className="border-brand-border focus:border-brand focus:ring-brand">
-                <SelectValue placeholder="Select a service" />
+                <SelectValue placeholder={isServiceLoading ? "Loading services..." : "Select a service"} />
               </SelectTrigger>
               <SelectContent>
-                {SERVICES.map((s) => (
+                {serviceOptions.map((s) => (
                   <SelectItem key={s} value={s}>{s}</SelectItem>
                 ))}
               </SelectContent>
@@ -183,6 +227,10 @@ export default function QuoteForm() {
       >
         {isSubmitting ? "Sending..." : "Request My Free Quote →"}
       </Button>
+
+      {submitError && (
+        <p className="text-center text-sm text-red-600">{submitError}</p>
+      )}
 
       <p className="text-center text-xs text-brand-muted">
         No commitment required. We&apos;ll never spam you.

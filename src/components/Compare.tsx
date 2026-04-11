@@ -145,7 +145,7 @@ export default function Compare() {
             </div>
 
             {/* Service columns */}
-            {SERVICES.map(({ slug, name, tagline, href, featured, badge }, i) => (
+            {SERVICES.map(({ slug, name, tagline, featured, badge }, i) => (
               <div
                 key={slug}
                 className={`p-5 flex flex-col gap-3 relative pt-8
