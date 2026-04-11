@@ -10,9 +10,6 @@
     "db:seed": "prisma db seed",
     "test:booking": "node --test tests/booking-integrity.test.mjs"
   },
-  "prisma": {
-    "seed": "node prisma/seed.js"
-  },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
     "@prisma/client": "^6.19.2",
