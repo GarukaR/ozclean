@@ -8,23 +8,30 @@ type ServiceCountConfig = {
   requireInteger: boolean;
 };
 
-function getServiceCountConfig(serviceCode: string): ServiceCountConfig | null {
-  if (serviceCode.includes("/hr")) {
-    return { unit: "hours", min: 2, requireInteger: false };
-  }
+function getServiceCountConfig(serviceRecord: {
+  pricingUnit: string;
+  minQuantity: number;
+  allowDecimalQuantity: boolean;
+}): ServiceCountConfig | null {
+  const unit = serviceRecord.pricingUnit.trim().toLowerCase();
 
-  if (serviceCode.includes("/bin")) {
-    return { unit: "bins", min: 1, requireInteger: true };
-  }
-
-  // Treat only explicit price-unit suffixes as quantity-based services.
-  // This avoids false positives for labels like "Apartment/House" in flat-rate services.
-  const hasExplicitPriceUnit = /=\s*\$?\d+(?:\s*AUD)?\s*\/\s*[a-zA-Z]+\s*$/i.test(serviceCode);
-  if (!hasExplicitPriceUnit) {
+  if (unit === "service") {
     return null;
   }
 
-  return { unit: "services", min: 1, requireInteger: true };
+  const unitLabelMap: Record<string, string> = {
+    hour: "hours",
+    hr: "hours",
+    bin: "bins",
+    service: "services",
+  };
+
+  const label = unitLabelMap[unit] ?? (unit.endsWith("s") ? unit : `${unit}s`);
+  return {
+    unit: label,
+    min: serviceRecord.minQuantity,
+    requireInteger: !serviceRecord.allowDecimalQuantity,
+  };
 }
 
 export async function POST(req: NextRequest) {
@@ -61,14 +68,20 @@ export async function POST(req: NextRequest) {
     const serviceCode = String(service);
     const serviceRecord = await prisma.service.findUnique({
       where: { code: serviceCode },
-      select: { code: true, isActive: true },
+      select: {
+        code: true,
+        isActive: true,
+        pricingUnit: true,
+        minQuantity: true,
+        allowDecimalQuantity: true,
+      },
     });
 
     if (!serviceRecord || !serviceRecord.isActive) {
       return NextResponse.json({ error: "Selected service is unavailable." }, { status: 400 });
     }
 
-    const countConfig = getServiceCountConfig(serviceRecord.code);
+    const countConfig = getServiceCountConfig(serviceRecord);
 
     let normalizedServiceCount = 1;
     let normalizedServiceCountUnit = "service";

@@ -3,17 +3,17 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient()
 
 const services = [
-  { code: '1 Bedroom Apartment/House Cleaning = 150 AUD', name: '1 Bedroom Apartment/House Cleaning', basePriceCents: 15000 },
-  { code: '2 Bedroom Apartment/House Cleaning = 175 AUD', name: '2 Bedroom Apartment/House Cleaning', basePriceCents: 17500 },
-  { code: '3 Bedroom Apartment/House Cleaning = 205 AUD', name: '3 Bedroom Apartment/House Cleaning', basePriceCents: 20500 },
-  { code: '3 Bedroom Apartment/House Cleaning 2-Storey House = 220 AUD', name: '3 Bedroom Apartment/House Cleaning 2-Storey House', basePriceCents: 22000 },
-  { code: '4 Bedroom Apartment/House Cleaning = 250 AUD', name: '4 Bedroom Apartment/House Cleaning', basePriceCents: 25000 },
-  { code: '4 Bedroom Apartment/House Cleaning 2-Storey House = 280 AUD', name: '4 Bedroom Apartment/House Cleaning 2-Storey House', basePriceCents: 28000 },
-  { code: 'Hourly Cleaning (One-off) = $60/hr', name: 'Hourly Cleaning (One-off)', basePriceCents: 6000 },
-  { code: 'Hourly Cleaning (Weekly) = $50/hr', name: 'Hourly Cleaning (Weekly)', basePriceCents: 5000 },
-  { code: 'Hourly Cleaning (Fortnightly) = $55/hr', name: 'Hourly Cleaning (Fortnightly)', basePriceCents: 5500 },
-  { code: 'Hourly Cleaning (Monthly) = $55/hr', name: 'Hourly Cleaning (Monthly)', basePriceCents: 5500 },
-  { code: 'Wheely Bin Cleaning = $35/bin', name: 'Wheely Bin Cleaning', basePriceCents: 3500 },
+  { code: '1 Bedroom Apartment/House Cleaning = 150 AUD', name: '1 Bedroom Apartment/House Cleaning', basePriceCents: 15000, pricingUnit: 'service', minQuantity: 1, allowDecimalQuantity: false },
+  { code: '2 Bedroom Apartment/House Cleaning = 175 AUD', name: '2 Bedroom Apartment/House Cleaning', basePriceCents: 17500, pricingUnit: 'service', minQuantity: 1, allowDecimalQuantity: false },
+  { code: '3 Bedroom Apartment/House Cleaning = 205 AUD', name: '3 Bedroom Apartment/House Cleaning', basePriceCents: 20500, pricingUnit: 'service', minQuantity: 1, allowDecimalQuantity: false },
+  { code: '3 Bedroom Apartment/House Cleaning 2-Storey House = 220 AUD', name: '3 Bedroom Apartment/House Cleaning 2-Storey House', basePriceCents: 22000, pricingUnit: 'service', minQuantity: 1, allowDecimalQuantity: false },
+  { code: '4 Bedroom Apartment/House Cleaning = 250 AUD', name: '4 Bedroom Apartment/House Cleaning', basePriceCents: 25000, pricingUnit: 'service', minQuantity: 1, allowDecimalQuantity: false },
+  { code: '4 Bedroom Apartment/House Cleaning 2-Storey House = 280 AUD', name: '4 Bedroom Apartment/House Cleaning 2-Storey House', basePriceCents: 28000, pricingUnit: 'service', minQuantity: 1, allowDecimalQuantity: false },
+  { code: 'Hourly Cleaning (One-off) = $60/hr', name: 'Hourly Cleaning (One-off)', basePriceCents: 6000, pricingUnit: 'hour', minQuantity: 2, allowDecimalQuantity: true },
+  { code: 'Hourly Cleaning (Weekly) = $50/hr', name: 'Hourly Cleaning (Weekly)', basePriceCents: 5000, pricingUnit: 'hour', minQuantity: 2, allowDecimalQuantity: true },
+  { code: 'Hourly Cleaning (Fortnightly) = $55/hr', name: 'Hourly Cleaning (Fortnightly)', basePriceCents: 5500, pricingUnit: 'hour', minQuantity: 2, allowDecimalQuantity: true },
+  { code: 'Hourly Cleaning (Monthly) = $55/hr', name: 'Hourly Cleaning (Monthly)', basePriceCents: 5500, pricingUnit: 'hour', minQuantity: 2, allowDecimalQuantity: true },
+  { code: 'Wheely Bin Cleaning = $35/bin', name: 'Wheely Bin Cleaning', basePriceCents: 3500, pricingUnit: 'bin', minQuantity: 1, allowDecimalQuantity: false },
 ]
 
 const addons = [
@@ -33,12 +33,18 @@ async function main() {
       update: {
         name: service.name,
         basePriceCents: service.basePriceCents,
+        pricingUnit: service.pricingUnit,
+        minQuantity: service.minQuantity,
+        allowDecimalQuantity: service.allowDecimalQuantity,
         isActive: true,
       },
       create: {
         code: service.code,
         name: service.name,
         basePriceCents: service.basePriceCents,
+        pricingUnit: service.pricingUnit,
+        minQuantity: service.minQuantity,
+        allowDecimalQuantity: service.allowDecimalQuantity,
         isActive: true,
       },
     })
