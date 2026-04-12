@@ -3,22 +3,13 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import Link from "next/link";
 import { Phone, Mail, MessageSquare, User, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-
-const contactSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Please enter a valid email address"),
-  phone: z.string().optional(),
-  message: z.string().min(10, "Please give us a bit more detail"),
-});
-
-type ContactFormData = z.infer<typeof contactSchema>;
+import { contactSchema, type ContactFormData } from "@/lib/contact";
 
 function FieldWrapper({ label, icon: Icon, error, children }: {
   label: string;
@@ -59,6 +50,7 @@ function SuccessState() {
 
 export default function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const {
     register,
@@ -69,8 +61,22 @@ export default function ContactForm() {
   });
 
   const onSubmit = async (data: ContactFormData) => {
-    await new Promise((r) => setTimeout(r, 1000));
-    console.log("Contact form submitted:", data);
+    setSubmitError(null);
+
+    const response = await fetch("/api/contact", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const body = await response.json().catch(() => null);
+      setSubmitError(body?.error ?? "Failed to submit contact message. Please try again.");
+      return;
+    }
+
     setSubmitted(true);
   };
 
@@ -123,6 +129,10 @@ export default function ContactForm() {
       >
         {isSubmitting ? "Sending..." : "Send Message →"}
       </Button>
+
+      {submitError && (
+        <p className="text-center text-sm text-red-600">{submitError}</p>
+      )}
     </form>
   );
 }
