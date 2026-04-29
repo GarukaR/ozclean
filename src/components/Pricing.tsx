@@ -262,7 +262,7 @@ export default function Pricing() {
         </div>
 
         {/* ── Add-ons ── */}
-        <div className="mb-14">
+        <div className="mb-5">
           <p className="text-sm font-bold text-brand-text uppercase tracking-widest mb-4 flex items-center gap-2">
             <span className="w-1 h-4 bg-brand rounded-full inline-block" />
             Optional Add-ons
@@ -284,47 +284,6 @@ export default function Pricing() {
           {catalogError && (
             <p className="text-xs text-red-600 mt-2">{catalogError}</p>
           )}
-        </div>
-
-        {/* ── Promos ── */}
-        <div>
-          <p className="text-sm font-bold text-brand-text uppercase tracking-widest mb-5 flex items-center gap-2">
-            <Tag className="w-4 h-4 text-brand" />
-            Current Offers
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {HOME_PROMO_OFFERS.map(({ id, icon, label, deal, description, code, color, iconBg }) => {
-              const Icon = PROMO_ICONS[icon];
-              return (
-                <div
-                  key={id}
-                  className={`rounded-2xl border p-5 flex flex-col gap-3 hover:shadow-md transition-all duration-200 ${color}`}
-                >
-                  <div className="flex items-start justify-between">
-                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${iconBg}`}>
-                      <Icon className="w-4 h-4" />
-                    </div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider opacity-60">{label}</span>
-                  </div>
-                  <div>
-                    <p className="font-bold text-lg leading-tight">{deal}</p>
-                    <p className="text-xs opacity-75 leading-relaxed mt-1">{description}</p>
-                  </div>
-                  <div className="mt-auto flex items-center justify-between border-t border-current/10 pt-3">
-                    <code className="text-xs font-mono font-bold tracking-widest opacity-80 bg-white/40 px-2 py-1 rounded-md">
-                      {code}
-                    </code>
-                    <Link
-                      href={ROUTES.BOOKING}
-                      className="text-xs font-semibold hover:underline underline-offset-2 opacity-90"
-                    >
-                      Claim →
-                    </Link>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
         </div>
 
       </div>

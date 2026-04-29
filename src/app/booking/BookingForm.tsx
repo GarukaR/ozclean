@@ -6,7 +6,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
   CalendarCheck,
-  User, Mail, Phone, MapPin, Clock, Sparkles, FileText
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Clock,
+  Sparkles,
+  FileText,
 } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
@@ -41,6 +47,11 @@ type ApiAddonOption = {
   isActive: boolean;
 };
 
+type ApiAvailabilityOption = {
+  timeSlot: string; // ISO date string
+  isAvailable: boolean; // e.g. ["09:00", "12:00", "15:00"]
+}
+
 const bookingSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Please enter a valid email address"),
@@ -60,8 +71,6 @@ const bookingSchema = z.object({
 });
 
 type BookingFormData = z.infer<typeof bookingSchema>;
-
-const PLANS = new Set(["Essential Plan", "Standard Plan", "Premium Plan"]);
 
 const TIME_SLOTS = [
   { label: "9:00 AM – 11:30 AM", value: "09:00" },
@@ -109,7 +118,9 @@ function getServiceRateFromService(serviceValue: string): number {
   return getServiceUnitRate(serviceValue)?.rate ?? 0;
 }
 
-function getServiceUnitRate(serviceValue: string): { rate: number; unit: string } | null {
+function getServiceUnitRate(
+  serviceValue: string,
+): { rate: number; unit: string } | null {
   const match = serviceValue.match(/=\s*\$(\d+)\s*\/\s*([a-zA-Z]+)/);
   if (!match) {
     return null;
@@ -125,7 +136,12 @@ function getServiceUnitRate(serviceValue: string): { rate: number; unit: string 
   return { rate, unit };
 }
 
-function FieldWrapper({ label, icon: Icon, error, children }: {
+function FieldWrapper({
+  label,
+  icon: Icon,
+  error,
+  children,
+}: {
   label: string;
   icon: React.ElementType;
   error?: string;
@@ -146,16 +162,18 @@ function FieldWrapper({ label, icon: Icon, error, children }: {
 export default function BookingForm({
   preselectedService,
 }: {
-  tierLabel?: string;
   preselectedService?: string;
 }) {
   // const [submitted, setSubmitted] = useState(false);
-  const [selectedService, setSelectedService] = useState(preselectedService ?? "");
+  const [selectedService, setSelectedService] = useState(
+    preselectedService ?? "",
+  );
   const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
   const [serviceCount, setServiceCount] = useState("1");
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const [services, setServices] = useState<ApiServiceOption[]>([]);
   const [addons, setAddons] = useState<ApiAddonOption[]>([]);
+  const [availability, setAvailability] = useState<ApiAvailabilityOption[]>([]);
   const [catalogError, setCatalogError] = useState<string | null>(null);
   const [isCatalogLoading, setIsCatalogLoading] = useState(true);
 
@@ -166,27 +184,32 @@ export default function BookingForm({
       setCatalogError(null);
       setIsCatalogLoading(true);
       try {
-        const [servicesRes, addonsRes] = await Promise.all([
+        const [servicesRes, addonsRes, availabilityRes] = await Promise.all([
           fetch("/api/services", { cache: "no-store" }),
           fetch("/api/addons", { cache: "no-store" }),
+          fetch("/api/availability", { cache: "no-store" }),
         ]);
 
-        if (!servicesRes.ok || !addonsRes.ok) {
+        if (!servicesRes.ok || !addonsRes.ok || !availabilityRes.ok) {
           throw new Error("Unable to load booking options");
         }
 
-        const [servicesData, addonsData] = await Promise.all([
+        const [servicesData, addonsData, availabilityData] = await Promise.all([
           servicesRes.json() as Promise<{ services?: ApiServiceOption[] }>,
           addonsRes.json() as Promise<{ addons?: ApiAddonOption[] }>,
+          availabilityRes.json() as Promise<{ availability?: ApiAvailabilityOption[] }>,
         ]);
 
         if (!mounted) return;
         setServices(servicesData.services ?? []);
         setAddons(addonsData.addons ?? []);
+        setAvailability(availabilityData.availability ?? []);
       } catch (error) {
         console.error("[BookingForm] Failed to load service catalog:", error);
         if (!mounted) return;
-        setCatalogError("Could not load live pricing options. Please refresh and try again.");
+        setCatalogError(
+          "Could not load live pricing options. Please refresh and try again.",
+        );
       } finally {
         if (mounted) setIsCatalogLoading(false);
       }
@@ -201,9 +224,14 @@ export default function BookingForm({
   const { flatRateLookup, addonLookup, serviceGroups } = useMemo(() => {
     const flatRates = services
       .filter((service) => !getServiceUnitRate(service.code))
-      .map((service) => ({ value: service.code, price: service.basePriceCents / 100 }));
+      .map((service) => ({
+        value: service.code,
+        price: service.basePriceCents / 100,
+      }));
 
-    const hourly = services.filter((service) => getServiceUnitRate(service.code)?.unit === "hr");
+    const hourly = services.filter(
+      (service) => getServiceUnitRate(service.code)?.unit === "hr",
+    );
     const additional = services.filter((service) => {
       const unit = getServiceUnitRate(service.code)?.unit;
       return Boolean(unit && unit !== "hr");
@@ -225,25 +253,30 @@ export default function BookingForm({
     ].filter((group) => group.options.length > 0);
 
     return {
-      flatRateLookup: new Map(flatRates.map((option) => [option.value, option.price])),
-      addonLookup: new Map(addons.map((addon) => [addon.code, addon.priceCents / 100])),
+      flatRateLookup: new Map(
+        flatRates.map((option) => [option.value, option.price]),
+      ),
+      addonLookup: new Map(
+        addons.map((addon) => [addon.code, addon.priceCents / 100]),
+      ),
       serviceGroups: groups,
     };
-  }, [services, addons]);
+  }, [services, addons, availability]);
 
   const countConfig = getCountConfigFromService(selectedService);
   const serviceRate = getServiceRateFromService(selectedService);
   const parsedServiceCount = Number(serviceCount) || 0;
   const baseServiceTotal = countConfig
     ? serviceRate * parsedServiceCount
-    : flatRateLookup.get(selectedService) ?? null;
+    : (flatRateLookup.get(selectedService) ?? null);
 
   const addOnTotal = selectedAddOns.reduce((sum, addOnId) => {
     return sum + (addonLookup.get(addOnId) ?? 0);
   }, 0);
 
   const estimatedTotal = baseServiceTotal;
-  const grandTotal = baseServiceTotal !== null ? baseServiceTotal + addOnTotal : null;
+  const grandTotal =
+    baseServiceTotal !== null ? baseServiceTotal + addOnTotal : null;
 
   const {
     register,
@@ -281,10 +314,11 @@ export default function BookingForm({
 
       // Redirect to Square hosted payment page
       window.location.href = json.url;
-
     } catch (error) {
       console.error("Checkout error:", error);
-      setCheckoutError("Something went wrong creating your booking. Please try again or call us on +61 3 9123 4567.");
+      setCheckoutError(
+        "Something went wrong creating your booking. Please try again or call us on +61 3 9123 4567.",
+      );
     }
   };
 
@@ -292,31 +326,28 @@ export default function BookingForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-8 flex flex-col gap-6">
-
-      {/* Plan banner */}
-      {PLANS.has(selectedService) && (
-        <div className="flex items-center gap-2 bg-brand/8 border border-brand/20 rounded-xl px-4 py-3">
-          <Sparkles className="w-4 h-4 text-brand shrink-0" />
-          <p className="text-sm text-brand font-medium">
-            Selected plan: <span className="font-bold">{selectedService}</span>
-          </p>
-        </div>
-      )}
-
       {/* Personal details */}
       <div>
         <p className="text-xs font-semibold text-brand-muted uppercase tracking-widest mb-4">
           Your Details
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <FieldWrapper label="Full Name" icon={User} error={errors.name?.message}>
+          <FieldWrapper
+            label="Full Name"
+            icon={User}
+            error={errors.name?.message}
+          >
             <Input
               {...register("name")}
               placeholder="Jane Smith"
               className="border-brand-border focus:border-brand focus:ring-brand"
             />
           </FieldWrapper>
-          <FieldWrapper label="Email Address" icon={Mail} error={errors.email?.message}>
+          <FieldWrapper
+            label="Email Address"
+            icon={Mail}
+            error={errors.email?.message}
+          >
             <Input
               {...register("email")}
               type="email"
@@ -324,7 +355,11 @@ export default function BookingForm({
               className="border-brand-border focus:border-brand focus:ring-brand"
             />
           </FieldWrapper>
-          <FieldWrapper label="Phone Number" icon={Phone} error={errors.phone?.message}>
+          <FieldWrapper
+            label="Phone Number"
+            icon={Phone}
+            error={errors.phone?.message}
+          >
             <Input
               {...register("phone")}
               type="tel"
@@ -332,28 +367,44 @@ export default function BookingForm({
               className="border-brand-border focus:border-brand focus:ring-brand"
             />
           </FieldWrapper>
-          <FieldWrapper label="Address / Suburb" icon={MapPin} error={errors.address?.message}>
+          <FieldWrapper
+            label="Address / Suburb"
+            icon={MapPin}
+            error={errors.address?.message}
+          >
             <Input
               {...register("address")}
               placeholder="123 Main St"
               className="border-brand-border focus:border-brand focus:ring-brand"
             />
           </FieldWrapper>
-          <FieldWrapper label="Suburb" icon={MapPin} error={errors.suburb?.message}>
+          <FieldWrapper
+            label="Suburb"
+            icon={MapPin}
+            error={errors.suburb?.message}
+          >
             <Input
               {...register("suburb")}
               placeholder="Richmond"
               className="border-brand-border focus:border-brand focus:ring-brand"
             />
           </FieldWrapper>
-          <FieldWrapper label="State" icon={MapPin} error={errors.state?.message}>
+          <FieldWrapper
+            label="State"
+            icon={MapPin}
+            error={errors.state?.message}
+          >
             <Input
               {...register("state")}
               placeholder="VIC"
               className="border-brand-border focus:border-brand focus:ring-brand"
             />
           </FieldWrapper>
-          <FieldWrapper label="Postcode" icon={MapPin} error={errors.postcode?.message}>
+          <FieldWrapper
+            label="Postcode"
+            icon={MapPin}
+            error={errors.postcode?.message}
+          >
             <Input
               {...register("postcode")}
               placeholder="3121"
@@ -371,8 +422,11 @@ export default function BookingForm({
           Service & Schedule
         </p>
         <div className="grid grid-cols-1 gap-4">
-          
-          <FieldWrapper label="Service Type" icon={Sparkles} error={errors.service?.message}>
+          <FieldWrapper
+            label="Service Type"
+            icon={Sparkles}
+            error={errors.service?.message}
+          >
             <Select
               disabled={isCatalogLoading}
               defaultValue={preselectedService}
@@ -386,14 +440,22 @@ export default function BookingForm({
               }}
             >
               <SelectTrigger className="border-brand-border focus:border-brand focus:ring-brand">
-                <SelectValue placeholder={isCatalogLoading ? "Loading services..." : "Select a service"} />
+                <SelectValue
+                  placeholder={
+                    isCatalogLoading
+                      ? "Loading services..."
+                      : "Select a service"
+                  }
+                />
               </SelectTrigger>
               <SelectContent>
                 {serviceGroups.map(({ label, options }) => (
                   <SelectGroup key={label}>
                     <SelectLabel>{label}</SelectLabel>
                     {options.map((s) => (
-                      <SelectItem key={s} value={s}>{s}</SelectItem>
+                      <SelectItem key={s} value={s}>
+                        {s}
+                      </SelectItem>
                     ))}
                   </SelectGroup>
                 ))}
@@ -421,16 +483,25 @@ export default function BookingForm({
                           checked={checked}
                           onChange={(e) => {
                             if (e.target.checked) {
-                              setSelectedAddOns((prev) => [...prev, addon.code]);
+                              setSelectedAddOns((prev) => [
+                                ...prev,
+                                addon.code,
+                              ]);
                               return;
                             }
-                            setSelectedAddOns((prev) => prev.filter((id) => id !== addon.code));
+                            setSelectedAddOns((prev) =>
+                              prev.filter((id) => id !== addon.code),
+                            );
                           }}
                           className="h-4 w-4 accent-brand"
                         />
-                        <span className="text-sm text-brand-text">{addon.name}</span>
+                        <span className="text-sm text-brand-text">
+                          {addon.name}
+                        </span>
                       </div>
-                      <span className="text-sm font-semibold text-brand">+${addonPrice}</span>
+                      <span className="text-sm font-semibold text-brand">
+                        +${addonPrice}
+                      </span>
                     </label>
                   );
                 })}
@@ -442,7 +513,10 @@ export default function BookingForm({
           {countConfig && (
             <div className="bg-brand/8 border border-brand/20 rounded-xl p-4 space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <FieldWrapper label={countConfig.label} icon={countConfig.unit === "hours" ? Clock : Sparkles}>
+                <FieldWrapper
+                  label={countConfig.label}
+                  icon={countConfig.unit === "hours" ? Clock : Sparkles}
+                >
                   <Input
                     type="number"
                     min={String(countConfig.min)}
@@ -460,12 +534,17 @@ export default function BookingForm({
 
               {estimatedTotal !== null && (
                 <div className="bg-white rounded-lg p-3 border border-brand-border">
-                  <p className="text-xs text-brand-muted uppercase tracking-wide font-semibold mb-1">Estimated Total</p>
+                  <p className="text-xs text-brand-muted uppercase tracking-wide font-semibold mb-1">
+                    Estimated Total
+                  </p>
                   <p className="text-2xl font-bold text-brand">
                     ${estimatedTotal.toFixed(0)} AUD
                   </p>
                   <p className="text-xs text-brand-muted mt-1">
-                    {parsedServiceCount} {countConfig.unit} × ${serviceRate}/{countConfig.unit === "hours" ? "hr" : countConfig.unit.slice(0, -1)}
+                    {parsedServiceCount} {countConfig.unit} × ${serviceRate}/
+                    {countConfig.unit === "hours"
+                      ? "hr"
+                      : countConfig.unit.slice(0, -1)}
                   </p>
                 </div>
               )}
@@ -487,8 +566,12 @@ export default function BookingForm({
               </div>
               <div className="h-px bg-brand-accent-border" />
               <div className="flex items-center justify-between">
-                <span className="font-semibold text-brand-text">Estimated total</span>
-                <span className="text-xl font-black text-brand-accent-dark">${grandTotal.toFixed(0)} AUD</span>
+                <span className="font-semibold text-brand-text">
+                  Estimated total
+                </span>
+                <span className="text-xl font-black text-brand-accent-dark">
+                  ${grandTotal.toFixed(0)} AUD
+                </span>
               </div>
             </div>
           )}
@@ -500,9 +583,14 @@ export default function BookingForm({
           )}
 
           <p className="bg-yellow-50 border border-yellow-200 text-yellow-800 rounded-lg px-4 py-2 text-sm font-medium">
-            For any service not listed, please contact us directly or get a quote.
+            For any service not listed, please contact us directly or get a
+            quote.
           </p>
-          <FieldWrapper label="Preferred Date" icon={CalendarCheck} error={errors.date?.message}>
+          <FieldWrapper
+            label="Preferred Date"
+            icon={CalendarCheck}
+            error={errors.date?.message}
+          >
             <Input
               {...register("date")}
               type="date"
@@ -510,27 +598,40 @@ export default function BookingForm({
               className="border-brand-border focus:border-brand focus:ring-brand"
             />
           </FieldWrapper>
-          
-          <FieldWrapper label="Preferred Time" icon={Clock} error={errors.time?.message}>
-            <Select onValueChange={(v) => setValue("time", v, { shouldValidate: true })}>
+
+          <FieldWrapper
+            label="Preferred Time"
+            icon={Clock}
+            error={errors.time?.message}
+          >
+            <Select
+              onValueChange={(v) =>
+                setValue("time", v, { shouldValidate: true })
+              }
+            >
               <SelectTrigger className="border-brand-border focus:border-brand focus:ring-brand">
                 <SelectValue placeholder="Select a time slot" />
               </SelectTrigger>
               <SelectContent>
-                  {TIME_SLOTS.map((slot) => (
-                    <SelectItem key={slot.value} value={slot.value}>{slot.label}</SelectItem>
+                {availability.map((slot) => (
+                  <SelectItem key={slot.value} value={slot.value}>
+                    {slot.label}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </FieldWrapper>
-        
         </div>
       </div>
 
       <div className="h-px bg-brand-border" />
 
       {/* Special instructions */}
-      <FieldWrapper label="Special Instructions (optional)" icon={FileText} error={errors.instructions?.message}>
+      <FieldWrapper
+        label="Special Instructions (optional)"
+        icon={FileText}
+        error={errors.instructions?.message}
+      >
         <Textarea
           {...register("instructions")}
           placeholder="E.g. pet in the house, focus on the kitchen, access code is 1234..."
@@ -542,7 +643,9 @@ export default function BookingForm({
       {/* Submit */}
       {checkoutError && (
         <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3">
-          <p className="text-sm text-red-600 leading-relaxed">{checkoutError}</p>
+          <p className="text-sm text-red-600 leading-relaxed">
+            {checkoutError}
+          </p>
         </div>
       )}
       <Button
@@ -554,18 +657,26 @@ export default function BookingForm({
       </Button>
 
       <p className="text-center text-xs text-brand-muted">
-        You&apos;ll pay the full amount securely at checkout to confirm this booking.
+        You&apos;ll pay the full amount securely at checkout to confirm this
+        booking.
       </p>
 
       <p className="text-center text-xs text-brand-muted">
         By submitting you agree to our{" "}
-        <Link href="/terms" className="text-brand hover:underline underline-offset-2">
+        <Link
+          href="/terms"
+          className="text-brand hover:underline underline-offset-2"
+        >
           Terms of Service
         </Link>{" "}
         and{" "}
-        <Link href="/privacy" className="text-brand hover:underline underline-offset-2">
+        <Link
+          href="/privacy"
+          className="text-brand hover:underline underline-offset-2"
+        >
           Privacy Policy
-        </Link>.
+        </Link>
+        .
       </p>
     </form>
   );
