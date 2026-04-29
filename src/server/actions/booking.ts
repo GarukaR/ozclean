@@ -6,7 +6,7 @@ import { prisma } from '@/lib/prisma'
 import { validateBookingPrice } from '@/lib/validators'
 import { createPaymentLink } from '@/lib/square'
 import { nanoid } from 'nanoid'
-import { utcToZonedTime } from 'date-fns-tz'
+import { toZonedTime } from 'date-fns-tz'
 import { format } from 'date-fns'
 
 export async function createBookingAndPaymentLink(params: {
@@ -40,9 +40,9 @@ export async function createBookingAndPaymentLink(params: {
     )
 
     // Disallow same-day bookings server-side as a last-resort guard
-    const nowSydney = utcToZonedTime(new Date(), 'Australia/Sydney');
-    const todaySydney = format(nowSydney, 'yyyy-MM-dd');
-    const requestedDate = params.scheduledAt.slice(0, 10);
+    const nowSydney = toZonedTime(new Date(), 'Australia/Sydney')
+    const todaySydney = format(nowSydney, 'yyyy-MM-dd')
+    const requestedDate = params.scheduledAt.slice(0, 10)
     if (requestedDate <= todaySydney) {
       return {
         success: false,
