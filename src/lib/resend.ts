@@ -6,6 +6,7 @@ import QuoteRequestReceived from '@/emails/QuoteRequestReceived'
 import QuoteRequestNotification from '@/emails/QuoteRequestNotification'
 import { render as renderEmail } from '@react-email/render'
 import { env, isProduction } from '@/env'
+import ContactSubmissionNotification from '@/emails/ContactSubmissionNotification'
 
 if (!env.RESEND_API_KEY) {
   throw new Error('RESEND_API_KEY is missing')
@@ -132,6 +133,13 @@ export type QuoteEmailPayload = {
   message: string
 }
 
+export type ContactEmailPayload = {
+  customerName: string
+  customerEmail: string
+  customerPhone?: string
+  message: string
+}
+
 export async function sendBookingEmails(payload: BookingEmailPayload) {
   const customerRecipient = devOverrideRecipient ?? payload.customerEmail
   const ownerRecipient = devOverrideRecipient ?? ownerInbox
@@ -220,4 +228,39 @@ export async function sendQuoteEmails(payload: QuoteEmailPayload) {
     ownerTemplate,
     logLabel: 'Quote',
   })
+}
+
+export async function sendContactSubmissionEmail(payload: ContactEmailPayload) {
+  const ownerRecipient = devOverrideRecipient ?? ownerInbox
+  const subjectPrefix = isProduction ? '' : '[DEV] '
+
+  const ownerTemplate = ContactSubmissionNotification({
+    customerName: payload.customerName,
+    customerEmail: payload.customerEmail,
+    customerPhone: payload.customerPhone,
+    message: payload.message,
+  })
+
+  const [ownerHtml, ownerText] = await Promise.all([
+    renderEmail(ownerTemplate),
+    renderEmail(ownerTemplate, { plainText: true }),
+  ])
+
+  const ownerResult = await resend.emails.send({
+    from: ownerFrom,
+    to: ownerRecipient,
+    subject: `${subjectPrefix}New SparkClean Contact Message — ${payload.customerName}`,
+    html: ownerHtml,
+    text: ownerText,
+  })
+
+  ensureSendSucceeded(ownerResult as ResendSendResult, ownerRecipient)
+
+  console.log('[resend] Contact email accepted', {
+    ownerEmailId: (ownerResult as ResendSendResult).data?.id ?? null,
+    fromCustomerEmail: payload.customerEmail,
+    toOwner: ownerRecipient,
+  })
+
+  return ownerResult
 }

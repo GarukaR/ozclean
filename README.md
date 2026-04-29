@@ -15,6 +15,37 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 2. Set `NEXT_PUBLIC_URL` to your public app URL.
 3. Set `DATABASE_URL` and `DIRECT_URL` to your Postgres connection strings.
 
+## Recommended Staging Setup: Vercel + Neon
+
+For the fastest production-like staging environment, use Vercel for the app and Neon for Postgres.
+
+1. Create a Neon project and copy the pooled connection string into `DATABASE_URL`.
+2. Copy the direct connection string into `DIRECT_URL`.
+3. Deploy this repo to Vercel from GitHub.
+4. Add the environment variables from `.env.example` in the Vercel project settings.
+5. Set `NEXT_PUBLIC_URL` to your Vercel production URL, for example `https://your-app.vercel.app`.
+6. Run Prisma migrations after deployment with:
+
+```bash
+npx prisma migrate deploy
+```
+
+7. Configure Square webhooks to point to `https://your-app.vercel.app/api/webhook`.
+8. Configure Resend with a verified sender domain before sending real customer email.
+
+Deployment order that keeps risk low:
+
+1. Deploy to Vercel preview first.
+2. Verify booking form, checkout, webhook, and emails.
+3. Run the integration tests against the preview URL or a staging alias.
+4. Promote the same setup to production only after the booking flow is stable.
+
+Notes:
+
+- Vercel handles HTTPS automatically, which Square requires for webhook verification.
+- Neon is a good fit for this project because Prisma works cleanly with it and you can keep the database separate from the app runtime.
+- This is the best path for staging now; AWS Free Tier can come later if you want the portfolio value of an AWS deployment.
+
 ## Square Setup
 
 1. Go to the Square Developer Dashboard and create an app.
@@ -53,6 +84,7 @@ Copy `.env.example` to `.env.local` for local development and fill in:
 
 - The booking flow charges full payment through Square and sends confirmation after webhook verification.
 - If you change a service slug or booking option label, keep `src/components/Services.tsx`, `src/app/services/page.tsx`, and `src/lib/services.ts` in sync.
+- For staging on Vercel, use `NEXT_PUBLIC_URL` with the Vercel domain and keep `DATABASE_URL`/`DIRECT_URL` pointed at Neon.
 
 ## Booking and Email Flow
 
