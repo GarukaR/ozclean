@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createBookingAndPaymentLink } from "@/server/actions/booking";
 import { prisma } from "@/lib/prisma";
+import { isBookingTimeSlot, getScheduledAtForSlot } from "@/lib/booking-slots";
+import { utcToZonedTime } from 'date-fns-tz';
+import { format } from 'date-fns';
 
 type ServiceCountConfig = {
   unit: string;
@@ -65,6 +68,24 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(date))) {
+      return NextResponse.json({ error: "Please choose a valid booking date." }, { status: 400 });
+    }
+
+    if (!isBookingTimeSlot(String(time))) {
+      return NextResponse.json(
+        { error: "Please choose one of the available booking time slots." },
+        { status: 400 }
+      );
+    }
+
+    // Disallow same-day bookings: compute current date in Australia/Sydney timezone
+    const nowSydney = utcToZonedTime(new Date(), 'Australia/Sydney');
+    const todaySydney = format(nowSydney, 'yyyy-MM-dd');
+    if (String(date) <= todaySydney) {
+      return NextResponse.json({ error: 'Bookings must be made at least one day in advance.' }, { status: 400 });
+    }
+
     const serviceCode = String(service);
     const serviceRecord = await prisma.service.findUnique({
       where: { code: serviceCode },
@@ -79,6 +100,22 @@ export async function POST(req: NextRequest) {
 
     if (!serviceRecord || !serviceRecord.isActive) {
       return NextResponse.json({ error: "Selected service is unavailable." }, { status: 400 });
+    }
+
+    const scheduledAt = getScheduledAtForSlot(String(date), String(time));
+    const existingBooking = await prisma.booking.findFirst({
+      where: {
+        scheduledAt,
+        status: { not: "CANCELLED" },
+      },
+      select: { id: true },
+    });
+
+    if (existingBooking) {
+      return NextResponse.json(
+        { error: "Selected time slot is no longer available. Please choose another time." },
+        { status: 409 }
+      );
     }
 
     const countConfig = getServiceCountConfig(serviceRecord);

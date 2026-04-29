@@ -61,13 +61,14 @@ Canonical rule: booking emails are rendered and sent only from `src/lib/resend.t
 ### Request Lifecycle
 
 1. Customer submits booking form in `src/app/booking/BookingForm.tsx`.
-2. Form calls `POST /api/create-checkout` in `src/app/api/create-checkout/route.ts`.
-3. Server action `createBookingAndPaymentLink` in `src/server/actions/booking.ts` validates price, creates DB booking, and requests Square payment link.
-4. Square payment link is created in `src/lib/square.ts` with booking metadata.
-5. Square redirects customer to success page after payment.
-6. Square webhook posts to `src/app/api/webhook/route.ts`.
-7. Webhook verifies signature, confirms booking payment state, builds email payload, and calls `sendBookingEmails`.
-8. `src/lib/resend.ts` renders `src/emails/BookingConfirmation.tsx` and `src/emails/BookingNotification.tsx`, then sends both via Resend.
+2. Form calls `GET /api/bookings/availability` when a date is selected so booked slots can be hidden immediately.
+3. Form calls `POST /api/create-checkout` in `src/app/api/create-checkout/route.ts`.
+4. Server action `createBookingAndPaymentLink` in `src/server/actions/booking.ts` validates price, checks slot availability again, creates DB booking, and requests Square payment link.
+5. Square payment link is created in `src/lib/square.ts` with booking metadata.
+6. Square redirects customer to success page after payment.
+7. Square webhook posts to `src/app/api/webhook/route.ts`.
+8. Webhook verifies signature, confirms booking payment state, builds email payload, and calls `sendBookingEmails`.
+9. `src/lib/resend.ts` renders `src/emails/BookingConfirmation.tsx` and `src/emails/BookingNotification.tsx`, then sends both via Resend.
 
 ### Mermaid Diagram
 

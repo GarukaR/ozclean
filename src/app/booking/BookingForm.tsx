@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
@@ -24,6 +24,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { BOOKING_TIME_SLOTS } from "@/lib/booking-slots";
 
 type ApiServiceOption = {
   id: string;
@@ -62,12 +63,6 @@ const bookingSchema = z.object({
 type BookingFormData = z.infer<typeof bookingSchema>;
 
 const PLANS = new Set(["Essential Plan", "Standard Plan", "Premium Plan"]);
-
-const TIME_SLOTS = [
-  { label: "9:00 AM – 11:30 AM", value: "09:00" },
-  { label: "12:00 PM – 2:30 PM", value: "12:00" },
-  { label: "3:00 PM – 5:30 PM", value: "15:00" },
-];
 
 function getCountConfigFromService(serviceValue: string): {
   label: string;
@@ -153,11 +148,15 @@ export default function BookingForm({
   const [selectedService, setSelectedService] = useState(preselectedService ?? "");
   const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
   const [serviceCount, setServiceCount] = useState("1");
+  const [selectedTime, setSelectedTime] = useState("");
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const [services, setServices] = useState<ApiServiceOption[]>([]);
   const [addons, setAddons] = useState<ApiAddonOption[]>([]);
   const [catalogError, setCatalogError] = useState<string | null>(null);
   const [isCatalogLoading, setIsCatalogLoading] = useState(true);
+  const [slotAvailability, setSlotAvailability] = useState<Record<string, boolean> | null>(null);
+  const [isAvailabilityLoading, setIsAvailabilityLoading] = useState(false);
+  const [availabilityError, setAvailabilityError] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -246,6 +245,7 @@ export default function BookingForm({
   const grandTotal = baseServiceTotal !== null ? baseServiceTotal + addOnTotal : null;
 
   const {
+    control,
     register,
     handleSubmit,
     setValue,
@@ -254,6 +254,70 @@ export default function BookingForm({
     resolver: zodResolver(bookingSchema),
     defaultValues: { service: preselectedService ?? "" },
   });
+
+  const selectedDate = useWatch({ control, name: "date" });
+
+  useEffect(() => {
+    setSelectedTime("");
+    setValue("time", "", { shouldValidate: false });
+  }, [selectedDate, setValue]);
+
+  useEffect(() => {
+    if (!selectedDate) {
+      setSlotAvailability(null);
+      setAvailabilityError(null);
+      setIsAvailabilityLoading(false);
+      return;
+    }
+
+    let mounted = true;
+
+    async function loadAvailability() {
+      setAvailabilityError(null);
+      setIsAvailabilityLoading(true);
+
+      try {
+        const response = await fetch(`/api/bookings/availability?date=${encodeURIComponent(selectedDate)}`, {
+          cache: "no-store",
+        });
+
+        const json = await response.json() as {
+          availability?: Array<{ label: string; value: string; available: boolean }>;
+          error?: string;
+          fullyBooked?: boolean;
+        };
+
+        if (!response.ok) {
+          throw new Error(json.error ?? "Unable to load slot availability");
+        }
+
+        if (!mounted) return;
+
+        const nextAvailability = Object.fromEntries(
+          (json.availability ?? []).map((slot) => [slot.value, slot.available])
+        ) as Record<string, boolean>;
+
+        setSlotAvailability(nextAvailability);
+
+        if (json.fullyBooked) {
+          setAvailabilityError("This date is fully booked. Please choose another date.");
+        }
+      } catch (error) {
+        if (!mounted) return;
+        console.error("[BookingForm] Failed to load slot availability:", error);
+        setSlotAvailability(null);
+        setAvailabilityError("Availability could not be loaded right now. Please try again.");
+      } finally {
+        if (mounted) setIsAvailabilityLoading(false);
+      }
+    }
+
+    void loadAvailability();
+
+    return () => {
+      mounted = false;
+    };
+  }, [selectedDate, setValue]);
 
   const onSubmit = async (data: BookingFormData) => {
     setCheckoutError(null);
@@ -506,22 +570,66 @@ export default function BookingForm({
             <Input
               {...register("date")}
               type="date"
-              min={new Date().toISOString().split("T")[0]}
+              // Disallow same-day bookings: only allow dates from tomorrow onwards
+              min={(() => {
+                const d = new Date();
+                d.setDate(d.getDate() + 1);
+                return d.toISOString().split("T")[0];
+              })()}
               className="border-brand-border focus:border-brand focus:ring-brand"
             />
+            <p className="text-xs text-brand-muted mt-1">Same-day bookings are not accepted. Please select at least one day in advance.</p>
           </FieldWrapper>
           
           <FieldWrapper label="Preferred Time" icon={Clock} error={errors.time?.message}>
-            <Select onValueChange={(v) => setValue("time", v, { shouldValidate: true })}>
+            <Select
+              disabled={
+                !selectedDate ||
+                isAvailabilityLoading ||
+                Boolean(selectedDate && slotAvailability && Object.values(slotAvailability).every((available) => !available))
+              }
+              value={selectedTime}
+              onValueChange={(v) => {
+                setSelectedTime(v);
+                setValue("time", v, { shouldValidate: true });
+              }}
+            >
               <SelectTrigger className="border-brand-border focus:border-brand focus:ring-brand">
-                <SelectValue placeholder="Select a time slot" />
+                <SelectValue
+                  placeholder={
+                    !selectedDate
+                      ? "Select a date first"
+                      : isAvailabilityLoading
+                        ? "Checking availability..."
+                        : availabilityError && !slotAvailability
+                          ? "Availability unavailable"
+                          : "Select a time slot"
+                  }
+                />
               </SelectTrigger>
               <SelectContent>
-                  {TIME_SLOTS.map((slot) => (
-                    <SelectItem key={slot.value} value={slot.value}>{slot.label}</SelectItem>
-                ))}
+                {BOOKING_TIME_SLOTS.map((slot) => {
+                  const isAvailable = selectedDate ? slotAvailability?.[slot.value] ?? false : false;
+
+                  return (
+                    <SelectItem key={slot.value} value={slot.value} disabled={!isAvailable}>
+                      {slot.label}{!isAvailable ? " (Booked)" : ""}
+                    </SelectItem>
+                  );
+                })}
               </SelectContent>
             </Select>
+            {selectedDate && !isAvailabilityLoading && slotAvailability && Object.values(slotAvailability).every((available) => !available) && (
+              <p className="text-xs text-red-600 mt-1">No time slots are available on this date.</p>
+            )}
+            {availabilityError && (
+              <p className="text-xs text-red-600 mt-1">{availabilityError}</p>
+            )}
+            {selectedDate && !availabilityError && !isAvailabilityLoading && (
+              <p className="text-xs text-brand-muted mt-1">
+                Only unbooked time slots can be selected.
+              </p>
+            )}
           </FieldWrapper>
         
         </div>

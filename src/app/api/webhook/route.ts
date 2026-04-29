@@ -46,8 +46,9 @@ function verifySquareSignature(
   );
   hmac.update(url + body);
   const expected = hmac.digest("base64");
-  const received = Buffer.from(signature);
-  const expectedBuffer = Buffer.from(expected);
+  // Square sends the signature as base64; decode accordingly before timing-safe compare
+  const received = Buffer.from(signature, 'base64');
+  const expectedBuffer = Buffer.from(expected, 'base64');
 
   if (received.length !== expectedBuffer.length) {
     return false;
