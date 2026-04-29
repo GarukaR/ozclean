@@ -27,7 +27,7 @@ const FEATURES = [
       "We use only non-toxic, biodegradable cleaning products that are safe for your family, pets, and the planet. Clean home, clean conscience.",
     stat: "100%",
     statLabel: "Non-toxic products",
-    accent: "bg-emerald-50 text-emerald-600",
+    accent: "bg-brand-accent-bg text-brand-accent",
   },
   {
     icon: ShieldCheck,
@@ -52,7 +52,7 @@ export default function WhyUs() {
           </p>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-brand-text leading-tight tracking-tight">
             Cleaning you can{" "}
-            <span className="text-brand">count on,</span>
+            <span className="text-brand-accent-dark">count on,</span>
             <br />every single visit.
           </h2>
           <p className="mt-4 text-brand-muted text-lg leading-relaxed">
@@ -68,13 +68,13 @@ export default function WhyUs() {
               key={title}
               className={`
                 group relative rounded-3xl border border-brand-border bg-brand-bg p-8
-                hover:border-brand/40 hover:shadow-xl hover:shadow-brand/8
+                hover:border-brand-accent/40 hover:shadow-xl hover:shadow-brand-accent/10
                 transition-all duration-300 overflow-hidden
                 ${index === 0 ? "sm:row-span-1" : ""}
               `}
             >
               {/* Subtle background circle on hover */}
-              <div className="absolute -right-10 -bottom-10 w-48 h-48 rounded-full bg-brand/5 group-hover:bg-brand/10 transition-colors duration-300 pointer-events-none" />
+              <div className="absolute -right-10 -bottom-10 w-48 h-48 rounded-full bg-brand-accent/5 group-hover:bg-brand-accent/10 transition-colors duration-300 pointer-events-none" />
 
               <div className="relative flex flex-col gap-5 h-full">
 
@@ -97,7 +97,7 @@ export default function WhyUs() {
 
                 {/* Bottom accent line */}
                 <div className="mt-auto pt-5 border-t border-brand-border">
-                  <div className="w-8 h-1 rounded-full bg-brand group-hover:w-16 transition-all duration-300" />
+                  <div className="w-8 h-1 rounded-full bg-brand-accent group-hover:w-16 transition-all duration-300" />
                 </div>
 
               </div>
@@ -106,12 +106,12 @@ export default function WhyUs() {
         </div>
 
         {/* ── Bottom Social Proof Strip ── */}
-        <div className="mt-12 rounded-2xl bg-brand px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="mt-12 rounded-2xl bg-gradient-to-r from-brand to-brand-accent px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex flex-wrap justify-center sm:justify-start gap-8">
             {[
-              { value: "10,000+", label: "Cleans completed" },
-              { value: "5 years", label: "In the industry" },
-              { value: "2,000+", label: "Happy customers" },
+              { value: "500+", label: "Cleans completed" },
+              { value: "7 years", label: "In the industry" },
+              { value: "500+", label: "Happy customers" },
             ].map(({ value, label }) => (
               <div key={label} className="text-center sm:text-left">
                 <p className="text-white font-bold text-2xl leading-none">{value}</p>
@@ -125,7 +125,7 @@ export default function WhyUs() {
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
               </svg>
             ))}
-            <span className="text-white font-semibold text-sm ml-1">4.9 / 5</span>
+            <span className="text-white font-semibold text-sm ml-1">4.75 / 5</span>
           </div>
         </div>
 

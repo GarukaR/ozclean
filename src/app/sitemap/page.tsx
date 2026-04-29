@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { generatePageMeta } from "@/lib/seo";
+import { ROUTES } from "@/lib/routes";
 
 export const metadata = generatePageMeta({
   title: "Sitemap",
@@ -12,16 +13,16 @@ const SITEMAP = [
   {
     category: "Main Pages",
     links: [
-      { label: "Home", href: "/", desc: "SparkClean homepage" },
-      { label: "About Us", href: "/about", desc: "Our story, team, and values" },
-      { label: "Contact", href: "/contact", desc: "Get in touch with our team" },
+      { label: "Home", href: ROUTES.HOME, desc: "SparkClean homepage" },
+      { label: "About Us", href: ROUTES.ABOUT, desc: "Our story, team, and values" },
+      { label: "Contact", href: ROUTES.CONTACT, desc: "Get in touch with our team" },
       { label: "FAQ", href: "/faq", desc: "Frequently asked questions" },
     ],
   },
   {
     category: "Services",
     links: [
-      { label: "All Services", href: "/services", desc: "Overview of everything we offer" },
+      { label: "All Services", href: ROUTES.SERVICES, desc: "Overview of everything we offer" },
       { label: "Commercial Cleaning", href: "/services/commercial", desc: "Office and business cleaning" },
       { label: "Residential Cleaning", href: "/services/residential", desc: "Regular home cleaning" },
       { label: "Deep Cleaning", href: "/services/deep-clean", desc: "Thorough top-to-bottom clean" },
@@ -32,8 +33,8 @@ const SITEMAP = [
   {
     category: "Booking",
     links: [
-      { label: "Book a Clean", href: "/book", desc: "Book your service online" },
-      { label: "Get a Free Quote", href: "/quote", desc: "Request a personalised quote" },
+      { label: "Book a Clean", href: ROUTES.BOOKING, desc: "Book your service online" },
+      { label: "Get a Free Quote", href: ROUTES.QUOTE, desc: "Request a personalised quote" },
     ],
   },
   {

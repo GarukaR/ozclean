@@ -2,6 +2,7 @@ import Link from "next/link";
 import { FileText, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { generatePageMeta } from "@/lib/seo";
+import { ROUTES } from "@/lib/routes";
 import QuoteForm from "./QuoteForm";
 
 export const metadata = generatePageMeta({
@@ -81,7 +82,7 @@ export default function QuotePage() {
                 asChild
                 className="bg-white text-brand hover:bg-brand-bg font-semibold text-sm w-full"
               >
-                <Link href="/book">Book a Clean →</Link>
+                <Link href={ROUTES.BOOKING}>Book a Clean →</Link>
               </Button>
             </div>
           </div>

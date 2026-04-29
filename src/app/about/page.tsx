@@ -3,6 +3,7 @@ import Image from "next/image";
 import { ArrowRight, Sparkles, Heart, Leaf, ShieldCheck, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { generatePageMeta } from "@/lib/seo";
+import { ROUTES } from "@/lib/routes";
 
 export const metadata = generatePageMeta({
   title: "About Us",
@@ -47,14 +48,14 @@ const TEAM = [
     role: "Head of Operations",
     bio: "James oversees scheduling, staff training, and quality control. He ensures every clean meets the SparkClean standard — no exceptions.",
     avatar: "JO",
-    avatarBg: "bg-emerald-100 text-emerald-600",
+    avatarBg: "bg-brand-accent-bg text-brand-accent-dark border border-brand-accent-border",
   },
   {
     name: "Priya Sharma",
     role: "Customer Experience Lead",
     bio: "Priya is the first point of contact for all our customers. She makes sure every booking, query, and concern is handled with care and efficiency.",
     avatar: "PS",
-    avatarBg: "bg-violet-100 text-violet-600",
+    avatarBg: "bg-brand-accent-bg text-brand-accent-dark border border-brand-accent-border",
   },
 ];
 
@@ -66,9 +67,9 @@ const SERVICE_AREAS = [
 
 const STATS = [
   { value: "2019", label: "Founded" },
-  { value: "10,000+", label: "Cleans completed" },
-  { value: "2,000+", label: "Happy customers" },
-  { value: "4.9★", label: "Average rating" },
+  { value: "500+", label: "Cleans completed" },
+  { value: "500+", label: "Happy customers" },
+  { value: "4.75★", label: "Average rating" },
 ];
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -92,17 +93,17 @@ export default function AboutPage() {
               </div>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-brand-text leading-[1.1] tracking-tight">
                 Cleaning with{" "}
-                <span className="text-brand">purpose.</span>
+                <span className="text-brand-accent-dark">purpose.</span>
               </h1>
               <p className="text-brand-muted text-lg leading-relaxed">
                 SparkClean was built on a simple belief — everyone deserves a clean, healthy space. Since 2019, we&apos;ve been delivering that promise to thousands of homes and businesses across Melbourne.
               </p>
               <div className="flex flex-wrap gap-3">
                 <Button asChild className="bg-brand hover:bg-brand-dark text-white font-semibold gap-2 shadow-lg shadow-brand/25">
-                  <Link href="/book">Book a Clean <ArrowRight className="w-4 h-4" /></Link>
+                  <Link href={ROUTES.QUOTE}>Get a Quote <ArrowRight className="w-4 h-4" /></Link>
                 </Button>
                 <Button asChild variant="outline" className="border-brand-border hover:border-brand text-brand-text font-semibold">
-                  <Link href="/contact">Get in Touch</Link>
+                  <Link href={ROUTES.CONTACT}>Get in Touch</Link>
                 </Button>
               </div>
             </div>
@@ -160,7 +161,7 @@ export default function AboutPage() {
                 </p>
               </div>
               <Button asChild className="bg-brand hover:bg-brand-dark text-white font-semibold gap-2 w-fit">
-                <Link href="/services">See Our Services <ArrowRight className="w-4 h-4" /></Link>
+                <Link href={ROUTES.SERVICES}>See Our Services <ArrowRight className="w-4 h-4" /></Link>
               </Button>
             </div>
           </div>
@@ -178,9 +179,9 @@ export default function AboutPage() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {VALUES.map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="bg-white rounded-3xl border border-brand-border p-7 flex flex-col gap-4 hover:border-brand/40 hover:shadow-md transition-all duration-200">
-                <div className="w-11 h-11 rounded-2xl bg-brand/10 flex items-center justify-center">
-                  <Icon className="w-5 h-5 text-brand" />
+              <div key={title} className="bg-white rounded-3xl border border-brand-border p-7 flex flex-col gap-4 hover:border-brand-accent/40 hover:shadow-md hover:shadow-brand-accent/10 transition-all duration-200">
+                <div className="w-11 h-11 rounded-2xl bg-brand-accent-bg border border-brand-accent-border flex items-center justify-center">
+                  <Icon className="w-5 h-5 text-brand-accent-dark" />
                 </div>
                 <h3 className="font-bold text-brand-text">{title}</h3>
                 <p className="text-sm text-brand-muted leading-relaxed">{desc}</p>
@@ -207,7 +208,7 @@ export default function AboutPage() {
                 </div>
                 <div>
                   <p className="font-bold text-brand-text text-lg">{name}</p>
-                  <p className="text-brand text-xs font-semibold uppercase tracking-wide mt-0.5">{role}</p>
+                  <p className="text-brand-accent-dark text-xs font-semibold uppercase tracking-wide mt-0.5">{role}</p>
                 </div>
                 <p className="text-sm text-brand-muted leading-relaxed">{bio}</p>
               </div>
@@ -238,7 +239,7 @@ export default function AboutPage() {
                   </span>
                 ))}
               </div>
-              <Button asChild variant="outline" className="border-brand text-brand hover:bg-brand/5 font-semibold gap-2">
+              <Button asChild variant="outline" className="border-brand-accent-border text-brand-accent-dark hover:bg-brand-accent-bg hover:border-brand-accent font-semibold gap-2">
                 <Link href="/contact">Check Your Area <ArrowRight className="w-4 h-4" /></Link>
               </Button>
             </div>
@@ -259,18 +260,18 @@ export default function AboutPage() {
       </section>
 
       {/* ── Bottom CTA ── */}
-      <section className="bg-brand py-16">
+      <section className="bg-gradient-to-r from-brand to-brand-accent py-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 text-center flex flex-col items-center gap-5">
           <h2 className="text-3xl sm:text-4xl font-bold text-white">Ready to experience the difference?</h2>
           <p className="text-white/70 text-lg max-w-xl">
             Join thousands of satisfied customers across Melbourne. Book your first clean today.
           </p>
           <div className="flex flex-wrap justify-center gap-3">
-            <Button asChild size="lg" className="bg-white text-brand hover:bg-brand-bg font-semibold gap-2 shadow-lg">
-              <Link href="/book">Book a Clean <ArrowRight className="w-4 h-4" /></Link>
+            <Button asChild size="lg" className="bg-white text-brand-accent-dark hover:bg-brand-accent-bg font-semibold gap-2 shadow-lg">
+              <Link href={ROUTES.BOOKING}>Book a Clean <ArrowRight className="w-4 h-4" /></Link>
             </Button>
             <Button asChild size="lg" variant="link" className="border-white/30 text-white hover:bg-white/10 font-semibold">
-              <Link href="/contact">Contact Us</Link>
+              <Link href={ROUTES.CONTACT}>Contact Us</Link>
             </Button>
           </div>
         </div>

@@ -4,34 +4,35 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, ShieldCheck, CalendarCheck, ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
+import { ROUTES } from "@/lib/routes";
 
 // ─── Trust badge data ─────────────────────────────────────────────────────────
-const TRUST_BADGES = [
-  {
-    icon: Star,
-    text: "4.9/5 rating",
-    sub: "from 2,000+ reviews",
-    filled: true,
-  },
-  {
-    icon: CalendarCheck,
-    text: "5+ years",
-    sub: "in business",
-    filled: false,
-  },
-  {
-    icon: ShieldCheck,
-    text: "100% guarantee",
-    sub: "or we re-clean free",
-    filled: false,
-  },
-];
+// const TRUST_BADGES = [
+//   {
+//     icon: Star,
+//     text: "4.75/5 rating",
+//     sub: "from 500+ reviews",
+//     filled: true,
+//   },
+//   {
+//     icon: CalendarCheck,
+//     text: "7+ years",
+//     sub: "in business",
+//     filled: false,
+//   },
+//   {
+//     icon: ShieldCheck,
+//     text: "100% guarantee",
+//     sub: "or we re-clean free",
+//     filled: false,
+//   },
+// ];
 
 // ─── Floating stat cards that appear over the image ───────────────────────────
 const STAT_CARDS = [
   {
-    value: "10,000+",
+    value: "500+",
     label: "Homes Cleaned",
     position: "top-6 -left-5 sm:-left-10",
     delay: "animation-delay-300",
@@ -58,6 +59,7 @@ export default function Hero() {
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full bg-brand/10 blur-3xl" />
         <div className="absolute -bottom-32 -left-32 w-[500px] h-[500px] rounded-full bg-brand-accent/10 blur-3xl" />
+        
         {/* Subtle dot grid */}
         <div
           className="absolute inset-0 opacity-[0.03]"
@@ -77,7 +79,7 @@ export default function Hero() {
             {/* Eyebrow badge */}
             <div className="flex">
               <Badge
-                className="bg-brand/10 text-brand border-brand/20 font-medium px-3 py-1 text-xs tracking-wide uppercase gap-1.5"
+                className="bg-brand-accent-bg text-brand-accent-dark border-brand-accent-border font-medium px-3 py-1 text-xs tracking-wide uppercase gap-1.5"
                 variant="outline"
               >
                 <Sparkles className="w-3 h-3" />
@@ -90,7 +92,7 @@ export default function Hero() {
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-brand-text leading-[1.1] tracking-tight">
                 A Spotless Space,{" "}
                 <span className="relative inline-block">
-                  <span className="relative z-10 text-brand">Every Time.</span>
+                  <span className="relative z-10 text-brand-accent-dark">Every Time.</span>
                   {/* Underline accent */}
                   <svg
                     className="absolute -bottom-2 left-0 w-full"
@@ -101,7 +103,7 @@ export default function Hero() {
                   >
                     <path
                       d="M2 6C40 2 100 1 198 4"
-                      stroke="#0EA5E9"
+                      stroke="#14B8A6"
                       strokeWidth="3"
                       strokeLinecap="round"
                       opacity="0.4"
@@ -124,7 +126,7 @@ export default function Hero() {
                 size="lg"
                 className="bg-brand hover:bg-brand-dark text-white font-semibold shadow-lg shadow-brand/25 hover:shadow-brand/40 transition-all duration-200 gap-2 px-6"
               >
-                <Link href="/book">
+                <Link href={ROUTES.BOOKING}>
                   Book a Clean
                   <ArrowRight className="w-4 h-4" />
                 </Link>
@@ -133,14 +135,14 @@ export default function Hero() {
                 asChild
                 size="lg"
                 variant="outline"
-                className="border-brand-border text-brand-text hover:bg-brand/5 hover:border-brand font-semibold px-6 transition-all duration-200"
+                className="border-brand-accent-border text-brand-accent-dark hover:bg-brand-accent-bg hover:border-brand-accent font-semibold px-6 transition-all duration-200"
               >
-                <Link href="/quote">Get a Free Quote</Link>
+                <Link href={ROUTES.QUOTE}>Get a Free Quote</Link>
               </Button>
             </div>
 
             {/* Trust Badges */}
-            <div className="flex flex-wrap gap-x-6 gap-y-3 pt-2">
+            {/* <div className="flex flex-wrap gap-x-6 gap-y-3 pt-2">
               {TRUST_BADGES.map(({ icon: Icon, text, sub, filled }) => (
                 <div key={text} className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center shrink-0">
@@ -154,7 +156,7 @@ export default function Hero() {
                   </div>
                 </div>
               ))}
-            </div>
+            </div> */}
           </div>
 
           {/* ── Right: Image + Floating Cards ── */}
@@ -172,21 +174,21 @@ export default function Hero() {
                   className="object-cover"
                 />
                 {/* Subtle overlay for depth */}
-                <div className="absolute inset-0 bg-gradient-to-t from-brand-text/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-brand-text/20 via-transparent to-brand-accent/10" />
               </div>
 
               {/* Decorative ring behind image */}
-              <div className="absolute -inset-4 rounded-3xl border-2 border-brand/15 -z-10" />
+              <div className="absolute -inset-4 rounded-3xl border-2 border-brand-accent/20 -z-10" />
               <div className="absolute -inset-8 rounded-3xl border border-brand/8 -z-10" />
 
               {/* Floating Stat Cards */}
               {STAT_CARDS.map(({ value, label, position }) => (
                 <div
                   key={label}
-                  className={`absolute ${position} bg-white rounded-xl shadow-lg shadow-brand-text/10 border border-brand-border px-4 py-3 min-w-[130px]`}
+                  className={`absolute ${position} bg-white rounded-xl shadow-lg shadow-brand-text/10 border border-brand-accent-border px-4 py-3 min-w-[130px]`}
                 >
                   <p className="text-brand-text font-bold text-sm leading-none">{value}</p>
-                  <p className="text-brand-muted text-xs mt-1">{label}</p>
+                  <p className="text-brand-accent-dark text-xs mt-1">{label}</p>
                 </div>
               ))}
             </div>

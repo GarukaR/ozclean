@@ -1,14 +1,15 @@
 import Link from "next/link";
-import { ArrowLeft, CheckCircle2, Phone } from "lucide-react";
+import { ArrowLeft, Phone } from "lucide-react";
 import { CalendarCheck } from "lucide-react";
 import { generatePageMeta } from "@/lib/seo";
 import BookingForm from "./BookingForm";
-import { ShieldCheck, Lock } from "lucide-react";
+import { ROUTES } from "@/lib/routes";
+import { prisma } from "@/lib/prisma";
 
 export const metadata = generatePageMeta({
   title: "Book a Clean",
   description: "Book your SparkClean service online in minutes. Choose your service, pick a date and time, and we'll confirm within 2 hours.",
-  path: "/book",
+  path: ROUTES.BOOKING,
 });
 
 const TIER_MAP: Record<string, { label: string; service: string }> = {
@@ -20,17 +21,32 @@ const TIER_MAP: Record<string, { label: string; service: string }> = {
 export default async function BookPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tier?: string }>;
+  searchParams: Promise<{ tier?: string; service?: string }>;
 }) {
-  const { tier: tierParam } = await searchParams;
+  const { tier: tierParam, service: serviceSlug } = await searchParams;
   const tier = TIER_MAP[tierParam ?? ""] ?? null;
+
+  let preselectedServiceFromSlug: string | undefined;
+  if (serviceSlug === "wheely-bin") {
+    const wheelyBinService = await prisma.service.findFirst({
+      where: {
+        isActive: true,
+        code: { contains: "/bin" },
+      },
+      select: { code: true },
+      orderBy: { basePriceCents: "asc" },
+    });
+    preselectedServiceFromSlug = wheelyBinService?.code;
+  }
+
+  const preselected = tier?.service ?? preselectedServiceFromSlug ?? undefined;
   return (
     <main className="min-h-screen bg-brand-bg pt-24 pb-16">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
 
         {/* ── Back link ── */}
         <Link
-          href="/"
+          href={ROUTES.HOME}
           className="inline-flex items-center gap-1.5 text-sm text-brand-muted hover:text-brand transition-colors mb-8"
         >
           <ArrowLeft className="w-3.5 h-3.5" /> Back to home
@@ -58,61 +74,22 @@ export default async function BookPage({
 
           {/* ── Form ── */}
           <div className="lg:col-span-2 bg-white rounded-3xl border border-brand-border shadow-sm overflow-hidden">
-            <BookingForm tierLabel={tier?.label} preselectedService={tier?.service} />
+            <BookingForm tierLabel={tier?.label} preselectedService={preselected} />
           </div>
 
           {/* ── Sidebar ── */}
           <div className="flex flex-col gap-5">
-
-
-            {/* Booking Fee card */}
-            <div className="bg-white rounded-3xl border-2 border-brand/30 p-6 flex flex-col gap-4 shadow-sm relative overflow-hidden">
-              <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full bg-brand/6 pointer-events-none" />
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center shrink-0">
-                  <ShieldCheck className="w-4 h-4 text-brand" />
-                </div>
-                <p className="font-bold text-brand-text text-sm">Secure Your Booking</p>
-              </div>
-              <div className="bg-brand-bg rounded-2xl px-4 py-3 flex items-center justify-between">
-                <div>
-                  <p className="text-xs text-brand-muted">Due today</p>
-                  <p className="text-xl font-black text-brand-text">10% deposit</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-xs text-brand-muted">Balance due</p>
-                  <p className="text-sm font-bold text-brand-text">24hrs before</p>
-                </div>
-              </div>
-              <ul className="flex flex-col gap-2.5">
-                {[
-                  { icon: CheckCircle2, text: "Deposit credited to your total — not an extra charge" },
-                  { icon: CheckCircle2, text: "Balance payment link sent 24hrs before your clean" },
-                  { icon: CheckCircle2, text: "100% refunded if cancelled 48hrs before" },
-                  { icon: CheckCircle2, text: "Reserves your time slot exclusively" },
-                  { icon: Lock, text: "Secure payment via encrypted checkout" },
-                ].map(({ icon: Icon, text }) => (
-                  <li key={text} className="flex items-start gap-2">
-                    <Icon className="w-3.5 h-3.5 text-brand shrink-0 mt-0.5" />
-                    <span className="text-xs text-brand-muted leading-relaxed">{text}</span>
-                  </li>
-                ))}
-              </ul>
-              <div className="flex items-center gap-1.5 border-t border-brand-border pt-3">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                <p className="text-xs text-emerald-600 font-medium">Protected by SparkClean&apos;s booking guarantee</p>
-              </div>
-            </div>
 
             {/* What Happens Next card */}
             <div className="bg-white rounded-3xl border border-brand-border p-6 flex flex-col gap-4 shadow-sm">
               <p className="font-bold text-brand-text text-sm">What happens next?</p>
               <ol className="flex flex-col gap-3">
                 {[
-                  { step: "1", title: "We confirm within 2hrs", desc: "You'll receive an email confirmation with your booking details." },
-                  { step: "2", title: "Deposit collected today", desc: "A secure payment link is sent to collect your 10% deposit." },
-                  { step: "3", title: "Balance due 24hrs before", desc: "We send a payment link for the remaining 90% the day before your clean." },
+                  { step: "1", title: "Full payment collected now", desc: "A secure payment link is sent and the full amount is paid when you book." },
+                  { step: "2", title: "Confirmation Email", desc: "You'll receive an email confirmation with your booking details." },
+                  { step: "3", title: "We'll contact you via email or call", desc: "We want to ensure everything is set for your clean." },
                   { step: "4", title: "Cleaner arrives on time", desc: "Your vetted cleaner shows up at the agreed time, fully equipped." },
+                  { step: "5", title: "Enjoy your sparkling space!", desc: "Sit back and relax while we make your space shine." },
                 ].map(({ step, title, desc }) => (
                   <li key={step} className="flex items-start gap-3">
                     <div className="w-5 h-5 rounded-full bg-brand/10 text-brand text-[10px] font-black flex items-center justify-center shrink-0 mt-0.5">
@@ -140,7 +117,7 @@ export default async function BookPage({
             {/* Quote link */}
             <p className="text-center text-xs text-brand-muted">
               Not ready to book?{" "}
-              <Link href="/quote" className="text-brand font-semibold hover:underline underline-offset-2">
+              <Link href={ROUTES.QUOTE} className="text-brand font-semibold hover:underline underline-offset-2">
                 Get a free quote instead →
               </Link>
             </p>

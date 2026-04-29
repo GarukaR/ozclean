@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { Phone, FileText, CalendarCheck, Sparkles, ArrowRight } from "lucide-react";
+import { Phone , CalendarCheck, Sparkles, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ROUTES } from "@/lib/routes";
 
 // ─── Steps config ─────────────────────────────────────────────────────────────
 const STEPS = [
@@ -10,10 +11,10 @@ const STEPS = [
     title: "Call Us or Get a Quote",
     description:
       "Not sure what you need? Give us a call or request a free quote. We'll recommend the right service and answer any questions.",
-    cta: { label: "Get a Free Quote", href: "/quote" },
+    cta: { label: "Get a Free Quote", href: ROUTES.QUOTE },
     alt: {
       label: "Or browse services first",
-      href: "/services",
+      href: ROUTES.SERVICES,
     },
   },
   {
@@ -22,7 +23,7 @@ const STEPS = [
     title: "Book Your Clean",
     description:
       "Pick your service, choose a date and time that suits you, and confirm your booking online in minutes. No phone call required.",
-    cta: { label: "Book Now", href: "/book" },
+    cta: { label: "Book Now", href: ROUTES.BOOKING },
     alt: null,
   },
   {
@@ -30,7 +31,7 @@ const STEPS = [
     icon: Sparkles,
     title: "We Clean, You Relax",
     description:
-      "Our vetted professionals arrive on time and get to work. You'll come back to a spotless, fresh space — guaranteed.",
+      "Our vetted professionals arrive on time and get to work. You'll come back to a spotless & fresh space, guaranteed.",
     cta: null,
     alt: null,
   },
@@ -52,7 +53,7 @@ export default function HowItWorks() {
             <span className="text-brand">3 simple steps.</span>
           </h2>
           <p className="mt-4 text-brand-muted text-lg leading-relaxed">
-            Whether you know exactly what you need or want to chat first —
+            Whether you know exactly what you need or want to chat first, 
             getting started takes just a few minutes.
           </p>
         </div>
@@ -127,7 +128,7 @@ export default function HowItWorks() {
                         </svg>
                       </div>
                       <p className="text-xs font-medium text-brand">
-                        100% satisfaction guarantee — or we re-clean for free
+                        100% satisfaction guarantee or we re-clean for free
                       </p>
                     </div>
                   )}
@@ -141,7 +142,7 @@ export default function HowItWorks() {
         {/* ── Bottom note ── */}
         <p className="text-center text-brand-muted text-sm mt-12">
           Questions before booking?{" "}
-          <Link href="/contact" className="text-brand font-semibold hover:underline underline-offset-2">
+          <Link href={ROUTES.CONTACT} className="text-brand font-semibold hover:underline underline-offset-2">
             Talk to our team →
           </Link>
         </p>

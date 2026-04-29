@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Service {
+  id                   String   @id @default(cuid())
+  code                 String   @unique
+  name                 String
+  description          String?
+  basePriceCents       Int
+  pricingUnit          String   @default("service")
+  minQuantity          Float    @default(1)
+  allowDecimalQuantity Boolean  @default(false)
+  isActive             Boolean  @default(true)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@map("services")
+}
+
+model Addon {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  name        String
+  description String?
+  priceCents  Int
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("addons")
+}
+
+model Booking {
+  id            String        @id @default(cuid())
+  bookingRef    String        @unique
+  status        BookingStatus @default(PENDING_PAYMENT)
+  paymentStatus PaymentStatus @default(UNPAID)
+
+  customerName  String
+  customerEmail String
+  customerPhone String
+
+  service     String
+  scheduledAt DateTime
+
+  addressLine1 String
+  addressLine2 String?
+  suburb       String
+  state        String
+  postcode     String
+
+  instructions          String?
+  adminNotes            String?
+  addons                Json?
+  serviceCount          Int     @default(1)
+  serviceCountUnit      String  @default("service")
+  serviceUnitPriceCents Int     @default(0)
+  serviceSubtotalCents  Int     @default(0)
+  addonsSubtotalCents   Int     @default(0)
+
+  totalCents      Int
+  totalPaidCents  Int     @default(0)
+  currency        String  @default("AUD")
+  squarePaymentId String?
+
+  confirmedAt DateTime?
+  cancelledAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([customerEmail])
+  @@index([status])
+  @@index([paymentStatus])
+  @@index([scheduledAt])
+  @@index([createdAt])
+  @@map("bookings")
+}
+
+enum BookingStatus {
+  PENDING_PAYMENT
+  CONFIRMED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  UNPAID
+  DEPOSIT_PAID
+  PAID
+  REFUNDED
+  FAILED
+}

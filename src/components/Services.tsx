@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { Building2, Home, Sparkles, ArrowLeftRight, Wind, ArrowRight } from "lucide-react";
+import { Building2, Home, Sparkles, ArrowLeftRight, Wind, Trash2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { ROUTES, bookingWithService } from "@/lib/routes";
 
 // ─── Config: Add, remove or edit services here ────────────────────────────────
 type Service = {
@@ -11,8 +12,9 @@ type Service = {
     features: string[];
     href: string;
     featured: boolean;
-    price: string;
-    priceLabel: string;
+    bookable: boolean;
+    price: string | null;
+    priceLabel: string | null;
 };
 
 const SERVICES: Service[] = [
@@ -24,8 +26,9 @@ const SERVICES: Service[] = [
     features: ["Office & retail spaces", "After-hours scheduling", "Weekly or daily plans"],
     href: "/services/commercial",
     featured: true, // ← only one card should have featured: true
+    bookable: false,
     price: "From $150",
-    priceLabel: "per visit",
+    priceLabel: "per session",
   },
   {
     icon: Home,
@@ -35,17 +38,19 @@ const SERVICES: Service[] = [
     features: ["All rooms covered", "Fortnightly or weekly", "Same cleaner every time"],
     href: "/services/residential",
     featured: false,
-    price: "From $80",
-    priceLabel: "per visit",
+    bookable: true,
+    price: "$50–60/hr or $150–280",
+    priceLabel: "hourly or flat-rate",
   },
   {
     icon: Sparkles,
-    title: "Deep Cleaning",
+    title: "Spring Deep Cleaning",
     description:
       "A thorough top-to-bottom clean for homes or offices that need extra attention. Perfect for spring cleans or before a big event.",
     features: ["Inside appliances", "Grout & tile scrubbing", "Ceiling to floor"],
     href: "/services/deep-clean",
     featured: false,
+    bookable: false,
     price: "From $200",
     priceLabel: "per session",
   },
@@ -57,6 +62,7 @@ const SERVICES: Service[] = [
     features: ["Bond clean guarantee", "Landlord approved", "Flexible timing"],
     href: "/services/move",
     featured: false,
+    bookable: false,
     price: "From $180",
     priceLabel: "per property",
   },
@@ -68,8 +74,21 @@ const SERVICES: Service[] = [
     features: ["Inside & outside", "Streak-free finish", "Multi-storey available"],
     href: "/services/windows",
     featured: false,
-    price: "From $60",
-    priceLabel: "per visit",
+    bookable: false,
+    price: "From $250",
+    priceLabel: "per storey",
+  },
+  {
+    icon: Trash2,
+    title: "Wheely Bin Cleaning",
+    description:
+      "Keep your bins clean, hygienic, and odour-free with high-pressure washing and eco-friendly disinfectants.",
+    features: ["High-pressure wash", "Odour removal", "Eco-friendly sanitising"],
+    href: "/services/wheely-bin",
+    featured: false,
+    bookable: true,
+    price: "From $35",
+    priceLabel: "per bin",
   },
 ];
 // ─────────────────────────────────────────────────────────────────────────────
@@ -77,7 +96,7 @@ const SERVICES: Service[] = [
 function FeaturedCard({ service }: { service: Service }) {
   const Icon = service.icon;
   return (
-    <div className="relative rounded-3xl bg-brand p-8 flex flex-col gap-6 overflow-hidden shadow-2xl shadow-brand/30 h-full">
+    <div className="relative rounded-3xl bg-gradient-to-br from-brand to-brand-accent p-8 flex flex-col gap-6 overflow-hidden shadow-2xl shadow-brand-accent/25 h-full">
       {/* Background decoration */}
       <div className="absolute -top-16 -right-16 w-56 h-56 rounded-full bg-white/10 pointer-events-none" />
       <div className="absolute -bottom-10 -left-10 w-40 h-40 rounded-full bg-white/5 pointer-events-none" />
@@ -121,10 +140,10 @@ function FeaturedCard({ service }: { service: Service }) {
           </div>
           <Button
             asChild
-            className="bg-white text-brand hover:bg-brand-bg font-semibold shadow-lg gap-1.5 shrink-0"
+            className="bg-white text-brand-accent-dark hover:bg-brand-accent-bg font-semibold shadow-lg gap-1.5 shrink-0"
           >
-            <Link href={service.href}>
-              Book Now <ArrowRight className="w-3.5 h-3.5" />
+            <Link href={ROUTES.QUOTE}>
+              Get Quote <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </Button>
         </div>
@@ -136,15 +155,15 @@ function FeaturedCard({ service }: { service: Service }) {
 function ServiceCard({ service }: { service: Service }) {
   const Icon = service.icon;
   return (
-    <div className="group relative rounded-3xl border border-brand-border bg-brand-bg p-7 flex flex-col gap-5 hover:border-brand/40 hover:shadow-lg hover:shadow-brand/8 transition-all duration-300 overflow-hidden h-full">
+    <div className="group relative rounded-3xl border border-brand-border bg-brand-bg p-7 flex flex-col gap-5 hover:border-brand-accent/40 hover:shadow-lg hover:shadow-brand-accent/10 transition-all duration-300 overflow-hidden h-full">
       {/* Hover circle */}
-      <div className="absolute -right-8 -bottom-8 w-32 h-32 rounded-full bg-brand/5 group-hover:bg-brand/10 transition-colors duration-300 pointer-events-none" />
+      <div className="absolute -right-8 -bottom-8 w-32 h-32 rounded-full bg-brand-accent/5 group-hover:bg-brand-accent/10 transition-colors duration-300 pointer-events-none" />
 
       <div className="relative flex flex-col gap-4 h-full">
         {/* Icon + Price */}
         <div className="flex items-start justify-between">
-          <div className="w-11 h-11 rounded-2xl bg-brand/10 flex items-center justify-center">
-            <Icon className="w-5 h-5 text-brand" />
+          <div className="w-11 h-11 rounded-2xl bg-brand-accent-bg flex items-center justify-center">
+            <Icon className="w-5 h-5 text-brand-accent-dark" />
           </div>
           <div className="text-right">
             <p className="text-brand-text font-bold text-base leading-none">{service.price}</p>
@@ -162,17 +181,31 @@ function ServiceCard({ service }: { service: Service }) {
         <ul className="flex flex-col gap-2">
           {service.features.map((f) => (
             <li key={f} className="flex items-center gap-2 text-xs text-brand-muted">
-              <div className="w-1 h-1 rounded-full bg-brand shrink-0" />
+              <div className="w-1 h-1 rounded-full bg-brand-accent shrink-0" />
               {f}
             </li>
           ))}
         </ul>
 
         {/* CTA link */}
-        <div className="mt-auto pt-4 border-t border-brand-border">
+        <div className="mt-auto pt-4 border-t border-brand-border flex items-center gap-3 flex-wrap">
+          {service.bookable && (
+            <Button asChild size="sm" className="bg-brand-accent hover:bg-brand-accent-dark text-white font-semibold gap-1 h-8 px-3 text-xs">
+              <Link href={bookingWithService(service.href.split('/').pop() ?? "")}>
+                Book Now
+              </Link>
+            </Button>
+          )}
+          {!service.bookable && (
+            <Button asChild size="sm" variant="outline" className="border-brand-accent-border text-brand-accent-dark hover:border-brand-accent hover:bg-brand-accent-bg font-semibold gap-1 h-8 px-3 text-xs">
+              <Link href={ROUTES.QUOTE}>
+                Get a Quote
+              </Link>
+            </Button>
+          )}
           <Link
             href={service.href}
-            className="flex items-center gap-1.5 text-sm font-semibold text-brand hover:gap-2.5 transition-all duration-200"
+            className="flex items-center gap-1.5 text-sm font-semibold text-brand-accent-dark hover:gap-2.5 transition-all duration-200"
           >
             Learn more <ArrowRight className="w-3.5 h-3.5" />
           </Link>
@@ -198,31 +231,37 @@ export default function Services() {
             </p>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-brand-text leading-tight tracking-tight">
               Services built around{" "}
-              <span className="text-brand">your needs.</span>
+              <span className="text-brand-accent-dark">your needs.</span>
             </h2>
           </div>
           <Button
             asChild
             variant="outline"
-            className="border-brand-border text-brand-text hover:border-brand hover:text-brand shrink-0 self-start sm:self-auto"
+            className="border-brand-accent-border text-brand-text hover:border-brand-accent hover:text-brand-accent-dark shrink-0 self-start sm:self-auto"
           >
-            <Link href="/services">View all services</Link>
+            <Link href={ROUTES.SERVICES}>View all services</Link>
           </Button>
         </div>
 
         {/* ── Cards Grid ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 sm:grid-row-3 lg:grid-cols-3 lg:grid-row-2 gap-6 items-start">
-          {/* Featured card — full height left column on large screens */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:items-stretch">
+          {/* Featured card */}
           {featured && (
-            <div className="sm:col-span-2 lg:col-span-1 lg:row-span-2 lg:self-stretch">
+            <div className="lg:col-span-1 lg:self-stretch">
               <FeaturedCard service={featured} />
             </div>
           )}
 
           {/* Regular cards */}
-          {regular.map((service) => (
-            <ServiceCard key={service.title} service={service} />
-          ))}
+          <div
+            className={`grid grid-cols-1 sm:grid-cols-2 gap-6 auto-rows-fr ${
+              featured ? "lg:col-span-2" : "lg:col-span-3"
+            }`}
+          >
+            {regular.map((service) => (
+              <ServiceCard key={service.title} service={service} />
+            ))}
+          </div>
         </div>
 
         {/* ── Bottom CTA ── */}
@@ -232,7 +271,7 @@ export default function Services() {
           </p>
           <Button
             asChild
-            className="bg-brand hover:bg-brand-dark text-white font-semibold shadow-md shadow-brand/20 gap-2"
+            className="bg-brand-accent hover:bg-brand-accent-dark text-white font-semibold shadow-md shadow-brand-accent/20 gap-2"
           >
             <Link href="/quote">
               Get a Free Quote <ArrowRight className="w-4 h-4" />

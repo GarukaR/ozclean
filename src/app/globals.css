@@ -50,6 +50,9 @@
   --color-brand: var(--brand);
   --color-brand-dark: var(--brand-dark);
   --color-brand-accent: var(--brand-accent);
+  --color-brand-accent-dark: var(--brand-accent-dark);
+  --color-brand-accent-bg: var(--brand-accent-bg);
+  --color-brand-accent-border: var(--brand-accent-border);
   --color-brand-bg: var(--brand-bg);
   --color-brand-surface: var(--brand-surface);
   --color-brand-text: var(--brand-text);
@@ -96,7 +99,10 @@
   /* ── Your brand palette (prefixed to avoid shadcn conflicts) ── */
   --brand: #0EA5E9;
   --brand-dark: #0369A1;
-  --brand-accent: #06B6D4;
+  --brand-accent: #14B8A6;
+  --brand-accent-dark: #0F766E;
+  --brand-accent-bg: #F0FDFA;
+  --brand-accent-border: #99F6E4;
   --brand-bg: #F0F9FF;
   --brand-surface: #FFFFFF;
   --brand-text: #0C1A2E;
