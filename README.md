@@ -45,6 +45,11 @@ Notes:
 - Vercel handles HTTPS automatically, which Square requires for webhook verification.
 - Neon is a good fit for this project because Prisma works cleanly with it and you can keep the database separate from the app runtime.
 - This is the best path for staging now; AWS Free Tier can come later if you want the portfolio value of an AWS deployment.
+- If any live secrets have been exposed, rotate them before publishing staging or production.
+
+## Security
+
+See [SECURITY.md](SECURITY.md) for the secret rotation order and verification checklist.
 
 ## Square Setup
 
