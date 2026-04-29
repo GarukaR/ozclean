@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createBookingAndPaymentLink } from "@/server/actions/booking";
 import { prisma } from "@/lib/prisma";
 import { isBookingTimeSlot, getScheduledAtForSlot } from "@/lib/booking-slots";
-import { utcToZonedTime } from 'date-fns-tz';
+import { toZonedTime } from 'date-fns-tz';
 import { format } from 'date-fns';
 
 type ServiceCountConfig = {
@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Disallow same-day bookings: compute current date in Australia/Sydney timezone
-    const nowSydney = utcToZonedTime(new Date(), 'Australia/Sydney');
+    const nowSydney = toZonedTime(new Date(), 'Australia/Sydney');
     const todaySydney = format(nowSydney, 'yyyy-MM-dd');
     if (String(date) <= todaySydney) {
       return NextResponse.json({ error: 'Bookings must be made at least one day in advance.' }, { status: 400 });
