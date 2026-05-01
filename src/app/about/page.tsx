@@ -88,7 +88,7 @@ export default function AboutPage() {
                   <Sparkles className="w-4 h-4 text-white" />
                 </div>
                 <p className="text-brand text-sm font-semibold uppercase tracking-widest">
-                  About SparkClean
+                  About Us
                 </p>
               </div>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-brand-text leading-[1.1] tracking-tight">
@@ -96,7 +96,7 @@ export default function AboutPage() {
                 <span className="text-brand-accent-dark">purpose.</span>
               </h1>
               <p className="text-brand-muted text-lg leading-relaxed">
-                SparkClean was built on a simple belief — everyone deserves a clean, healthy space. Since 2019, we&apos;ve been delivering that promise to thousands of homes and businesses across Melbourne.
+                OzClean was built on a simple belief that everyone deserves a clean, healthy space. Since 2019, we&apos;ve been delivering that promise to thousands of homes and businesses across Melbourne.
               </p>
               <div className="flex flex-wrap gap-3">
                 <Button asChild className="bg-brand hover:bg-brand-dark text-white font-semibold gap-2 shadow-lg shadow-brand/25">
@@ -139,7 +139,7 @@ export default function AboutPage() {
             <div className="relative rounded-3xl overflow-hidden aspect-square shadow-xl">
               <Image
                 src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=800&q=80"
-                alt="SparkClean founder"
+                alt="OzClean founder"
                 fill
                 className="object-cover"
               />
@@ -151,7 +151,7 @@ export default function AboutPage() {
               </h2>
               <div className="flex flex-col gap-4 text-brand-muted text-sm leading-relaxed">
                 <p>
-                  SparkClean started when our founder Sarah Mitchell couldn&apos;t find a cleaning service she could actually trust. After years of unreliable bookings, inconsistent results, and harsh chemicals, she decided to build something better.
+                  OzClean started when our founder Sarah Mitchell couldn&apos;t find a cleaning service she could actually trust. After years of unreliable bookings, inconsistent results, and harsh chemicals, she decided to build something better.
                 </p>
                 <p>
                   What began as a one-woman operation in Fitzroy has grown into a team of 30+ dedicated professionals serving hundreds of homes and businesses across greater Melbourne.

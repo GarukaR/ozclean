@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, Sparkles } from "lucide-react";
+import { Menu } from "lucide-react";
 import { ROUTES } from "@/lib/routes";
 import { SERVICES } from "@/lib/services";
 
@@ -85,12 +86,15 @@ export default function Navbar() {
 
         {/* ── Logo ── */}
         <Link href={ROUTES.HOME} className="flex items-center gap-2 shrink-0">
-          <div className="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center">
-            <Sparkles className="w-4 h-4 text-white" />
-          </div>
-          <span className="text-lg font-bold tracking-tight text-slate-900">
-            SparkClean
-          </span>
+          <Image
+            src="/logo/logo1.svg"
+            alt="Oz Clean"
+            width={32}
+            height={32}
+            className="w-8 h-8"
+            priority
+          />
+          <span className="font-bold text-brand-dark">Oz<span className="font-bold text-brand">CLEAN</span></span>
         </Link>
 
         {/* ── Desktop Nav (hidden on mobile) ── */}
@@ -145,10 +149,15 @@ export default function Navbar() {
             <div className="flex flex-col h-full">
               {/* Sheet Header */}
               <div className="flex items-center gap-2 px-6 py-5">
-                <div className="w-7 h-7 rounded-lg bg-sky-500 flex items-center justify-center">
-                  <Sparkles className="w-3.5 h-3.5 text-white" />
-                </div>
-                <span className="font-bold text-slate-900">SparkClean</span>
+                <Image
+                  src="/logo/logo1.svg"
+                  alt="Oz Clean"
+                  width={28}
+                  height={28}
+                  className="w-7 h-7"
+                />
+                <span className="font-bold text-brand-dark">Oz<span className="font-bold text-brand">CLEAN</span></span>
+
               </div>
 
               <Separator />

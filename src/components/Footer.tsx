@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Sparkles, Phone, Mail, MapPin, Facebook, Instagram, Twitter } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
@@ -50,10 +51,15 @@ export default function Footer() {
           <div className="lg:col-span-2 flex flex-col gap-5">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 w-fit">
-              <div className="w-8 h-8 rounded-lg bg-brand flex items-center justify-center">
-                <Sparkles className="w-4 h-4 text-white" />
-              </div>
-              <span className="text-lg font-bold tracking-tight">SparkClean</span>
+              <Image
+                src="/logo/logo5.png"
+                alt="Oz Clean"
+                width={32}
+                height={32}
+                className="w-8 h-8"
+                priority
+              />
+              <span className="font-bold text-brand-dark">Oz<span className="font-bold text-brand">CLEAN</span></span>
             </Link>
 
             <p className="text-white/60 text-sm leading-relaxed max-w-xs">

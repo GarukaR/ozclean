@@ -148,7 +148,7 @@ export default function Testimonials() {
           </h2>
           <p className="mt-4 text-brand-muted text-lg leading-relaxed">
             Don&apos;t just take our word for it, here&apos;s what our customers say
-            about their SparkClean experience.
+            about their OzClean experience.
           </p>
 
           {/* Overall rating */}
