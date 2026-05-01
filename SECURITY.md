@@ -1,5 +1,11 @@
 # Security Policy
 
+## Security Contact
+
+If you've discovered a security vulnerability, please report it privately to the security contact below.
+
+- Email: garukar9895@gmail.com
+
 ## Supported Reporting
 
 If you believe you found a security issue, report it privately to the repository owner before opening a public issue.

@@ -6,29 +6,34 @@ import { ROUTES, bookingWithService } from "@/lib/routes";
 
 // ─── Config: Add, remove or edit services here ────────────────────────────────
 type Service = {
-    icon: React.ComponentType<{ className?: string }>;
-    title: string;
-    description: string;
-    features: string[];
-    href: string;
-    featured: boolean;
-    bookable: boolean;
-    price: string | null;
-    priceLabel: string | null;
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  description: string;
+  features: string[];
+  href: string;
+  featured: boolean;
+  bookable: boolean;
+  price: string | null;
+  priceLabel: string | null;
 };
 
 const SERVICES: Service[] = [
   {
     icon: Building2,
-    title: "Commercial Cleaning",
+    title: "Short-Term Rental (STR) / Airbnb Cleaning",
     description:
-      "Tailored cleaning solutions for offices, retail spaces, and commercial properties. We work around your hours so your business is always at its best.",
-    features: ["Office & retail spaces", "After-hours scheduling", "Weekly or daily plans"],
-    href: "/services/commercial",
+      "Specialised turnover cleans for short-term rentals and Airbnb properties — fast, reliable, and guest-ready every time.",
+    features: [
+      "Quick same-day turnovers",
+      "Linen & towel change",
+      "Restock essentials (toiletries, coffee)",
+      "Inspection & guest-ready checklist",
+    ],
+    href: "/services/short-term-rental",
     featured: true, // ← only one card should have featured: true
     bookable: false,
-    price: "From $150",
-    priceLabel: "per session",
+    price: "From $120",
+    priceLabel: "per turnover",
   },
   {
     icon: Home,
@@ -56,7 +61,7 @@ const SERVICES: Service[] = [
   },
   {
     icon: ArrowLeftRight,
-    title: "Move In / Move Out",
+    title: "Move In / Move Out(Bond) Cleaning",
     description:
       "Leave your old place spotless or start fresh in your new one. We help you meet lease requirements and get your bond back.",
     features: ["Bond clean guarantee", "Landlord approved", "Flexible timing"],
@@ -66,18 +71,18 @@ const SERVICES: Service[] = [
     price: "From $180",
     priceLabel: "per property",
   },
-  {
-    icon: Wind,
-    title: "Window Cleaning",
-    description:
-      "Crystal-clear windows inside and out. We use streak-free techniques for residential and multi-storey commercial buildings.",
-    features: ["Inside & outside", "Streak-free finish", "Multi-storey available"],
-    href: "/services/windows",
-    featured: false,
-    bookable: false,
-    price: "From $250",
-    priceLabel: "per storey",
-  },
+  // {
+  //   icon: Wind,
+  //   title: "Window Cleaning",
+  //   description:
+  //     "Crystal-clear windows inside and out. We use streak-free techniques for residential and multi-storey commercial buildings.",
+  //   features: ["Inside & outside", "Streak-free finish", "Multi-storey available"],
+  //   href: "/services/windows",
+  //   featured: false,
+  //   bookable: false,
+  //   price: "From $250",
+  //   priceLabel: "per storey",
+  // },
   {
     icon: Trash2,
     title: "Wheely Bin Cleaning",
@@ -89,6 +94,30 @@ const SERVICES: Service[] = [
     bookable: true,
     price: "From $35",
     priceLabel: "per bin",
+  },
+  {
+    icon: Trash2,
+    title: "Bathroom Deep Cleaning",
+    description:
+      "Keep your bathroom clean, hygienic, and odour-free with our thorough deep cleaning service.",
+    features: ["Tile & grout cleaning", "Fixture sanitisation", "Odour elimination"],
+    href: "/services/bathroom-deep-clean",
+    featured: false,
+    bookable: true,
+    price: "From $100",
+    priceLabel: "per session",
+  },
+  {
+    icon: Trash2,
+    title: "Kitchen Deep Cleaning",
+    description:
+      "Keep your kitchen clean, hygienic, and odour-free with our thorough deep cleaning service.",
+    features: ["Appliance cleaning", "Countertop sanitisation", "Odour elimination"],
+    href: "/services/kitchen-deep-clean",
+    featured: false,
+    bookable: true,
+    price: "From $100",
+    priceLabel: "per session",
   },
 ];
 // ─────────────────────────────────────────────────────────────────────────────
@@ -133,11 +162,7 @@ function FeaturedCard({ service }: { service: Service }) {
         </ul>
 
         {/* Price + CTA */}
-        <div className="mt-auto pt-6 border-t border-white/20 flex items-center justify-between gap-4">
-          <div>
-            <p className="text-white font-bold text-xl leading-none">{service.price}</p>
-            <p className="text-white/60 text-xs mt-1">{service.priceLabel}</p>
-          </div>
+        <div className="mt-auto pt-4 border-t border-brand-border flex items-center gap-3 flex-wrap">
           <Button
             asChild
             className="bg-white text-brand-accent-dark hover:bg-brand-accent-bg font-semibold shadow-lg gap-1.5 shrink-0"
@@ -146,7 +171,14 @@ function FeaturedCard({ service }: { service: Service }) {
               Get Quote <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </Button>
+          <Link
+            href={service.href}
+            className="flex items-center gap-1.5 text-sm font-semibold text-white hover:gap-2.5 transition-all duration-200"
+          >
+            Learn more <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
         </div>
+        
       </div>
     </div>
   );
@@ -254,9 +286,8 @@ export default function Services() {
 
           {/* Regular cards */}
           <div
-            className={`grid grid-cols-1 sm:grid-cols-2 gap-6 auto-rows-fr ${
-              featured ? "lg:col-span-2" : "lg:col-span-3"
-            }`}
+            className={`grid grid-cols-1 sm:grid-cols-2 gap-6 auto-rows-fr ${featured ? "lg:col-span-2" : "lg:col-span-3"
+              }`}
           >
             {regular.map((service) => (
               <ServiceCard key={service.title} service={service} />

@@ -116,7 +116,7 @@ export default function Hero() {
             {/* Subheading */}
             <p className="text-brand-muted text-lg leading-relaxed max-w-md">
               Trusted commercial and residential cleaning for homes and businesses across Melbourne.
-              We handle the mess — you enjoy the results.
+              We handle the mess, you enjoy the results.
             </p>
 
             {/* CTA Buttons */}

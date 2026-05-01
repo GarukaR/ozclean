@@ -93,7 +93,7 @@ export default function Pricing() {
       });
 
     const flat = services
-      .filter((service) => !service.code.includes("/"))
+      .filter((service) => !service.code.includes("/session"))
       .map((service) => ({
         label: service.name.replace("Apartment/House Cleaning", "").trim(),
         price: `$${(service.basePriceCents / 100).toFixed(0)}`,
@@ -130,7 +130,7 @@ export default function Pricing() {
             <div className="px-7 pt-7 pb-5 border-b border-brand-border">
               <div className="flex items-center gap-2 mb-3">
                 <Clock className="w-5 h-5 text-brand" />
-                <h3 className="text-xl font-bold text-brand-text">Hourly House Cleaning</h3>
+                <h3 className="text-xl font-bold text-brand-text">Hourly Cleaning</h3>
               </div>
               <p className="text-sm text-brand-muted leading-relaxed">
                 Charged by the hour. Your cleaner follows tasks you provide or our standard
@@ -195,7 +195,7 @@ export default function Pricing() {
             <div className="px-7 pt-7 pb-5 border-b border-brand-accent-border bg-brand-accent-bg/40">
               <div className="flex items-center gap-2 mb-3">
                 <Home className="w-5 h-5 text-brand-accent" />
-                <h3 className="text-xl font-bold text-brand-text">Flat-Rate House Cleaning</h3>
+                <h3 className="text-xl font-bold text-brand-text">Flat-Rate Cleaning</h3>
               </div>
               <p className="text-sm text-brand-muted leading-relaxed">
                 Your cleaner follows our full checklist covering all aspects of general cleaning
@@ -284,47 +284,6 @@ export default function Pricing() {
           {catalogError && (
             <p className="text-xs text-red-600 mt-2">{catalogError}</p>
           )}
-        </div>
-
-        {/* ── Promos ── */}
-        <div>
-          <p className="text-sm font-bold text-brand-text uppercase tracking-widest mb-5 flex items-center gap-2">
-            <Tag className="w-4 h-4 text-brand" />
-            Current Offers
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {HOME_PROMO_OFFERS.map(({ id, icon, label, deal, description, code, color, iconBg }) => {
-              const Icon = PROMO_ICONS[icon];
-              return (
-                <div
-                  key={id}
-                  className={`rounded-2xl border p-5 flex flex-col gap-3 hover:shadow-md transition-all duration-200 ${color}`}
-                >
-                  <div className="flex items-start justify-between">
-                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${iconBg}`}>
-                      <Icon className="w-4 h-4" />
-                    </div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider opacity-60">{label}</span>
-                  </div>
-                  <div>
-                    <p className="font-bold text-lg leading-tight">{deal}</p>
-                    <p className="text-xs opacity-75 leading-relaxed mt-1">{description}</p>
-                  </div>
-                  <div className="mt-auto flex items-center justify-between border-t border-current/10 pt-3">
-                    <code className="text-xs font-mono font-bold tracking-widest opacity-80 bg-white/40 px-2 py-1 rounded-md">
-                      {code}
-                    </code>
-                    <Link
-                      href={ROUTES.BOOKING}
-                      className="text-xs font-semibold hover:underline underline-offset-2 opacity-90"
-                    >
-                      Claim →
-                    </Link>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
         </div>
 
       </div>
