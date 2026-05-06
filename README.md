@@ -1,4 +1,4 @@
-This is a [Next.js](https://nextjs.org) project for SparkClean.
+This is a [Next.js](https://nextjs.org) project for OzClean.
 
 ## Getting Started
 
@@ -7,7 +7,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [https://www.ozclean.au/) in your browser.
 
 ## Deployment Setup
 
