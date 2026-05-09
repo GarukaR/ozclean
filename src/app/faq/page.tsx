@@ -5,7 +5,7 @@ import { generatePageMeta } from "@/lib/seo";
 
 export const metadata = generatePageMeta({
   title: "FAQ",
-  description: "Answers to common questions about SparkClean — booking, our cleaners, products, pricing, and our satisfaction guarantee.",
+  description: "Answers to common questions about OzClean — booking, our cleaners, products, pricing, and our satisfaction guarantee.",
   path: "/faq",
 });
 
@@ -37,7 +37,7 @@ const FAQ_CATEGORIES = [
     faqs: [
       {
         q: "Are your cleaners vetted and insured?",
-        a: "Yes — every SparkClean team member is background-checked, fully insured, and completes our in-house training program before their first job.",
+        a: "Yes — every OzClean team member is background-checked, fully insured, and completes our in-house training program before their first job.",
       },
       {
         q: "Will I get the same cleaner each visit?",

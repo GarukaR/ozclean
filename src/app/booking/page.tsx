@@ -8,7 +8,7 @@ import { prisma } from "@/lib/prisma";
 
 export const metadata = generatePageMeta({
   title: "Book a Clean",
-  description: "Book your SparkClean service online in minutes. Choose your service, pick a date and time, and we'll confirm within 2 hours.",
+  description: "Book your OzClean service online in minutes. Choose your service, pick a date and time, and we'll confirm within 2 hours.",
   path: ROUTES.BOOKING,
 });
 
@@ -103,13 +103,13 @@ export default async function BookPage({
                 ))}
               </ol>
               <a
-                href="tel:+61391234567"
+                href="tel:+61428276935"
                 className="flex items-center gap-2 bg-brand-bg rounded-xl px-4 py-3 hover:bg-brand/10 transition-colors"
               >
                 <Phone className="w-4 h-4 text-brand shrink-0" />
                 <div>
                   <p className="text-xs text-brand-muted">Prefer to call?</p>
-                  <p className="text-sm font-semibold text-brand-text">+61 3 9123 4567</p>
+                  <p className="text-sm font-semibold text-brand-text">+61 428 276 935</p>
                 </div>
               </a>
             </div>

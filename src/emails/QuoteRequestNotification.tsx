@@ -30,11 +30,11 @@ export default function QuoteRequestNotification({
   return (
     <Html>
       <Head />
-      <Preview>New SparkClean quote request from {customerName}</Preview>
+      <Preview>New OzClean quote request from {customerName}</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={header}>
-            <Heading style={logo}>SparkClean Internal</Heading>
+            <Heading style={logo}>OzClean Internal</Heading>
             <Text style={headerSub}>New Quote Request</Text>
           </Section>
 

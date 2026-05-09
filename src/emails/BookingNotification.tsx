@@ -51,7 +51,7 @@ export default function BookingNotification({
 
           {/* Header */}
           <Section style={header}>
-            <Heading style={logo}>✦ SparkClean — New Booking</Heading>
+            <Heading style={logo}>✦ OzClean — New Booking</Heading>
             <Text style={headerSub}>Payment received · Booking confirmed</Text>
           </Section>
 
@@ -172,7 +172,7 @@ export default function BookingNotification({
 
           {/* Footer */}
           <Section style={footer}>
-            <Text style={footerText}>SparkClean Internal Notification · Do not reply</Text>
+            <Text style={footerText}>OzClean Internal Notification · Do not reply</Text>
             <Text style={footerMuted}>Booking ID: {bookingId} · Square: {squarePaymentId}</Text>
           </Section>
 

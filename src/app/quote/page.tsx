@@ -7,7 +7,7 @@ import QuoteForm from "./QuoteForm";
 
 export const metadata = generatePageMeta({
   title: "Get a Free Quote",
-  description: "Request a free, no-obligation quote from SparkClean. Tell us about your space and we'll get back to you with a personalised price within 2 hours.",
+  description: "Request a free, no-obligation quote from OzClean. Tell us about your space and we'll get back to you with a personalised price within 2 hours.",
   path: "/quote",
 });
 

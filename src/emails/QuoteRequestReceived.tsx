@@ -30,11 +30,11 @@ export default function QuoteRequestReceived({
   return (
     <Html>
       <Head />
-      <Preview>We received your SparkClean quote request</Preview>
+      <Preview>We received your OzClean quote request</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={header}>
-            <Heading style={logo}>SparkClean</Heading>
+            <Heading style={logo}>OzClean</Heading>
             <Text style={headerSub}>Quote Request Received</Text>
           </Section>
 

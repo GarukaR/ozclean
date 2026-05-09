@@ -108,7 +108,7 @@ export const SERVICES: Record<string, Service> = {
       },
       {
         q: "Are your staff insured and police-checked?",
-        a: "Yes — every SparkClean team member is fully insured, police-checked, and has completed our in-house training program before visiting any commercial site.",
+        a: "Yes — every OzClean team member is fully insured, police-checked, and has completed our in-house training program before visiting any commercial site.",
       },
       {
         q: "Do you bring your own equipment and products?",

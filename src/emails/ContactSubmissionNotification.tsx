@@ -26,11 +26,11 @@ export default function ContactSubmissionNotification({
   return (
     <Html>
       <Head />
-      <Preview>New SparkClean contact form message from {customerName}</Preview>
+      <Preview>New OzClean contact form message from {customerName}</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={header}>
-            <Heading style={logo}>SparkClean Internal</Heading>
+            <Heading style={logo}>OzClean Internal</Heading>
             <Text style={headerSub}>New Contact Form Submission</Text>
           </Section>
 

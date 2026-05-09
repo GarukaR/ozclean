@@ -25,12 +25,16 @@ type ApiServiceOption = {
 };
 
 const SERVICES = [
+  "Short-Term Rental/Airbnb Cleaning",
   "Residential Cleaning",
-  "Commercial Cleaning",
   "Spring Deep Cleaning",
   "Move In / Move Out",
   "Window Cleaning",
+  "Office Cleaning",
+  "Deep Bathroom Cleaning",
+  "Deep Kitchen Cleaning",
   "Wheely Bin Cleaning",
+  "Commercial Cleaning",
   "Not sure — need advice",
 ];
 

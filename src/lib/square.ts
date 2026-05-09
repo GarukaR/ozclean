@@ -50,7 +50,7 @@ export async function createPaymentLink(params: {
       : params.serviceUnitPriceCents
 
     const serviceLineItem = {
-      name: `SparkClean payment — ${params.service}`,
+      name: `OzClean payment — ${params.service}`,
       quantity: serviceQuantity,
       basePriceMoney: {
         amount: BigInt(serviceUnitPriceCents),
