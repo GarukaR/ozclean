@@ -8,7 +8,7 @@ import Compare from "@/components/Compare";
 import Pricing from "@/components/Pricing";
 
 export const metadata = generatePageMeta({
-  title: "OzClean|Professional Cleaning Services Melbourne",
+  title: "OzClean | Professional Cleaning Services Melbourne",
   description: "OzClean delivers spotless residential and commercial cleaning across Melbourne. Book online in minutes — 100% satisfaction guaranteed.",
   path: "/",
 });
