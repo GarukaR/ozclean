@@ -37,24 +37,17 @@ const VALUES = [
 
 const TEAM = [
   {
-    name: "Sarah Mitchell",
+    name: "Kevin M",
     role: "Founder & CEO",
-    bio: "Sarah started OzClean in 2019 after noticing a gap in reliable, eco-friendly cleaning services in Melbourne. She leads the team with a focus on quality and customer care.",
-    avatar: "SM",
+    bio: "Kevin started OzClean in 2019 after noticing a gap in reliable, eco-friendly cleaning services in Melbourne. He leads the team with a focus on quality and customer care.",
+    avatar: "KM",
     avatarBg: "bg-brand/15 text-brand",
   },
   {
-    name: "James Okoye",
-    role: "Head of Operations",
-    bio: "James oversees scheduling, staff training, and quality control. He ensures every clean meets the OzClean standard — no exceptions.",
-    avatar: "JO",
-    avatarBg: "bg-brand-accent-bg text-brand-accent-dark border border-brand-accent-border",
-  },
-  {
-    name: "Priya Sharma",
+    name: "Ushi",
     role: "Customer Experience Lead",
-    bio: "Priya is the first point of contact for all our customers. She makes sure every booking, query, and concern is handled with care and efficiency.",
-    avatar: "PS",
+    bio: "Ushi is the first point of contact for all our customers. She makes sure every booking, query, and concern is handled with care and efficiency.",
+    avatar: "US",
     avatarBg: "bg-brand-accent-bg text-brand-accent-dark border border-brand-accent-border",
   },
 ];
