@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Clock, Home, ChevronUp, ChevronDown, Tag, Users, Gift, Sun, Sparkles } from "lucide-react";
+import { Clock, Home, ChevronUp, ChevronDown, Users, Gift, Sun, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { HOME_PROMO_OFFERS } from "@/lib/services";
 import { ROUTES } from "@/lib/routes";
@@ -200,7 +200,7 @@ export default function Pricing() {
               </div>
               <p className="text-sm text-brand-muted leading-relaxed">
                 Your cleaner follows our full checklist covering all aspects of general cleaning
-                to OzClean standards — no surprises on the price.
+                to OzClean standards, no surprises on the price.
               </p>
             </div>
 

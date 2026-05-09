@@ -52,7 +52,7 @@ export default function Footer() {
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 w-fit">
               <Image
-                src="/logo/logo5.svg"
+                src="/logo/logo5.png"
                 alt="Oz Clean"
                 width={32}
                 height={32}
