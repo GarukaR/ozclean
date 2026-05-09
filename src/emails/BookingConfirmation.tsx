@@ -45,13 +45,13 @@ export default function BookingConfirmation({
   return (
     <Html>
       <Head />
-      <Preview>Your SparkClean booking is confirmed — {service} on {date}</Preview>
+      <Preview>Your OzClean booking is confirmed — {service} on {date}</Preview>
       <Body style={main}>
         <Container style={container}>
 
           {/* Header */}
           <Section style={header}>
-            <Heading style={logo}>✦ SparkClean</Heading>
+            <Heading style={logo}>✦ OzClean</Heading>
             <Text style={headerSub}>Professional Cleaning Services</Text>
           </Section>
 
@@ -198,13 +198,13 @@ export default function BookingConfirmation({
               <a href="tel:+61391234567" style={link}>+61 3 9123 4567</a>
             </Text>
             <Text style={footerText}>
-              <a href="https://sparkclean.com.au" style={link}>sparkclean.com.au</a>
+              <a href="https://ozclean.au" style={link}>ozclean.com.au</a>
               {" · "}
-              <a href="https://sparkclean.com.au/privacy" style={link}>Privacy</a>
+              <a href="https://ozclean.au/privacy" style={link}>Privacy</a>
               {" · "}
-              <a href="https://sparkclean.com.au/terms" style={link}>Terms</a>
+              <a href="https://ozclean.au/terms" style={link}>Terms</a>
             </Text>
-            <Text style={footerMuted}>© {new Date().getFullYear()} SparkClean. All rights reserved.</Text>
+            <Text style={footerMuted}>© {new Date().getFullYear()} OzClean. All rights reserved.</Text>
           </Section>
 
         </Container>

@@ -7,7 +7,7 @@ import ContactForm from "./ContactForm";
 
 export const metadata = generatePageMeta({
   title: "Contact Us",
-  description: "Get in touch with SparkClean. Call, email, or send a message and we'll get back to you within 2 hours.",
+  description: "Get in touch with OzClean. Call, email, or send a message and we'll get back to you within 2 hours.",
   path: "/contact",
 });
 
@@ -16,15 +16,15 @@ const CONTACT_DETAILS = [
   {
     icon: Phone,
     label: "Phone",
-    value: "+61 3 9123 4567",
-    href: "tel:+61391234567",
+    value: "+61 428 276 935",
+    href: "tel:+61428276935",
     sub: "Mon–Sat, 8am–6pm",
   },
   {
     icon: Mail,
     label: "Email",
-    value: "hello@sparkclean.com.au",
-    href: "mailto:hello@sparkclean.com.au",
+    value: "ozclean.au@gmail.com",
+    href: "mailto:ozclean.au@gmail.com",
     sub: "We reply within 2 hours",
   },
   {
@@ -48,8 +48,8 @@ const CONNECT_OPTIONS = [
     icon: Phone,
     title: "Call Us",
     desc: "Prefer to talk? Give us a call and we'll sort out your booking or query on the spot.",
-    action: "Call +61 3 9123 4567",
-    href: "tel:+61391234567",
+    action: "Call +61 428 276 935",
+    href: "tel:+61428276935",
     style: "bg-gradient-to-br from-brand to-brand-accent text-white",
     btnStyle: "bg-white text-brand-accent-dark hover:bg-brand-accent-bg",
   },
@@ -57,8 +57,8 @@ const CONNECT_OPTIONS = [
     icon: Mail,
     title: "Email Us",
     desc: "Send us an email and we'll get back to you within 2 business hours.",
-    action: "hello@sparkclean.com.au",
-    href: "mailto:hello@sparkclean.com.au",
+    action: "ozclean.au@gmail.com",
+    href: "mailto:ozclean.au@gmail.com",
     style: "bg-brand-accent-bg border border-brand-accent-border",
     btnStyle: "bg-brand-accent hover:bg-brand-accent-dark text-white",
   },

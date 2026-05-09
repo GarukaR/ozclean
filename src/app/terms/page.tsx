@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export const metadata = generatePageMeta({
   title: "Terms of Service",
-  description: "SparkClean's terms of service — the rules and conditions that apply when using our cleaning services.",
+  description: "OzClean's terms of service — the rules and conditions that apply when using our cleaning services.",
   path: "/terms",
 });
 
@@ -12,11 +12,11 @@ const LAST_UPDATED = "1 November 2024";
 const SECTIONS = [
   {
     title: "Acceptance of Terms",
-    content: `By booking a service with SparkClean, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our services. We reserve the right to update these terms at any time, and continued use of our services constitutes acceptance of any changes.`,
+    content: `By booking a service with OzClean, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our services. We reserve the right to update these terms at any time, and continued use of our services constitutes acceptance of any changes.`,
   },
   {
     title: "Booking & Confirmation",
-    content: `All bookings are subject to availability and are confirmed only upon receipt of a booking confirmation from SparkClean. We reserve the right to decline any booking at our discretion. It is your responsibility to ensure that access to the property is available at the agreed time.`,
+    content: `All bookings are subject to availability and are confirmed only upon receipt of a booking confirmation from OzClean. We reserve the right to decline any booking at our discretion. It is your responsibility to ensure that access to the property is available at the agreed time.`,
   },
   {
     title: "Cancellation & Rescheduling",
@@ -32,7 +32,7 @@ const SECTIONS = [
   },
   {
     title: "Liability",
-    content: `SparkClean is fully insured for public liability. In the event of accidental damage caused by our team, our liability is limited to the cost of repair or replacement of the damaged item at current market value. We are not liable for pre-existing damage, normal wear and tear, or damage resulting from items that were not secured or were improperly stored.`,
+    content: `OzClean is fully insured for public liability. In the event of accidental damage caused by our team, our liability is limited to the cost of repair or replacement of the damaged item at current market value. We are not liable for pre-existing damage, normal wear and tear, or damage resulting from items that were not secured or were improperly stored.`,
   },
   {
     title: "Payment",
@@ -48,7 +48,7 @@ const SECTIONS = [
   },
   {
     title: "Contact",
-    content: `If you have any questions about these terms, please contact us at legal@sparkclean.com.au or call +61 3 9123 4567.`,
+    content: `If you have any questions about these terms, please contact us at ozclean.au@gmail.com or call +61 428 276 935.`,
   },
 ];
 
@@ -66,7 +66,7 @@ export default function TermsPage() {
       <section className="py-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 flex flex-col gap-10">
           <p className="text-brand-muted text-sm leading-relaxed">
-            Please read these Terms of Service carefully before using SparkClean&apos;s services. These terms constitute a legally binding agreement between you and SparkClean ABN 00 000 000 000.
+            Please read these Terms of Service carefully before using OzClean&apos;s services. These terms constitute a legally binding agreement between you and OzClean ABN 00 000 000 000.
           </p>
 
           {SECTIONS.map(({ title, content }) => (

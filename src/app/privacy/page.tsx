@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export const metadata = generatePageMeta({
   title: "Privacy Policy",
-  description: "SparkClean's privacy policy — how we collect, use, and protect your personal information.",
+  description: "OzClean's privacy policy — how we collect, use, and protect your personal information.",
   path: "/privacy",
 });
 
@@ -32,7 +32,7 @@ const SECTIONS = [
   },
   {
     title: "Your Rights",
-    content: `You have the right to access, correct, or delete your personal information at any time. You may also opt out of marketing communications by clicking the unsubscribe link in any email we send, or by contacting us directly. To exercise any of these rights, please contact us at privacy@sparkclean.com.au.`,
+    content: `You have the right to access, correct, or delete your personal information at any time. You may also opt out of marketing communications by clicking the unsubscribe link in any email we send, or by contacting us directly. To exercise any of these rights, please contact us at ozclean.au@gmail.com.`,
   },
   {
     title: "Retention",
@@ -44,7 +44,7 @@ const SECTIONS = [
   },
   {
     title: "Contact Us",
-    content: `If you have any questions about this privacy policy or how we handle your personal information, please contact us at privacy@sparkclean.com.au or call us on +61 3 9123 4567.`,
+    content: `If you have any questions about this privacy policy or how we handle your personal information, please contact us at ozclean.au@gmail.com or call us on +61 428 276 935.`,
   },
 ];
 
@@ -62,7 +62,7 @@ export default function PrivacyPage() {
       <section className="py-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 flex flex-col gap-10">
           <p className="text-brand-muted text-sm leading-relaxed">
-            SparkClean (&ldquo;we&rdquo;, &ldquo;us&rdquo;, or &ldquo;our&rdquo;) is committed to protecting your privacy. This policy explains how we collect, use, and safeguard your personal information when you use our services or visit our website.
+            OzClean (&ldquo;we&rdquo;, &ldquo;us&rdquo;, or &ldquo;our&rdquo;) is committed to protecting your privacy. This policy explains how we collect, use, and safeguard your personal information when you use our services or visit our website.
           </p>
 
           {SECTIONS.map(({ title, content }) => (

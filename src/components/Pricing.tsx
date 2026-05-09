@@ -12,6 +12,7 @@ type ApiServiceOption = {
   code: string;
   name: string;
   basePriceCents: number;
+  pricingUnit: string;
 };
 
 type ApiAddonOption = {
@@ -91,9 +92,9 @@ export default function Pricing() {
         const price = `$${(service.basePriceCents / 100).toFixed(0)}/hr`;
         return { label, price };
       });
-
+    
     const flat = services
-      .filter((service) => !service.code.includes("/session"))
+      .filter((service) => service.pricingUnit.includes("service"))
       .map((service) => ({
         label: service.name.replace("Apartment/House Cleaning", "").trim(),
         price: `$${(service.basePriceCents / 100).toFixed(0)}`,
@@ -199,7 +200,7 @@ export default function Pricing() {
               </div>
               <p className="text-sm text-brand-muted leading-relaxed">
                 Your cleaner follows our full checklist covering all aspects of general cleaning
-                to SparkClean standards — no surprises on the price.
+                to OzClean standards — no surprises on the price.
               </p>
             </div>
 

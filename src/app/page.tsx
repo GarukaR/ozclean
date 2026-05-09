@@ -9,7 +9,7 @@ import Pricing from "@/components/Pricing";
 
 export const metadata = generatePageMeta({
   title: "Professional Cleaning Services Melbourne",
-  description: "SparkClean delivers spotless residential and commercial cleaning across Melbourne. Book online in minutes — 100% satisfaction guaranteed.",
+  description: "OzClean delivers spotless residential and commercial cleaning across Melbourne. Book online in minutes — 100% satisfaction guaranteed.",
   path: "/",
 });
 

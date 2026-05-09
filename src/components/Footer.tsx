@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Sparkles, Phone, Mail, MapPin, Facebook, Instagram, Twitter } from "lucide-react";
+import { Phone, Mail, MapPin, Facebook, Instagram, CircleFadingPlus } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 // ─── Config ───────────────────────────────────────────────────────────────────
@@ -25,14 +25,14 @@ const FOOTER_LINKS = {
 };
 
 const SOCIAL_LINKS = [
-  { icon: Facebook, href: "https://facebook.com", label: "Facebook" },
-  { icon: Instagram, href: "https://instagram.com", label: "Instagram" },
-  { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
+  { icon: Facebook, href: "https://www.facebook.com/share/1BypuKhcK9/?mibextid=wwXIfr", label: "Facebook" },
+  { icon: Instagram, href: "https://www.instagram.com/ozclean.au?igsh=MTN5Mzg0b20xZ3Vvdw==", label: "Instagram" },
+  { icon: CircleFadingPlus, href: "https://www.tiktok.com/@oz.clean.au?_r=1&_t=ZS-96DcjiQnrcr", label: "TikTok" },
 ];
 
 const CONTACT_INFO = [
-  { icon: Phone, text: "+1 (555) 123-4567", href: "tel:+15551234567" },
-  { icon: Mail, text: "hello@sparkclean.com", href: "mailto:hello@sparkclean.com" },
+  { icon: Phone, text: "+61 428 276 935", href: "tel:+61428276935" },
+  { icon: Mail, text: "ozclean.au@gmail.com", href: "mailto:ozclean.au@gmail.com" },
   { icon: MapPin, text: "Melbourne, VIC, Australia", href: "#" },
 ];
 // ─────────────────────────────────────────────────────────────────────────────
@@ -52,7 +52,7 @@ export default function Footer() {
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 w-fit">
               <Image
-                src="/logo/logo5.png"
+                src="/logo/logo5.svg"
                 alt="Oz Clean"
                 width={32}
                 height={32}
@@ -126,7 +126,7 @@ export default function Footer() {
         <Separator className="mt-10 mb-6 bg-white/10" />
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/40">
-          <p>© {new Date().getFullYear()} SparkClean. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} OzClean. All rights reserved.</p>
           <div className="flex items-center gap-4">
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
             <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>

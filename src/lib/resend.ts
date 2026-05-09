@@ -14,7 +14,7 @@ if (!env.RESEND_API_KEY) {
 
 const resend = new Resend(env.RESEND_API_KEY)
 
-const defaultDevFrom = 'SparkClean <onboarding@resend.dev>'
+const defaultDevFrom = 'OzClean <bookings@ozclean.au>'
 const configuredCustomerFrom = env.RESEND_FROM_CUSTOMER ?? env.RESEND_FROM ?? (isProduction ? undefined : defaultDevFrom)
 const configuredOwnerFrom = env.RESEND_FROM_OWNER ?? env.RESEND_FROM ?? (isProduction ? undefined : defaultDevFrom)
 
@@ -188,8 +188,8 @@ export async function sendBookingEmails(payload: BookingEmailPayload) {
   return sendEmailPair({
     customerRecipient,
     ownerRecipient,
-    customerSubject: `${subjectPrefix}SparkClean Booking Confirmed — ${payload.service} on ${payload.date}`,
-    ownerSubject: `${subjectPrefix}New SparkClean Booking — ${payload.customerName} · ${payload.service} · ${payload.date}`,
+    customerSubject: `${subjectPrefix}OzClean Booking Confirmed — ${payload.service} on ${payload.date}`,
+    ownerSubject: `${subjectPrefix}New OzClean Booking — ${payload.customerName} · ${payload.service} · ${payload.date}`,
     customerTemplate,
     ownerTemplate,
     logLabel: 'Booking',
@@ -222,8 +222,8 @@ export async function sendQuoteEmails(payload: QuoteEmailPayload) {
   return sendEmailPair({
     customerRecipient,
     ownerRecipient,
-    customerSubject: `${subjectPrefix}SparkClean Quote Request Received — ${payload.service}`,
-    ownerSubject: `${subjectPrefix}New SparkClean Quote Request — ${payload.customerName} · ${payload.service}`,
+    customerSubject: `${subjectPrefix}OzClean Quote Request Received — ${payload.service}`,
+    ownerSubject: `${subjectPrefix}New OzClean Quote Request — ${payload.customerName} · ${payload.service}`,
     customerTemplate,
     ownerTemplate,
     logLabel: 'Quote',
@@ -249,7 +249,7 @@ export async function sendContactSubmissionEmail(payload: ContactEmailPayload) {
   const ownerResult = await resend.emails.send({
     from: ownerFrom,
     to: ownerRecipient,
-    subject: `${subjectPrefix}New SparkClean Contact Message — ${payload.customerName}`,
+    subject: `${subjectPrefix}New OzClean Contact Message — ${payload.customerName}`,
     html: ownerHtml,
     text: ownerText,
   })

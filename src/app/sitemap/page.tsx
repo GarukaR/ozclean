@@ -5,7 +5,7 @@ import { ROUTES } from "@/lib/routes";
 
 export const metadata = generatePageMeta({
   title: "Sitemap",
-  description: "A full list of all pages on the SparkClean website.",
+  description: "A full list of all pages on the OzClean website.",
   path: "/sitemap",
 });
 
@@ -13,7 +13,7 @@ const SITEMAP = [
   {
     category: "Main Pages",
     links: [
-      { label: "Home", href: ROUTES.HOME, desc: "SparkClean homepage" },
+      { label: "Home", href: ROUTES.HOME, desc: "OzClean homepage" },
       { label: "About Us", href: ROUTES.ABOUT, desc: "Our story, team, and values" },
       { label: "Contact", href: ROUTES.CONTACT, desc: "Get in touch with our team" },
       { label: "FAQ", href: "/faq", desc: "Frequently asked questions" },
@@ -53,7 +53,7 @@ export default function SitemapPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <p className="text-brand text-sm font-semibold uppercase tracking-widest mb-3">Sitemap</p>
           <h1 className="text-4xl font-bold text-brand-text mb-3">All Pages</h1>
-          <p className="text-brand-muted">A full list of every page on the SparkClean website.</p>
+          <p className="text-brand-muted">A full list of every page on the OzClean website.</p>
         </div>
       </section>
 

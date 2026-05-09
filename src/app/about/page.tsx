@@ -7,7 +7,7 @@ import { ROUTES } from "@/lib/routes";
 
 export const metadata = generatePageMeta({
   title: "About Us",
-  description: "Meet the SparkClean team. Founded in Melbourne in 2019, we deliver trusted, eco-friendly cleaning services to thousands of happy customers.",
+  description: "Meet the OzClean team. Founded in Melbourne in 2019, we deliver trusted, eco-friendly cleaning services to thousands of happy customers.",
   path: "/about",
 });
 
@@ -39,14 +39,14 @@ const TEAM = [
   {
     name: "Sarah Mitchell",
     role: "Founder & CEO",
-    bio: "Sarah started SparkClean in 2019 after noticing a gap in reliable, eco-friendly cleaning services in Melbourne. She leads the team with a focus on quality and customer care.",
+    bio: "Sarah started OzClean in 2019 after noticing a gap in reliable, eco-friendly cleaning services in Melbourne. She leads the team with a focus on quality and customer care.",
     avatar: "SM",
     avatarBg: "bg-brand/15 text-brand",
   },
   {
     name: "James Okoye",
     role: "Head of Operations",
-    bio: "James oversees scheduling, staff training, and quality control. He ensures every clean meets the SparkClean standard — no exceptions.",
+    bio: "James oversees scheduling, staff training, and quality control. He ensures every clean meets the OzClean standard — no exceptions.",
     avatar: "JO",
     avatarBg: "bg-brand-accent-bg text-brand-accent-dark border border-brand-accent-border",
   },
@@ -112,7 +112,7 @@ export default function AboutPage() {
             <div className="relative rounded-3xl overflow-hidden aspect-[4/3] shadow-xl shadow-brand/10">
               <Image
                 src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=800&q=80"
-                alt="SparkClean team at work"
+                alt="OzClean team at work"
                 fill
                 className="object-cover"
               />
@@ -227,7 +227,7 @@ export default function AboutPage() {
                 Serving greater Melbourne.
               </h2>
               <p className="text-brand-muted text-sm leading-relaxed mb-8">
-                We currently service Melbourne&apos;s inner suburbs and CBD. Don&apos;t see your area? Get in touch — we&apos;re expanding regularly.
+                We currently service Melbourne&apos;s inner suburbs and CBD. Don&apos;t see your area? Get in touch, we&apos;re expanding regularly.
               </p>
               <div className="flex flex-wrap gap-2 mb-8">
                 {SERVICE_AREAS.map((area) => (
@@ -252,7 +252,7 @@ export default function AboutPage() {
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="SparkClean service area map"
+                title="OzClean service area map"
               />
             </div>
           </div>

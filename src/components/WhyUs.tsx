@@ -48,7 +48,7 @@ export default function WhyUs() {
         {/* ── Section Header ── */}
         <div className="max-w-2xl mb-16">
           <p className="text-brand text-sm font-semibold uppercase tracking-widest mb-3">
-            Why SparkClean
+            Why OzClean
           </p>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-brand-text leading-tight tracking-tight">
             Cleaning you can{" "}
@@ -56,7 +56,7 @@ export default function WhyUs() {
             <br />every single visit.
           </h2>
           <p className="mt-4 text-brand-muted text-lg leading-relaxed">
-            We built SparkClean around the things that matter most to our customers —
+            We built OzClean around the things that matter most to our customers —
             reliability, safety, and results that speak for themselves.
           </p>
         </div>

@@ -87,11 +87,11 @@ export default function Navbar() {
         {/* ── Logo ── */}
         <Link href={ROUTES.HOME} className="flex items-center gap-2 shrink-0">
           <Image
-            src="/logo/logo1.svg"
+            src="/logo/logo5.svg"
             alt="Oz Clean"
             width={32}
             height={32}
-            className="w-8 h-8"
+            className="w-8 h-8 bg-transparent rounded-full p-1"
             priority
           />
           <span className="font-bold text-brand-dark">Oz<span className="font-bold text-brand">CLEAN</span></span>
@@ -150,11 +150,11 @@ export default function Navbar() {
               {/* Sheet Header */}
               <div className="flex items-center gap-2 px-6 py-5">
                 <Image
-                  src="/logo/logo1.svg"
+                  src="/logo/logo5.svg"
                   alt="Oz Clean"
                   width={28}
                   height={28}
-                  className="w-7 h-7"
+                  className="w-7 h-7 bg-transparent rounded-full p-1"
                 />
                 <span className="font-bold text-brand-dark">Oz<span className="font-bold text-brand">CLEAN</span></span>
 

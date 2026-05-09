@@ -22,7 +22,7 @@ export async function generateMetadata({
   const service = SERVICES[slug];
   if (!service) return {};
   return {
-    title: `${service.title} | SparkClean`,
+    title: `${service.title} | OzClean`,
     description: service.description,
   };
 }

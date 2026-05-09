@@ -1,8 +1,8 @@
 // src/lib/seo.ts
 // ─── Base site metadata — update once, applies everywhere ────────────────────
 
-export const SITE_NAME = "SparkClean";
-export const SITE_URL = "https://www.sparkclean.com.au"; // update when live
+export const SITE_NAME = "OzClean";
+export const SITE_URL = "https://www.ozclean.com.au"; // update when live
 export const SITE_DESCRIPTION =
   "Professional residential and commercial cleaning services across Melbourne. Vetted staff, eco-friendly products, 100% satisfaction guarantee.";
 
@@ -21,7 +21,7 @@ export const BASE_METADATA = {
     "end of lease cleaning",
     "bond clean Melbourne",
     "window cleaning",
-    "SparkClean",
+    "OzClean",
   ],
   authors: [{ name: SITE_NAME }],
   openGraph: {

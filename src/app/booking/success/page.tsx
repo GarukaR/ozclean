@@ -6,7 +6,7 @@ import { ROUTES } from "@/lib/routes";
 
 export const metadata = generatePageMeta({
   title: "Booking Confirmed",
-  description: "Your SparkClean booking is confirmed. We'll be in touch shortly.",
+  description: "Your OzClean booking is confirmed. We'll be in touch shortly.",
   path: ROUTES.BOOKING_SUCCESS,
 });
 
@@ -84,11 +84,11 @@ export default async function BookingSuccessPage({
 
             {/* Phone */}
             <a
-              href="tel:+61391234567"
+              href="tel:+61428276935"
               className="flex items-center gap-2 text-sm text-brand-muted hover:text-brand transition-colors"
             >
               <Phone className="w-3.5 h-3.5" />
-              Questions? Call +61 3 9123 4567
+              Questions? Call +61 428 276 935
             </a>
 
           </div>
