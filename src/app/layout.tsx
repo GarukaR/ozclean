@@ -26,7 +26,8 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col justify-between min-h-screen`}>
         <Navbar />
-        <main className="pt-16">{children}</main>
+        {/* Pages render their own <main>; this is only the fixed-navbar offset. */}
+        <div className="pt-16">{children}</div>
         <Footer />
       </body>
     </html>

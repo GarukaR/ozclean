@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
+import { releaseExpiredPendingBookings } from "@/lib/booking-holds";
 import { BOOKING_TIME_SLOTS, getScheduledAtForSlot } from "@/lib/booking-slots";
 
 export async function GET(req: NextRequest) {
@@ -15,6 +16,12 @@ export async function GET(req: NextRequest) {
       ...slot,
       scheduledAt: getScheduledAtForSlot(date, slot.value),
     }));
+
+    // Abandoned checkouts must not keep a slot marked as booked forever.
+    await releaseExpiredPendingBookings(
+      prisma,
+      requestedSlots.map((slot) => slot.scheduledAt)
+    );
 
     const bookedSlots = await prisma.booking.findMany({
       where: {

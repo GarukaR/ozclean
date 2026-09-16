@@ -1,4 +1,4 @@
-This is a [Next.js](https://nextjs.org) project for SparkClean.
+This is a [Next.js](https://nextjs.org) project for OzClean.
 
 ## Getting Started
 

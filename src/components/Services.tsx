@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Building2, Home, Sparkles, ArrowLeftRight, Wind, Trash2, ArrowRight } from "lucide-react";
+import { Building2, Home, Sparkles, ArrowLeftRight, Trash2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ROUTES, bookingWithService } from "@/lib/routes";
@@ -71,6 +71,7 @@ const SERVICES: Service[] = [
     price: "From $180",
     priceLabel: "per property",
   },
+  // Window cleaning is hidden from this grid for now; re-import Wind from lucide-react to restore.
   // {
   //   icon: Wind,
   //   title: "Window Cleaning",

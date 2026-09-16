@@ -2,7 +2,9 @@
 // ─── Base site metadata — update once, applies everywhere ────────────────────
 
 export const SITE_NAME = "OzClean";
-export const SITE_URL = "https://www.ozclean.com.au"; // update when live
+export const SITE_URL = "https://ozclean.au";
+// Display form of SITE_URL, for places that show the domain as text (e.g. email footers).
+export const SITE_DOMAIN = SITE_URL.replace(/^https?:\/\//, "").replace(/^www\./, "");
 export const SITE_DESCRIPTION =
   "Professional residential and commercial cleaning services across Melbourne. Vetted staff, eco-friendly products, 100% satisfaction guarantee.";
 
@@ -31,20 +33,12 @@ export const BASE_METADATA = {
     siteName: SITE_NAME,
     title: `${SITE_NAME} — Professional Cleaning Services Melbourne`,
     description: SITE_DESCRIPTION,
-    images: [
-      {
-        url: "/og-image.jpg", // add a 1200x630 image to /public
-        width: 1200,
-        height: 630,
-        alt: `${SITE_NAME} — Professional Cleaning Services`,
-      },
-    ],
+    // Social images come from the app/opengraph-image.tsx file convention.
   },
   twitter: {
     card: "summary_large_image",
     title: `${SITE_NAME} — Professional Cleaning Services Melbourne`,
     description: SITE_DESCRIPTION,
-    images: ["/og-image.jpg"],
   },
   robots: {
     index: true,
