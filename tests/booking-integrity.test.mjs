@@ -11,6 +11,12 @@ async function getJson(path) {
   return { response, body };
 }
 
+// Service `code` doubles as the picker label and is edited from time to time, so tests resolve
+// services by their stable `name` instead of a hardcoded code string.
+async function findService(name) {
+  return prisma.service.findFirst({ where: { name, isActive: true } });
+}
+
 async function postJson(path, payload) {
   const response = await fetch(`${baseUrl}${path}`, {
     method: "POST",
@@ -41,9 +47,7 @@ test("catalog APIs return active services and add-ons", async () => {
 );
 
 test("flat-rate checkout total matches DB pricing", async () => {
-  const service = await prisma.service.findUnique({
-    where: { code: "1 Bedroom Apartment/House Cleaning = 150 AUD" },
-  });
+  const service = await findService("1 Bedroom Apartment/House Cleaning");
   const addon = await prisma.addon.findUnique({
     where: { code: "inside-oven" },
   });
@@ -96,9 +100,7 @@ test("flat-rate checkout total matches DB pricing", async () => {
 });
 
 test("hourly checkout accepts decimals and rejects undersized bookings", async () => {
-  const service = await prisma.service.findUnique({
-    where: { code: "Hourly Cleaning (Weekly) = $50/hr" },
-  });
+  const service = await findService("Hourly Cleaning (Weekly)");
   const addon = await prisma.addon.findUnique({
     where: { code: "inside-fridge" },
   });
@@ -142,6 +144,8 @@ test("hourly checkout accepts decimals and rejects undersized bookings", async (
     assert.equal(hourlyBooking.addonsSubtotalCents, addon.priceCents);
     assert.equal(hourlyBooking.totalCents, expectedServiceSubtotal + addon.priceCents);
     assert.equal(hourlyBooking.serviceCountUnit, "hours");
+    // Fractional counts must be stored exactly, not rounded to a whole number.
+    assert.equal(hourlyBooking.serviceCount, decimalCount);
 
     const invalidResult = await postJson("/api/create-checkout", {
       name: "Hourly Invalid Test",
@@ -170,9 +174,7 @@ test("hourly checkout accepts decimals and rejects undersized bookings", async (
 });
 
 test("booking availability hides occupied slots and rejects duplicates", async () => {
-  const service = await prisma.service.findUnique({
-    where: { code: "1 Bedroom Apartment/House Cleaning = 150 AUD" },
-  });
+  const service = await findService("1 Bedroom Apartment/House Cleaning");
 
   assert.ok(service);
 

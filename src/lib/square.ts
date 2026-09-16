@@ -22,6 +22,7 @@ export const squareClient = new SquareClient({
 
 export async function createPaymentLink(params: {
   bookingId: string
+  bookingRef: string
   totalCents: number
   customerName: string
   customerEmail: string
@@ -79,13 +80,16 @@ export async function createPaymentLink(params: {
         lineItems: [serviceLineItem, ...addonLineItems],
         metadata: {
           bookingId: params.bookingId,
+          bookingRef: params.bookingRef,
           customerName: params.customerName,
           customerEmail: params.customerEmail,
           totalCents: params.totalCents.toString(),
         },
       },
       checkoutOptions: {
-        redirectUrl: `${publicUrl}/booking/success?id=${params.bookingId}`,
+        // The success page shows this to the customer, so it must be the human-readable ref
+        // that also appears in their confirmation email.
+        redirectUrl: `${publicUrl}/booking/success?ref=${encodeURIComponent(params.bookingRef)}`,
         askForShippingAddress: false,
         merchantSupportEmail: env.OWNER_EMAIL ?? env.BOOKING_NOTIFICATION_EMAIL,
       },

@@ -3,6 +3,9 @@ import {
   Preview, Section, Text, Row, Column,
 } from "@react-email/components";
 
+import { BUSINESS_PHONE, BUSINESS_PHONE_HREF } from "@/lib/business";
+import { SITE_DOMAIN, SITE_URL } from "@/lib/seo";
+
 export type BookingConfirmationProps = {
   customerName: string;
   customerEmail: string;
@@ -39,7 +42,7 @@ export default function BookingConfirmation({
   addonsTotal = "$40.00",
   totalAmount = "$160.00",
   addons = [{ name: "Inside oven", quantity: 1, unitPrice: "$40.00", lineTotal: "$40.00" }],
-  bookingId = "SC-00123",
+  bookingId = "OZ-00123",
   squarePaymentId = "sq_abc123",
 }: BookingConfirmationProps) {
   return (
@@ -195,14 +198,14 @@ export default function BookingConfirmation({
           <Section style={footer}>
             <Text style={footerText}>
               Questions? Reply to this email or call{" "}
-              <a href="tel:+61391234567" style={link}>+61 3 9123 4567</a>
+              <a href={BUSINESS_PHONE_HREF} style={link}>{BUSINESS_PHONE}</a>
             </Text>
             <Text style={footerText}>
-              <a href="https://ozclean.au" style={link}>ozclean.com.au</a>
+              <a href={SITE_URL} style={link}>{SITE_DOMAIN}</a>
               {" · "}
-              <a href="https://ozclean.au/privacy" style={link}>Privacy</a>
+              <a href={`${SITE_URL}/privacy`} style={link}>Privacy</a>
               {" · "}
-              <a href="https://ozclean.au/terms" style={link}>Terms</a>
+              <a href={`${SITE_URL}/terms`} style={link}>Terms</a>
             </Text>
             <Text style={footerMuted}>© {new Date().getFullYear()} OzClean. All rights reserved.</Text>
           </Section>

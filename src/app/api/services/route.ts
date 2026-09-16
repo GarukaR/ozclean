@@ -12,6 +12,8 @@ export async function GET() {
         basePriceCents: true,
         isActive: true,
         pricingUnit: true,
+        minQuantity: true,
+        allowDecimalQuantity: true,
       },
       orderBy: { basePriceCents: "asc" },
     });

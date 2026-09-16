@@ -2,9 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Clock, Home, ChevronUp, ChevronDown, Users, Gift, Sun, Sparkles } from "lucide-react";
+import { Clock, Home, ChevronUp, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { HOME_PROMO_OFFERS } from "@/lib/services";
 import { ROUTES } from "@/lib/routes";
 
 type ApiServiceOption = {
@@ -33,13 +32,6 @@ const FLAT_PERFECT_FOR =
 const FLAT_MORE = `The flat-rate option is perfect for having your entire home professionally cleaned from top to bottom. Pricing is based on the number of bedrooms in your home and our team will complete a full general clean following our detailed checklist. Additional services such as inside oven, fridge, and window cleaning can be added on. If your home hasn't had a deep or thorough clean in over a month, we recommend booking a deep clean first for the best results.`;
 
 // ─────────────────────────────────────────────────────────────────────────────
-
-const PROMO_ICONS = {
-  sparkles: Sparkles,
-  gift: Gift,
-  users: Users,
-  sun: Sun,
-};
 
 export default function Pricing() {
   const [hourlyOpen, setHourlyOpen] = useState(false);

@@ -39,7 +39,7 @@ export default function BookingNotification({
   addonsTotal = "$40.00",
   totalAmount = "$160.00",
   addons = [{ name: "Inside oven", quantity: 1, unitPrice: "$40.00", lineTotal: "$40.00" }],
-  bookingId = "SC-00123",
+  bookingId = "OZ-00123",
   squarePaymentId = "sq_abc123",
 }: BookingNotificationProps) {
   return (

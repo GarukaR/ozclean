@@ -1,4 +1,5 @@
 import { generatePageMeta } from "@/lib/seo";
+import { BUSINESS_EMAIL, BUSINESS_PHONE } from "@/lib/business";
 import Link from "next/link";
 
 export const metadata = generatePageMeta({
@@ -48,7 +49,7 @@ const SECTIONS = [
   },
   {
     title: "Contact",
-    content: `If you have any questions about these terms, please contact us at ozclean.au@gmail.com or call +61 428 276 935.`,
+    content: `If you have any questions about these terms, please contact us at ${BUSINESS_EMAIL} or call ${BUSINESS_PHONE}.`,
   },
 ];
 

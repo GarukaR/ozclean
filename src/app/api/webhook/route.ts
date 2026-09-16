@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { SquareClient, SquareEnvironment } from "square";
 import { prisma } from "@/lib/prisma";
 import { sendBookingEmails } from "@/lib/resend";
+import { formatBookingDate, formatBookingTime } from "@/lib/booking-slots";
 import { env, isProduction } from "@/env";
 import crypto from "crypto";
 
@@ -60,24 +62,6 @@ function verifySquareSignature(
 // ─── Format currency from cents ───────────────────────────────────────────────
 function formatMoney(cents: number): string {
   return `$${(cents / 100).toFixed(2)}`;
-}
-
-// ─── Format date for emails ───────────────────────────────────────────────────
-function formatDate(dateStr: string): string {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString("en-AU", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
-
-function formatTime(date: Date): string {
-  return date.toLocaleTimeString("en-AU", {
-    hour: "numeric",
-    minute: "2-digit",
-  });
 }
 
 function formatAddress(booking: {
@@ -345,26 +329,46 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ received: true, error: "Booking not found" });
     }
 
-    if (booking.status === "CONFIRMED" || booking.paymentStatus === "PAID") {
+    const alreadyProcessed =
+      booking.status === "CONFIRMED" || booking.paymentStatus === "PAID";
+
+    if (alreadyProcessed && booking.notifiedAt) {
       return NextResponse.json({ received: true, duplicate: true });
     }
 
-    const updateResult = await prisma.booking.updateMany({
-      where: {
-        id: bookingId,
-        status: { not: "CONFIRMED" },
-        paymentStatus: { not: "PAID" },
-      },
-      data: {
-        status: "CONFIRMED",
-        paymentStatus: "PAID",
-        squarePaymentId: paymentId,
-        totalPaidCents: paidCents,
-        confirmedAt: new Date(),
-      },
-    });
+    // The booking may have been cancelled (its slot released) before the payment landed. It can
+    // only be revived if nothing else has taken that slot in the meantime; the partial unique
+    // index on scheduledAt is the final arbiter and surfaces as P2002 below.
+    let updateResult;
+    try {
+      updateResult = await prisma.booking.updateMany({
+        where: {
+          id: bookingId,
+          status: { not: "CONFIRMED" },
+          paymentStatus: { not: "PAID" },
+        },
+        data: {
+          status: "CONFIRMED",
+          paymentStatus: "PAID",
+          squarePaymentId: paymentId,
+          totalPaidCents: paidCents,
+          confirmedAt: new Date(),
+          cancelledAt: null,
+        },
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+        await recordUnreconcilablePayment(bookingId, paymentId, paidCents);
+        console.error(
+          "[webhook] Payment received for a released booking whose slot was taken — manual refund required",
+          { bookingId, paymentId, scheduledAt: booking.scheduledAt.toISOString() }
+        );
+        return NextResponse.json({ received: true, requiresManualReview: true });
+      }
+      throw error;
+    }
 
-    if (updateResult.count === 0) {
+    if (updateResult.count === 0 && !alreadyProcessed) {
       return NextResponse.json({ received: true, duplicate: true });
     }
 
@@ -393,8 +397,8 @@ export async function POST(req: NextRequest) {
       customerEmail: booking.customerEmail,
       customerPhone: booking.customerPhone,
       service: booking.service,
-      date: formatDate(scheduledAt.toISOString()),
-      time: formatTime(scheduledAt),
+      date: formatBookingDate(scheduledAt),
+      time: formatBookingTime(scheduledAt),
       address: formatAddress(booking),
       instructions: booking.instructions ?? "",
       paidAmount: formatMoney(paidCents),
@@ -414,14 +418,48 @@ export async function POST(req: NextRequest) {
     };
 
     // Keep webhook thin: all booking email rendering/sending is centralized in src/lib/resend.ts.
+    // The payment is already recorded at this point, so a send failure returns 5xx and lets Square
+    // retry; notifiedAt is what stops a successful send from being repeated.
     await sendBookingEmails(emailProps);
+    await prisma.booking.update({
+      where: { id: bookingId },
+      data: { notifiedAt: new Date() },
+    });
 
     console.log(
       `[webhook] Booking ${bookingId} processed — emails sent to ${emailProps.customerEmail} and owner`
     );
     return NextResponse.json({ success: true });
   } catch (error) {
+    // Returning 200 here would tell Square the event was handled and stop all retries, silently
+    // dropping the booking confirmation. Fail loudly instead.
     console.error("[webhook] Error processing payment:", error);
-    return NextResponse.json({ received: true, error: String(error) });
+    return NextResponse.json(
+      { error: "Webhook processing failed" },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * Records a payment that cannot be reconciled with a bookable slot, so the amount and Square
+ * payment id are not lost while the owner arranges a refund.
+ */
+async function recordUnreconcilablePayment(
+  bookingId: string,
+  paymentId: string,
+  paidCents: number
+): Promise<void> {
+  try {
+    await prisma.booking.update({
+      where: { id: bookingId },
+      data: {
+        paymentStatus: "PAID",
+        squarePaymentId: paymentId,
+        totalPaidCents: paidCents,
+      },
+    });
+  } catch (error) {
+    console.error("[webhook] Failed to record unreconcilable payment:", bookingId, error);
   }
 }

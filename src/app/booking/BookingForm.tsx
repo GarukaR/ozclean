@@ -24,7 +24,8 @@ import {
 
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { BOOKING_TIME_SLOTS } from "@/lib/booking-slots";
+import { BOOKING_TIME_SLOTS, getMinimumBookingDate } from "@/lib/booking-slots";
+import { BUSINESS_PHONE } from "@/lib/business";
 
 type ApiServiceOption = {
   id: string;
@@ -32,6 +33,9 @@ type ApiServiceOption = {
   name: string;
   basePriceCents: number;
   isActive: boolean;
+  pricingUnit: string;
+  minQuantity: number;
+  allowDecimalQuantity: boolean;
 };
 
 type ApiAddonOption = {
@@ -64,60 +68,48 @@ type BookingFormData = z.infer<typeof bookingSchema>;
 
 const PLANS = new Set(["Essential Plan", "Standard Plan", "Premium Plan"]);
 
-function getCountConfigFromService(serviceValue: string): {
+const UNIT_LABELS: Record<string, string> = {
+  hour: "hours",
+  hr: "hours",
+  bin: "bins",
+};
+
+type CountConfig = {
   label: string;
   unit: string;
   min: number;
   step: string;
   requiresInteger: boolean;
-} | null {
-  const unitRate = getServiceUnitRate(serviceValue);
-  const rawUnit = unitRate?.unit;
+};
 
-  if (!rawUnit) {
+function pluraliseUnit(pricingUnit: string): string {
+  const unit = pricingUnit.trim().toLowerCase();
+  return UNIT_LABELS[unit] ?? (unit.endsWith("s") ? unit : `${unit}s`);
+}
+
+/**
+ * Quantity rules come from the service record (pricingUnit / minQuantity / allowDecimalQuantity),
+ * which is the same source the server validates against.
+ */
+function getCountConfig(service: ApiServiceOption | undefined): CountConfig | null {
+  if (!service || service.pricingUnit.trim().toLowerCase() === "service") {
     return null;
   }
 
-  if (rawUnit === "hr") {
-    return {
-      label: "Number of Hours",
-      unit: "hours",
-      min: 2,
-      step: "0.5",
-      requiresInteger: false,
-    };
-  }
-
-  const unit = rawUnit.endsWith("s") ? rawUnit : `${rawUnit}s`;
-  const label = `Number of ${unit.charAt(0).toUpperCase() + unit.slice(1)}`;
+  const unit = pluraliseUnit(service.pricingUnit);
 
   return {
-    label,
+    label: `Number of ${unit.charAt(0).toUpperCase() + unit.slice(1)}`,
     unit,
-    min: 1,
-    step: "1",
-    requiresInteger: true,
+    min: service.minQuantity,
+    step: service.allowDecimalQuantity ? "0.5" : "1",
+    requiresInteger: !service.allowDecimalQuantity,
   };
 }
 
-function getServiceRateFromService(serviceValue: string): number {
-  return getServiceUnitRate(serviceValue)?.rate ?? 0;
-}
-
-function getServiceUnitRate(serviceValue: string): { rate: number; unit: string } | null {
-  const match = serviceValue.match(/=\s*\$(\d+)\s*\/\s*([a-zA-Z]+)/);
-  if (!match) {
-    return null;
-  }
-
-  const rate = parseInt(match[1], 10);
-  const unit = match[2].toLowerCase();
-
-  if (!Number.isFinite(rate) || rate <= 0) {
-    return null;
-  }
-
-  return { rate, unit };
+function getUnitSuffix(pricingUnit: string): string {
+  const unit = pricingUnit.trim().toLowerCase();
+  return unit === "hour" || unit === "hr" ? "hr" : unit;
 }
 
 function FieldWrapper({ label, icon: Icon, error, children }: {
@@ -144,7 +136,6 @@ export default function BookingForm({
   tierLabel?: string;
   preselectedService?: string;
 }) {
-  // const [submitted, setSubmitted] = useState(false);
   const [selectedService, setSelectedService] = useState(preselectedService ?? "");
   const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
   const [serviceCount, setServiceCount] = useState("1");
@@ -197,16 +188,20 @@ export default function BookingForm({
     };
   }, []);
 
-  const { flatRateLookup, addonLookup, serviceGroups } = useMemo(() => {
+  const { flatRateLookup, addonLookup, serviceGroups, serviceLookup } = useMemo(() => {
+    const isFlatRate = (service: ApiServiceOption) =>
+      service.pricingUnit.trim().toLowerCase() === "service";
+    const isHourly = (service: ApiServiceOption) =>
+      ["hour", "hr"].includes(service.pricingUnit.trim().toLowerCase());
+
     const flatRates = services
-      .filter((service) => !getServiceUnitRate(service.code))
+      .filter(isFlatRate)
       .map((service) => ({ value: service.code, price: service.basePriceCents / 100 }));
 
-    const hourly = services.filter((service) => getServiceUnitRate(service.code)?.unit === "hr");
-    const additional = services.filter((service) => {
-      const unit = getServiceUnitRate(service.code)?.unit;
-      return Boolean(unit && unit !== "hr");
-    });
+    const hourly = services.filter(isHourly);
+    const additional = services.filter(
+      (service) => !isFlatRate(service) && !isHourly(service)
+    );
 
     const groups = [
       {
@@ -227,11 +222,13 @@ export default function BookingForm({
       flatRateLookup: new Map(flatRates.map((option) => [option.value, option.price])),
       addonLookup: new Map(addons.map((addon) => [addon.code, addon.priceCents / 100])),
       serviceGroups: groups,
+      serviceLookup: new Map(services.map((service) => [service.code, service])),
     };
   }, [services, addons]);
 
-  const countConfig = getCountConfigFromService(selectedService);
-  const serviceRate = getServiceRateFromService(selectedService);
+  const selectedServiceRecord = serviceLookup.get(selectedService);
+  const countConfig = getCountConfig(selectedServiceRecord);
+  const serviceRate = (selectedServiceRecord?.basePriceCents ?? 0) / 100;
   const parsedServiceCount = Number(serviceCount) || 0;
   const baseServiceTotal = countConfig
     ? serviceRate * parsedServiceCount
@@ -341,18 +338,25 @@ export default function BookingForm({
 
       const json = await res.json();
 
-      if (!res.ok) throw new Error(json.error ?? "Something went wrong");
+      if (!res.ok) {
+        // The API returns customer-safe messages (slot taken, minimum quantity, rate limit).
+        setCheckoutError(
+          json.error ??
+            `Something went wrong creating your booking. Please try again or call us on ${BUSINESS_PHONE}.`
+        );
+        return;
+      }
 
       // Redirect to Square hosted payment page
       window.location.href = json.url;
 
     } catch (error) {
       console.error("Checkout error:", error);
-      setCheckoutError("Something went wrong creating your booking. Please try again or call us on +61 3 9123 4567.");
+      setCheckoutError(
+        `Something went wrong creating your booking. Please try again or call us on ${BUSINESS_PHONE}.`
+      );
     }
   };
-
-  // if (submitted) return <SuccessState />;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-8 flex flex-col gap-6">
@@ -443,10 +447,8 @@ export default function BookingForm({
               onValueChange={(v) => {
                 setValue("service", v, { shouldValidate: true });
                 setSelectedService(v);
-                const nextConfig = getCountConfigFromService(v);
-                if (nextConfig) {
-                  setServiceCount(String(nextConfig.min));
-                }
+                const nextConfig = getCountConfig(serviceLookup.get(v));
+                setServiceCount(nextConfig ? String(nextConfig.min) : "1");
               }}
             >
               <SelectTrigger className="border-brand-border focus:border-brand focus:ring-brand">
@@ -529,7 +531,8 @@ export default function BookingForm({
                     ${estimatedTotal.toFixed(0)} AUD
                   </p>
                   <p className="text-xs text-brand-muted mt-1">
-                    {parsedServiceCount} {countConfig.unit} × ${serviceRate}/{countConfig.unit === "hours" ? "hr" : countConfig.unit.slice(0, -1)}
+                    {parsedServiceCount} {countConfig.unit} × ${serviceRate}/
+                    {getUnitSuffix(selectedServiceRecord?.pricingUnit ?? "")}
                   </p>
                 </div>
               )}
@@ -570,12 +573,9 @@ export default function BookingForm({
             <Input
               {...register("date")}
               type="date"
-              // Disallow same-day bookings: only allow dates from tomorrow onwards
-              min={(() => {
-                const d = new Date();
-                d.setDate(d.getDate() + 1);
-                return d.toISOString().split("T")[0];
-              })()}
+              // Disallow same-day bookings: only allow dates from tomorrow onwards, computed in
+              // the booking timezone so the picker matches what the server accepts.
+              min={getMinimumBookingDate()}
               className="border-brand-border focus:border-brand focus:ring-brand"
             />
             <p className="text-xs text-brand-muted mt-1">Same-day bookings are not accepted. Please select at least one day in advance.</p>

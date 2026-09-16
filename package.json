@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "db:seed": "prisma db seed",
-    "test:booking": "node --test tests/booking-integrity.test.mjs"
+    "test:booking": "node --env-file=.env --test tests/booking-integrity.test.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

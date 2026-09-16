@@ -1,4 +1,6 @@
 import Link from "next/link";
+
+import { BUSINESS_PHONE_HREF } from "@/lib/business";
 import { ChevronDown, Phone, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { generatePageMeta } from "@/lib/seo";
@@ -168,7 +170,7 @@ export default function FAQPage() {
             </div>
             <div className="flex flex-wrap gap-3">
               <Button asChild className="bg-white text-brand-accent-dark hover:bg-brand-accent-bg font-semibold gap-2">
-                <Link href="tel:+61391234567">
+                <Link href={BUSINESS_PHONE_HREF}>
                   <Phone className="w-4 h-4" /> Call Us
                 </Link>
               </Button>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Building2, Home, Sparkles, ArrowLeftRight, Wind, Trash2, ArrowRight } from "lucide-react";
+import { Building2, Home, Sparkles, ArrowLeftRight, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ROUTES, bookingWithService } from "@/lib/routes";
@@ -83,6 +83,8 @@ const SERVICES: Service[] = [
     price: "From $200",
     priceLabel: "per session",
   },
+  // Window and wheely bin cleaning are hidden from this grid for now; re-import Wind and
+  // Trash2 from lucide-react to restore them.
   // {
   //   icon: Wind,
   //   title: "Window Cleaning",

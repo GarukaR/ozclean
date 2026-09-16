@@ -59,7 +59,7 @@ model Booking {
   instructions          String?
   adminNotes            String?
   addons                Json?
-  serviceCount          Int     @default(1)
+  serviceCount          Float   @default(1)
   serviceCountUnit      String  @default("service")
   serviceUnitPriceCents Int     @default(0)
   serviceSubtotalCents  Int     @default(0)
@@ -72,6 +72,7 @@ model Booking {
 
   confirmedAt DateTime?
   cancelledAt DateTime?
+  notifiedAt  DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

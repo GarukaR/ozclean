@@ -3,6 +3,7 @@ import { CheckCircle2, Mail, Phone, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { generatePageMeta } from "@/lib/seo";
 import { ROUTES } from "@/lib/routes";
+import { BUSINESS_PHONE, BUSINESS_PHONE_HREF } from "@/lib/business";
 
 export const metadata = generatePageMeta({
   title: "Booking Confirmed",
@@ -13,9 +14,10 @@ export const metadata = generatePageMeta({
 export default async function BookingSuccessPage({
   searchParams,
 }: {
-  searchParams: Promise<{ id?: string }>;
+  searchParams: Promise<{ ref?: string; id?: string }>;
 }) {
-  const { id } = await searchParams;
+  const { ref, id } = await searchParams;
+  const bookingRef = ref ?? id;
 
   return (
     <main className="min-h-screen bg-brand-bg flex items-center justify-center px-4 py-24">
@@ -39,10 +41,10 @@ export default async function BookingSuccessPage({
               <h1 className="text-3xl font-bold text-brand-text tracking-tight">
                 You&apos;re booked in! 🎉
               </h1>
-              {id && (
+              {bookingRef && (
                 <p className="text-brand-muted text-sm mt-2">
                   Booking reference:{" "}
-                  <span className="font-mono font-semibold text-brand-text">{id}</span>
+                  <span className="font-mono font-semibold text-brand-text">{bookingRef}</span>
                 </p>
               )}
             </div>
@@ -84,11 +86,11 @@ export default async function BookingSuccessPage({
 
             {/* Phone */}
             <a
-              href="tel:+61428276935"
+              href={BUSINESS_PHONE_HREF}
               className="flex items-center gap-2 text-sm text-brand-muted hover:text-brand transition-colors"
             >
               <Phone className="w-3.5 h-3.5" />
-              Questions? Call +61 428 276 935
+              Questions? Call {BUSINESS_PHONE}
             </a>
 
           </div>

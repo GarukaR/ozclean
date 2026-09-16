@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createBookingAndPaymentLink } from "@/server/actions/booking";
 import { prisma } from "@/lib/prisma";
-import { isBookingTimeSlot, getScheduledAtForSlot } from "@/lib/booking-slots";
-import { toZonedTime } from 'date-fns-tz';
-import { format } from 'date-fns';
+import {
+  isBookingTimeSlot,
+  getScheduledAtForSlot,
+  getTodayInBookingTimeZone,
+} from "@/lib/booking-slots";
+import { releaseExpiredPendingBookings } from "@/lib/booking-holds";
+import { getClientIdentifier, rateLimit } from "@/lib/rate-limit";
 
 type ServiceCountConfig = {
   unit: string;
@@ -37,8 +41,20 @@ function getServiceCountConfig(serviceRecord: {
   };
 }
 
+// Each submission writes a booking row and calls Square, so cap how often one client can post.
+const RATE_LIMIT = { limit: 10, windowMs: 10 * 60 * 1000 };
+
 export async function POST(req: NextRequest) {
   try {
+    const limit = rateLimit(`create-checkout:${getClientIdentifier(req)}`, RATE_LIMIT);
+
+    if (!limit.allowed) {
+      return NextResponse.json(
+        { error: "Too many booking attempts. Please try again shortly." },
+        { status: 429, headers: { "Retry-After": String(limit.retryAfterSeconds) } }
+      );
+    }
+
     const body = await req.json();
     const {
       name,
@@ -79,9 +95,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Disallow same-day bookings: compute current date in Australia/Sydney timezone
-    const nowSydney = toZonedTime(new Date(), 'Australia/Sydney');
-    const todaySydney = format(nowSydney, 'yyyy-MM-dd');
+    // Disallow same-day bookings: compare against the current date in the booking timezone
+    const todaySydney = getTodayInBookingTimeZone();
     if (String(date) <= todaySydney) {
       return NextResponse.json({ error: 'Bookings must be made at least one day in advance.' }, { status: 400 });
     }
@@ -103,6 +118,8 @@ export async function POST(req: NextRequest) {
     }
 
     const scheduledAt = getScheduledAtForSlot(String(date), String(time));
+    await releaseExpiredPendingBookings(prisma, scheduledAt);
+
     const existingBooking = await prisma.booking.findFirst({
       where: {
         scheduledAt,
@@ -166,7 +183,7 @@ export async function POST(req: NextRequest) {
     if (!result.success) {
       return NextResponse.json(
         { error: result.error || "Failed to create booking" },
-        { status: 400 }
+        { status: result.conflict ? 409 : 400 }
       );
     }
 
