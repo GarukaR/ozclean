@@ -13,14 +13,25 @@ export const metadata = generatePageMeta({
 const SERVICES = [
   {
     icon: Building2,
-    title: "Commercial Cleaning",
-    desc: "Tailored cleaning for offices, retail spaces, and commercial properties. We work around your hours.",
+    title: "AirBnB Cleaning",
+    desc: "Regular home cleaning tailored to your schedule. Weekly, fortnightly, or one-off.",
     price: "From $150",
-    href: "/services/commercial",
-    highlights: ["After-hours available", "Dedicated team", "Weekly or daily"],
+    href: "/services/airbnb",
+    highlights: ["Reliable and Punctual", "Professional Quality", "Flexible scheduling"],
     featured: true,
     bookable: false,
-    priceLabel: "per session",
+    priceLabel: "quote based",
+  },
+  {
+    icon: ArrowLeftRight,
+    title: "Move In / Move Out",
+    desc: "Bond-back ready cleaning for end of lease or moving into a new property.",
+    price: "From $180",
+    href: "/services/move",
+    highlights: ["Bond clean guarantee", "Real estate checklist", "Re-clean guarantee"],
+    featured: false,
+    bookable: false,
+    priceLabel: "per property",
   },
   {
     icon: Home,
@@ -34,6 +45,17 @@ const SERVICES = [
     priceLabel: "hourly or flat-rate",
   },
   {
+    icon: Building2,
+    title: "Office & Commercial Cleaning",
+    desc: "Tailored cleaning for offices, retail spaces, and commercial properties. We work around your hours.",
+    price: "From $150",
+    href: "/services/commercial",
+    highlights: ["After-hours available", "Dedicated team", "Weekly or daily"],
+    featured: false,
+    bookable: false,
+    priceLabel: "per session",
+  },
+  {
     icon: Sparkles,
     title: "Spring Deep Cleaning",
     desc: "A thorough top-to-bottom clean. Inside appliances, grout lines, every corner.",
@@ -43,17 +65,6 @@ const SERVICES = [
     featured: false,
     bookable: false,
     priceLabel: "per session",
-  },
-  {
-    icon: ArrowLeftRight,
-    title: "Move In / Move Out",
-    desc: "Bond-back ready cleaning for end of lease or moving into a new property.",
-    price: "From $180",
-    href: "/services/move",
-    highlights: ["Bond clean guarantee", "Real estate checklist", "Re-clean guarantee"],
-    featured: false,
-    bookable: false,
-    priceLabel: "per property",
   },
   {
     icon: Wind,
@@ -84,7 +95,7 @@ export default function ServicesPage() {
     <main className="min-h-screen bg-brand-bg">
 
       {/* ── Hero ── */}
-      <section className="bg-white pt-32 pb-16 border-b border-brand-border">
+      <section className="bg-white pt-16 pb-16 border-b border-brand-border">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="max-w-2xl">
             <p className="text-brand text-sm font-semibold uppercase tracking-widest mb-3">Our Services</p>
@@ -114,8 +125,8 @@ export default function ServicesPage() {
             <div
               key={title}
               className={`rounded-3xl border p-8 flex flex-col sm:flex-row gap-6 items-start justify-between transition-all duration-200 hover:shadow-lg ${featured
-                  ? "bg-gradient-to-br from-brand to-brand-accent border-brand-accent shadow-lg shadow-brand-accent/20"
-                  : "bg-white border-brand-border hover:border-brand-accent/40"
+                ? "bg-gradient-to-br from-brand to-brand-accent border-brand-accent shadow-lg shadow-brand-accent/20"
+                : "bg-white border-brand-border hover:border-brand-accent/40"
                 }`}
             >
               <div className="flex gap-5 items-start flex-1">

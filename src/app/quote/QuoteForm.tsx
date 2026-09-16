@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
@@ -17,24 +17,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ROUTES } from "@/lib/routes";
+import { SERVICES as SERVICE_CATALOG } from "@/lib/services";
 import { quoteSchema, type QuoteFormData } from "@/lib/quote";
 
-type ApiServiceOption = {
-  id: string;
-  name: string;
-};
-
-const SERVICES = [
-  "Short-Term Rental/Airbnb Cleaning",
-  "Residential Cleaning",
-  "Spring Deep Cleaning",
-  "Move In / Move Out",
-  "Window Cleaning",
-  "Office Cleaning",
-  "Deep Bathroom Cleaning",
-  "Deep Kitchen Cleaning",
-  "Wheely Bin Cleaning",
-  "Commercial Cleaning",
+const SERVICE_OPTIONS = [
+  ...Object.values(SERVICE_CATALOG).map((service) => service.title),
   "Not sure — need advice",
 ];
 
@@ -84,40 +71,6 @@ function SuccessState() {
 export default function QuoteForm() {
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [serviceOptions, setServiceOptions] = useState<string[]>(SERVICES);
-  const [isServiceLoading, setIsServiceLoading] = useState(true);
-
-  useEffect(() => {
-    let mounted = true;
-
-    async function loadServices() {
-      setIsServiceLoading(true);
-      try {
-        const response = await fetch("/api/services", { cache: "no-store" });
-        if (!response.ok) {
-          throw new Error("Failed to fetch services");
-        }
-
-        const data = (await response.json()) as { services?: ApiServiceOption[] };
-        if (!mounted) return;
-
-        const dynamicServices = (data.services ?? []).map((service) => service.name);
-        const mergedServices = Array.from(new Set([...dynamicServices, "Not sure — need advice"]));
-        if (mergedServices.length > 0) {
-          setServiceOptions(mergedServices);
-        }
-      } catch (error) {
-        console.error("[QuoteForm] Failed to load service options:", error);
-      } finally {
-        if (mounted) setIsServiceLoading(false);
-      }
-    }
-
-    void loadServices();
-    return () => {
-      mounted = false;
-    };
-  }, []);
 
   const {
     register,
@@ -203,10 +156,10 @@ export default function QuoteForm() {
           <FieldWrapper label="Service Interested In" icon={Sparkles} error={errors.service?.message}>
             <Select onValueChange={(v) => setValue("service", v, { shouldValidate: true })}>
               <SelectTrigger className="border-brand-border focus:border-brand focus:ring-brand">
-                <SelectValue placeholder={isServiceLoading ? "Loading services..." : "Select a service"} />
+                <SelectValue placeholder="Select a service" />
               </SelectTrigger>
               <SelectContent>
-                {serviceOptions.map((s) => (
+                {SERVICE_OPTIONS.map((s) => (
                   <SelectItem key={s} value={s}>{s}</SelectItem>
                 ))}
               </SelectContent>

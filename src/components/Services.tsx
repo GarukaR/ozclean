@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Building2, Home, Sparkles, ArrowLeftRight, Trash2, ArrowRight } from "lucide-react";
+import { Building2, Home, Sparkles, ArrowLeftRight, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ROUTES, bookingWithService } from "@/lib/routes";
@@ -22,18 +22,30 @@ const SERVICES: Service[] = [
     icon: Building2,
     title: "Short-Term Rental (STR) / Airbnb Cleaning",
     description:
-      "Specialised turnover cleans for short-term rentals and Airbnb properties — fast, reliable, and guest-ready every time.",
+      "Specialised turnover cleans for short-term rentals and Airbnb properties: fast, reliable, and guest-ready every time.",
     features: [
       "Quick same-day turnovers",
       "Linen & towel change",
       "Restock essentials (toiletries, coffee)",
       "Inspection & guest-ready checklist",
     ],
-    href: "/services/short-term-rental",
+    href: "/services/airbnb",
     featured: true, // ← only one card should have featured: true
     bookable: false,
     price: "From $120",
     priceLabel: "per turnover",
+  },
+  {
+    icon: ArrowLeftRight,
+    title: "Move In / Move Out(Bond) Cleaning",
+    description:
+      "Leave your old place spotless or start fresh in your new one. We help you meet lease requirements and get your bond back.",
+    features: ["Bond clean guarantee", "Landlord approved", "Flexible timing"],
+    href: "/services/move",
+    featured: false,
+    bookable: false,
+    price: "From $180",
+    priceLabel: "per property",
   },
   {
     icon: Home,
@@ -48,6 +60,18 @@ const SERVICES: Service[] = [
     priceLabel: "hourly or flat-rate",
   },
   {
+    icon: Building2,
+    title: "Office & Commercial Cleaning",
+    description:
+      "Professional cleaning for offices, retail spaces, and commercial properties to keep your workplace spotless and presentable.",
+    features: ["Daily or scheduled cleans", "Office & workspace sanitising", "Custom commercial plans"],
+    href: "/services/commercial",
+    featured: false,
+    bookable: false,
+    price: "From $80",
+    priceLabel: "per visit",
+  },
+  {
     icon: Sparkles,
     title: "Spring Deep Cleaning",
     description:
@@ -59,19 +83,8 @@ const SERVICES: Service[] = [
     price: "From $200",
     priceLabel: "per session",
   },
-  {
-    icon: ArrowLeftRight,
-    title: "Move In / Move Out(Bond) Cleaning",
-    description:
-      "Leave your old place spotless or start fresh in your new one. We help you meet lease requirements and get your bond back.",
-    features: ["Bond clean guarantee", "Landlord approved", "Flexible timing"],
-    href: "/services/move",
-    featured: false,
-    bookable: false,
-    price: "From $180",
-    priceLabel: "per property",
-  },
-  // Window cleaning is hidden from this grid for now; re-import Wind from lucide-react to restore.
+  // Window and wheely bin cleaning are hidden from this grid for now; re-import Wind and
+  // Trash2 from lucide-react to restore them.
   // {
   //   icon: Wind,
   //   title: "Window Cleaning",
@@ -84,42 +97,30 @@ const SERVICES: Service[] = [
   //   price: "From $250",
   //   priceLabel: "per storey",
   // },
-  {
-    icon: Trash2,
-    title: "Wheely Bin Cleaning",
-    description:
-      "Keep your bins clean, hygienic, and odour-free with high-pressure washing and eco-friendly disinfectants.",
-    features: ["High-pressure wash", "Odour removal", "Eco-friendly sanitising"],
-    href: "/services/wheely-bin",
-    featured: false,
-    bookable: true,
-    price: "From $35",
-    priceLabel: "per bin",
-  },
-  {
-    icon: Trash2,
-    title: "Bathroom Deep Cleaning",
-    description:
-      "Keep your bathroom clean, hygienic, and odour-free with our thorough deep cleaning service.",
-    features: ["Tile & grout cleaning", "Fixture sanitisation", "Odour elimination"],
-    href: "/services/bathroom-deep-clean",
-    featured: false,
-    bookable: true,
-    price: "From $100",
-    priceLabel: "per session",
-  },
-  {
-    icon: Trash2,
-    title: "Kitchen Deep Cleaning",
-    description:
-      "Keep your kitchen clean, hygienic, and odour-free with our thorough deep cleaning service.",
-    features: ["Appliance cleaning", "Countertop sanitisation", "Odour elimination"],
-    href: "/services/kitchen-deep-clean",
-    featured: false,
-    bookable: true,
-    price: "From $100",
-    priceLabel: "per session",
-  },
+  // {
+  //   icon: Trash2,
+  //   title: "Bathroom Deep Cleaning",
+  //   description:
+  //     "Keep your bathroom clean, hygienic, and odour-free with our thorough deep cleaning service.",
+  //   features: ["Tile & grout cleaning", "Fixture sanitisation", "Odour elimination"],
+  //   href: "/services/bathroom-deep-clean",
+  //   featured: false,
+  //   bookable: true,
+  //   price: "From $100",
+  //   priceLabel: "per session",
+  // },
+  // {
+  //   icon: Trash2,
+  //   title: "Kitchen Deep Cleaning",
+  //   description:
+  //     "Keep your kitchen clean, hygienic, and odour-free with our thorough deep cleaning service.",
+  //   features: ["Appliance cleaning", "Countertop sanitisation", "Odour elimination"],
+  //   href: "/services/kitchen-deep-clean",
+  //   featured: false,
+  //   bookable: true,
+  //   price: "From $100",
+  //   priceLabel: "per session",
+  // },
 ];
 // ─────────────────────────────────────────────────────────────────────────────
 

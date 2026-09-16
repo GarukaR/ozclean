@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { BASE_METADATA } from "@/lib/seo";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,6 +30,7 @@ export default function RootLayout({
         {/* Pages render their own <main>; this is only the fixed-navbar offset. */}
         <div className="pt-16">{children}</div>
         <Footer />
+        <SpeedInsights />
       </body>
     </html>
   );

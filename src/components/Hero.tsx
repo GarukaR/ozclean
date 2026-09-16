@@ -32,19 +32,19 @@ import { ROUTES } from "@/lib/routes";
 // ─── Floating stat cards that appear over the image ───────────────────────────
 const STAT_CARDS = [
   {
-    value: "500+",
-    label: "Homes Cleaned",
+    value: "Reliable & Local",
+    label: "Serving South-East Melbourne",
     position: "top-6 -left-5 sm:-left-10",
     delay: "animation-delay-300",
   },
   {
-    value: "⭐ 4.9",
-    label: "Average Rating",
+    value: "Friendly & Professional",
+    label: "Experienced Cleaners",
     position: "bottom-16 -left-5 sm:-left-10",
     delay: "animation-delay-500",
   },
   {
-    value: "Same Day",
+    value: "Safe & Trusted",
     label: "Booking Available",
     position: "top-1/2 -right-5 sm:-right-10 -translate-y-1/2",
     delay: "animation-delay-700",
@@ -53,7 +53,7 @@ const STAT_CARDS = [
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen bg-brand-bg overflow-hidden flex items-center">
+    <section className="relative min-h-fit bg-brand-bg overflow-hidden flex items-center">
 
       {/* ── Background decorative blobs ── */}
       <div className="absolute inset-0 pointer-events-none">
@@ -74,7 +74,7 @@ export default function Hero() {
         <div className="grid md:grid-cols-2 gap-12 lg:gap-16 items-center">
 
           {/* ── Left: Content ── */}
-          <div className="flex flex-col gap-7 animate-fade-in-up items-center md:items-start">
+          <div className="flex flex-col gap-9 animate-fade-in-up items-center md:items-start">
 
             {/* Eyebrow badge */}
             <div className="flex">
@@ -88,7 +88,7 @@ export default function Hero() {
             </div>
 
             {/* Headline */}
-            <div className="space-y-2">
+            <div className="space-y-2 text-center md:text-left">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-brand-text leading-[1.1] tracking-tight">
                 A Spotless Space,{" "}
                 <span className="relative inline-block">
@@ -115,7 +115,7 @@ export default function Hero() {
 
             {/* Subheading */}
             <p className="text-brand-muted text-lg leading-relaxed max-w-md">
-              Trusted commercial and residential cleaning for homes and businesses across Melbourne.
+              Trusted <strong>Airbnb</strong>, commercial and residential cleaning for homes and businesses centered around Hampton Park.
               We handle the mess, you enjoy the results.
             </p>
 
@@ -168,7 +168,7 @@ export default function Hero() {
               <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-brand/20 aspect-[4/5] bg-gradient-to-br from-brand/20 to-brand-accent/20">
                 {/* Optimized image using next/image */}
                 <Image
-                  src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=800&q=80"
+                  src="https://images.pexels.com/photos/6195131/pexels-photo-6195131.jpeg"
                   alt="Professional cleaner at work in a bright modern home"
                   fill
                   className="object-cover"

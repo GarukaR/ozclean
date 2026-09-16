@@ -93,7 +93,7 @@ export default function ContactForm() {
         <FieldWrapper label="Full Name" icon={User} error={errors.name?.message}>
           <Input
             {...register("name")}
-            placeholder="Jane Smith"
+            placeholder="Don Bradman"
             className="border-brand-border focus:border-brand"
           />
         </FieldWrapper>
@@ -101,7 +101,7 @@ export default function ContactForm() {
           <Input
             {...register("email")}
             type="email"
-            placeholder="jane@email.com"
+            placeholder="don_bradman@email.com"
             className="border-brand-border focus:border-brand"
           />
         </FieldWrapper>

@@ -44,7 +44,7 @@ export default function QuotePage() {
             Get a free, no-obligation quote.
           </h1>
           <p className="text-brand-muted mt-2 text-base leading-relaxed">
-            Tell us about your space and what you need — we&apos;ll get back to you with a personalised price.
+            Tell us about your <strong>space</strong> and what you <strong>need</strong>, we&apos;ll get back to you with a personalised price.
           </p>
         </div>
 

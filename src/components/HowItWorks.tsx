@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Phone , CalendarCheck, Sparkles, ArrowRight } from "lucide-react";
+import { Phone, CalendarCheck, Sparkles, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/lib/routes";
 
@@ -53,7 +53,7 @@ export default function HowItWorks() {
             <span className="text-brand">3 simple steps.</span>
           </h2>
           <p className="mt-4 text-brand-muted text-lg leading-relaxed">
-            Whether you know exactly what you need or want to chat first, 
+            Whether you know exactly what you need or want to chat first,
             getting started takes just a few minutes.
           </p>
         </div>
@@ -77,19 +77,21 @@ export default function HowItWorks() {
                   <div className="lg:hidden absolute top-[52px] left-1/2 -translate-x-1/2 w-px h-full border-l-2 border-dashed border-brand/20 -z-10" />
                 )}
 
-                {/* Step circle */}
-                <div className="relative shrink-0">
-                  <div className="w-16 h-16 rounded-2xl bg-white border-2 border-brand/20 shadow-lg shadow-brand/10 flex items-center justify-center group-hover:border-brand transition-colors">
-                    <Icon className="w-7 h-7 text-brand" />
-                  </div>
-                  {/* Step number badge */}
-                  <div className="absolute -top-2.5 -right-2.5 w-6 h-6 rounded-full bg-brand flex items-center justify-center shadow-md">
-                    <span className="text-white text-[10px] font-bold">{step}</span>
-                  </div>
-                </div>
+
 
                 {/* Content card */}
                 <div className="w-full h-full bg-white rounded-3xl border border-brand-border p-7 flex flex-col gap-4 shadow-sm hover:shadow-md hover:border-brand/30 transition-all duration-300">
+                  {/* Step circle */}
+                  <div className="relative shrink-0 flex items-center justify-center mx-auto">
+                    <div className="w-16 h-16 rounded-2xl bg-white border border-brand/15 shadow-sm flex items-center justify-center transition-colors">
+                      <Icon className="w-7 h-7 text-brand" />
+                    </div>
+                    {/* Step number badge */}
+                    <div className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-brand flex items-center justify-center border-2 border-white shadow-sm">
+                      <span className="text-white text-[10px] font-bold leading-none">{step}</span>
+                    </div>
+                  </div>
+                  {/* Step content */}
                   <div className="flex flex-col gap-2">
                     <h3 className="text-xl font-bold text-brand-text">{title}</h3>
                     <p className="text-brand-muted text-sm leading-relaxed">{description}</p>

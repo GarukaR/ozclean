@@ -14,38 +14,38 @@ type Testimonial = {
 // ─── Testimonials data ────────────────────────────────────────────────────────
 const TESTIMONIALS: Testimonial[] = [
   {
-    name: "Sarah Mitchell",
-    location: "Fitzroy, VIC",
+    name: "Mathias Maurer",
+    location: "Berwick, VIC",
     service: "Residential Cleaning",
     rating: 5,
     text: "OzClean has been a game changer for our family. The team is always on time, thorough, and our house has never looked better. Highly recommend the Standard plan!",
-    avatar: "SM",
+    avatar: "MM",
     avatarBg: "bg-brand/10 text-brand",
   },
   {
-    name: "James Okoye",
+    name: "Shiya Okoye",
     location: "CBD, Melbourne",
     service: "Commercial Cleaning",
     rating: 5,
     text: "We use OzClean for our office every week. Professional, discreet, and the results are consistently excellent. Our team loves coming into a clean workspace on Monday mornings.",
-    avatar: "JO",
+    avatar: "SO",
     avatarBg: "bg-brand-accent-bg text-brand-accent-dark",
   },
   {
-    name: "Priya Sharma",
-    location: "Richmond, VIC",
+    name: "Jatin Sharma",
+    location: "Cranbourne, VIC",
     service: "Deep Cleaning",
-    rating: 5,
-    text: "Booked the deep clean before a big family event and I was blown away. They got into every corner — the grout, inside the oven, behind the fridge. Absolutely spotless.",
-    avatar: "PS",
+    rating: 4,
+    text: "Booked the deep clean before a big family event and I was blown away. They got into every corner, the grout, inside the oven, behind the fridge. Absolutely spotless.",
+    avatar: "JS",
     avatarBg: "bg-brand-bg text-brand-dark",
   },
   {
     name: "Tom & Lisa Berry",
-    location: "St Kilda, VIC",
+    location: "Hampton Park, VIC",
     service: "Move Out Clean",
     rating: 5,
-    text: "Got our full bond back thanks to OzClean. The landlord inspection went perfectly. Worth every cent — stress-free and professional from start to finish.",
+    text: "Got our full bond back thanks to OzClean. The landlord inspection went perfectly. Worth every cent, stress-free and professional from start to finish.",
     avatar: "TB",
     avatarBg: "bg-brand-accent/10 text-brand-accent-dark",
   },
@@ -54,22 +54,22 @@ const TESTIMONIALS: Testimonial[] = [
     location: "Southbank, VIC",
     service: "Window Cleaning",
     rating: 5,
-    text: "My apartment has floor-to-ceiling windows and I'd been putting off getting them cleaned for months. OzClean did an incredible job — streak-free and so fast.",
+    text: "My apartment has floor-to-ceiling windows and I'd been putting off getting them cleaned for months. OzClean did an incredible job, streak-free and so fast.",
     avatar: "AN",
     avatarBg: "bg-brand/10 text-brand-dark",
   },
   {
-    name: "David Park",
-    location: "Docklands, VIC",
+    name: "Trony Lee",
+    location: "Clayton, VIC",
     service: "Commercial Cleaning",
-    rating: 5,
+    rating: 4,
     text: "Running a café means cleanliness is everything. OzClean comes in after close and the place is immaculate every morning. Reliable, thorough, and great value.",
-    avatar: "DP",
+    avatar: "TL",
     avatarBg: "bg-brand-bg text-brand",
   },
   {
     name: "Megan Torres",
-    location: "Brunswick, VIC",
+    location: "Keyborogh, VIC",
     service: "Residential Cleaning",
     rating: 5,
     text: "I've tried three other cleaning services before OzClean. None of them came close. Same cleaner every visit, always remembers my preferences. Genuinely impressed.",
@@ -78,7 +78,7 @@ const TESTIMONIALS: Testimonial[] = [
   },
   {
     name: "Chris Halliday",
-    location: "Prahran, VIC",
+    location: "Pakenham, VIC",
     service: "Deep Cleaning",
     rating: 5,
     text: "Moved into a place that hadn't been cleaned properly in years. OzClean transformed it in one session. I couldn't believe it was the same apartment.",
@@ -161,7 +161,7 @@ export default function Testimonials() {
             <div className="w-px h-5 bg-brand-border" />
             <p className="text-sm font-bold text-brand-text">4.75 / 5</p>
             <div className="w-px h-5 bg-brand-border" />
-            <p className="text-sm text-brand-muted">500+ reviews</p>
+            <p className="text-sm text-brand-muted">100+ reviews</p>
           </div>
         </div>
       </div>

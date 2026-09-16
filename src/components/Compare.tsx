@@ -1,117 +1,54 @@
 import Link from "next/link";
-import { Check, X, Minus, ArrowRight} from "lucide-react";
+import { Check, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 // ─── Services config ──────────────────────────────────────────────────────────
 const SERVICES = [
   {
-    slug:     "residential",
-    name:     "General Cleaning",
-    tagline:  "Regular home maintenance",
-    href:     "/quote",
+    slug: "residential",
+    name: "Residential Cleaning",
+    tagline: "Regular home maintenance",
+    href: "/quote",
     featured: false,
-    badge:    null,
+    badge: null,
+    specialties: ["Dust and wipe bedrooms, bathrooms, and shared areas", "Vacuum carpets and mop hard floors", "Clean kitchen surfaces and everyday touchpoints"],
   },
   {
-    slug:     "deep-clean",
-    name:     "Deep Cleaning",
-    tagline:  "Complete top-to-bottom reset",
-    href:     "/quote",
+    slug: "deep-clean",
+    name: "Airbnb / Short‑Term Rental",
+    tagline: "Fast turnarounds for hosts",
+    href: "/quote",
     featured: true,
-    badge:    "Most Thorough",
+    badge: "Top Pick",
+    specialties: ["Reset bedrooms, bathrooms, and living areas", "Sanitise kitchens, sinks, and high-touch spots", "Make the property guest-ready between stays"],
   },
   {
-    slug:     "move",
-    name:     "Move In / Move Out",
-    tagline:  "Bond-back end of lease clean",
-    href:     "/quote",
+    slug: "move",
+    name: "Move In / Move Out",
+    tagline: "Bond-back end of lease clean",
+    href: "/quote",
     featured: false,
-    badge:    null,
+    badge: null,
+    specialties: ["Clean cupboards, wardrobes, and storage spaces", "Scrub kitchens, bathrooms, and fixtures", "Tackle detail areas for inspection-ready results"],
   },
 ];
 
-// ─── Comparison rows ──────────────────────────────────────────────────────────
-// true  = included  → green check
-// false = excluded  → grey ✕
-// null  = on request → dash
+// ─── Quick comparison rows ────────────────────────────────────────────────────
 
-type RowValue = boolean | null;
-
-const COMPARISON_ROWS: {
-  group:  string;
-  label:  string;
-  values: [RowValue, RowValue, RowValue];
+const QUICK_ROWS: {
+  label: string;
+  values: [string, string, string];
 }[] = [
-  // ── Standard tasks ──
-  { group: "Standard Tasks",     label: "All bedrooms cleaned & dusted",        values: [true,  true,  true]  },
-  { group: "Standard Tasks",     label: "Kitchen surfaces, sink & stovetop",    values: [false,  true,  true]  },
-  { group: "Standard Tasks",     label: "Bathrooms & toilets scrubbed",         values: [true,  true,  true]  },
-  { group: "Standard Tasks",     label: "Vacuuming all floors & rugs",          values: [true,  true,  true]  },
-  { group: "Standard Tasks",     label: "Mopping all hard floors",              values: [true,  true,  true]  },
-  { group: "Standard Tasks",     label: "Mirrors & glass surfaces",             values: [true,  true,  true]  },
-  { group: "Standard Tasks",     label: "Bins emptied throughout",              values: [true,  true,  true]  },
-  { group: "Standard Tasks",     label: "Light dusting of surfaces",            values: [true,  true,  true]  },
-  // ── Deep cleaning ──
-  { group: "Deep Cleaning",      label: "Inside oven & microwave",              values: [false, true,  true]  },
-  { group: "Deep Cleaning",      label: "Inside fridge",                        values: [false, true,  true]  },
-  { group: "Deep Cleaning",      label: "Behind & under appliances",            values: [false, true,  false] },
-  { group: "Deep Cleaning",      label: "Grout lines scrubbed & treated",       values: [false, true,  true]  },
-  { group: "Deep Cleaning",      label: "Skirting boards top to bottom",        values: [false, true,  true]  },
-  { group: "Deep Cleaning",      label: "Window sills & tracks",                values: [false, true,  true]  },
-  { group: "Deep Cleaning",      label: "Ceiling fans & light fittings",        values: [false, true,  false] },
-  { group: "Deep Cleaning",      label: "Walls spot-cleaned",                   values: [false, true,  true]  },
-  { group: "Deep Cleaning",      label: "All vents & exhaust fans",             values: [false, true,  false] },
-  // ── Move specific ──
-  { group: "Move In / Move Out", label: "Inside all cupboards & wardrobes",     values: [false, true,  true]  },
-  { group: "Move In / Move Out", label: "Rubbish removed from property",        values: [false, false, true]  },
-  { group: "Move In / Move Out", label: "Real estate checklist followed",       values: [false, false, true]  },
-  { group: "Move In / Move Out", label: "Bond-back guarantee",                  values: [false, false, true]  },
-  { group: "Move In / Move Out", label: "Free re-clean if inspection fails",    values: [false, false, true]  },
-  // ── Scheduling ──
-  { group: "Scheduling",         label: "One-off booking available",            values: [true,  true,  true]  },
-  { group: "Scheduling",         label: "Weekly / fortnightly recurring",       values: [true,  false, false] },
-  { group: "Scheduling",         label: "Same cleaner each visit",              values: [true,  null,  null]  },
+  { label: "Best for", values: ["Routine upkeep", "Fast host turnarounds", "Vacate / move-out cleans"] },
+  { label: "Main strength", values: ["Consistency", "Speed", "Inspection-ready detail"] },
+  { label: "Speciality focus", values: ["Same cleaner each visit", "Guest-ready kitchens and bathrooms", "Cupboards, wardrobes and hidden spots"] },
+  { label: "Best fit if you want", values: ["Regular maintenance", "Quick resets between bookings", "A bond-back focused clean"] },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-// Group comparison rows by category
-function groupRows(rows: typeof COMPARISON_ROWS) {
-  const result: { name: string; rows: typeof COMPARISON_ROWS }[] = [];
-  let current: { name: string; rows: typeof COMPARISON_ROWS } | null = null;
-  for (const row of rows) {
-    if (!current || current.name !== row.group) {
-      current = { name: row.group, rows: [] };
-      result.push(current);
-    }
-    current.rows.push(row);
-  }
-  return result;
-}
-
-function ValueIcon({ value }: { value: RowValue }) {
-  if (value === true) {
-    return (
-      <div className="w-5 h-5 rounded-full bg-brand/15 flex items-center justify-center mx-auto">
-        <Check className="w-3 h-3 text-brand" strokeWidth={3} />
-      </div>
-    );
-  }
-  if (value === null) {
-    return (
-      <div className="flex flex-col items-center gap-0.5 mx-auto">
-        <Minus className="w-3.5 h-3.5 text-brand-muted/40" strokeWidth={2} />
-        <span className="text-[9px] text-brand-muted/50 leading-none whitespace-nowrap">on request</span>
-      </div>
-    );
-  }
-  return <X className="w-3.5 h-3.5 text-brand-muted/30 mx-auto" strokeWidth={2.5} />;
-}
-
 export default function Compare() {
-  const groups = groupRows(COMPARISON_ROWS);
-
   return (
     <section className="bg-white py-24 sm:py-32">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
@@ -131,95 +68,92 @@ export default function Compare() {
           </p>
         </div>
 
-        {/* ── Comparison Table ── */}
-        <div className="rounded-3xl border border-brand-border overflow-hidden shadow-sm mb-6">
-
-          {/* ── Service header columns ── */}
-          <div className="grid grid-cols-4 border-b border-brand-border">
-
-            {/* Top-left label cell */}
-            <div className="p-5 bg-brand-bg border-r border-brand-border flex items-end">
-              <p className="text-xs font-semibold text-brand-muted uppercase tracking-widest">
-                What&apos;s included
-              </p>
-            </div>
-
-            {/* Service columns */}
-            {SERVICES.map(({ slug, name, tagline, featured, badge }, i) => (
-              <div
-                key={slug}
-                className={`p-5 flex flex-col gap-3 relative pt-8
-                  ${featured ? "bg-brand" : "bg-brand-bg"}
-                  ${i < SERVICES.length - 1 ? "border-r border-brand-border" : ""}
-                `}
-              >
-                {badge && (
-                  <div className="absolute top-3 inset-x-0 flex justify-center -translate-y-1/2">
-                    <Badge className={`font-semibold px-3 text-[10px] shadow-md
-                      ${featured
-                        ? "bg-white text-brand border-brand/20 shadow-brand/20"
-                        : "bg-brand text-white border-transparent shadow-brand/15"
-                      }`}>
+        {/* ── Service highlights ── */}
+        <div className="grid gap-4 lg:grid-cols-3 mb-6">
+          {SERVICES.map(({ slug, name, tagline, featured, badge, specialties }) => (
+            <div
+              key={slug}
+              className={`rounded-3xl border p-6 shadow-sm ${featured ? "border-brand/20 bg-brand text-white" : "border-brand-border bg-brand-bg"}`}
+            >
+              <div className="flex items-start justify-between gap-3 mb-4">
+                <div>
+                  {badge && (
+                    <Badge className={`mb-3 font-semibold px-3 text-[10px] shadow-md ${featured ? "bg-white text-brand border-transparent" : "bg-brand text-white border-transparent"}`}>
                       {badge}
                     </Badge>
-                  </div>
-                )}
-
-                <div>
-                  <p className={`font-bold text-sm ${featured ? "text-white" : "text-brand-text"}`}>
+                  )}
+                  <p className={`font-bold text-lg leading-tight ${featured ? "text-white" : "text-brand-text"}`}>
                     {name}
                   </p>
-                  <p className={`text-xs mt-0.5 leading-snug ${featured ? "text-white/65" : "text-brand-muted"}`}>
+                  <p className={`mt-1 text-sm leading-relaxed ${featured ? "text-white/75" : "text-brand-muted"}`}>
                     {tagline}
                   </p>
                 </div>
+                {featured && (
+                  <span className="text-[10px] uppercase tracking-[0.3em] text-white/70 pt-1">
+                    Most popular
+                  </span>
+                )}
+              </div>
+
+              <ul className="space-y-2">
+                <li className={`text-[11px] font-semibold uppercase tracking-widest mb-2 ${featured ? "text-white/70" : "text-brand-muted"}`}>
+                  Key Tasks
+                </li>
+                {specialties.map((specialty) => (
+                  <li key={specialty} className="flex items-start gap-2 text-sm leading-relaxed">
+                    <Check className={`mt-0.5 h-4 w-4 shrink-0 ${featured ? "text-white" : "text-brand"}`} strokeWidth={3} />
+                    <span className={featured ? "text-white/90" : "text-brand-text"}>{specialty}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        {/* ── Compact comparison strip ── */}
+        <div className="rounded-3xl border border-brand-border overflow-hidden shadow-sm mb-6">
+          <div className="grid grid-cols-4 border-b border-brand-border bg-brand-bg">
+            <div className="p-4 sm:p-5 border-r border-brand-border flex items-end">
+              <p className="text-xs font-semibold text-brand-muted uppercase tracking-widest">
+                Quick compare
+              </p>
+            </div>
+
+            {SERVICES.map(({ slug, name, featured }, i) => (
+              <div
+                key={slug}
+                className={`p-4 sm:p-5 flex flex-col gap-1 ${featured ? "bg-brand" : "bg-brand-bg"} ${i < SERVICES.length - 1 ? "border-r border-brand-border" : ""}`}
+              >
+                <p className={`font-bold text-sm ${featured ? "text-white" : "text-brand-text"}`}>
+                  {name}
+                </p>
+                <p className={`text-[11px] leading-snug ${featured ? "text-white/70" : "text-brand-muted"}`}>
+                  Specialty-led summary
+                </p>
               </div>
             ))}
           </div>
 
-          {/* ── Grouped comparison rows ── */}
-          {groups.map(({ name: groupName, rows }, gi) => (
-            <div key={groupName}>
-
-              {/* Group heading */}
-              <div className="grid grid-cols-4 bg-brand-text/[0.03] border-b border-brand-border">
-                <div className="col-span-4 px-5 py-2.5 flex items-center gap-2">
-                  <span className="w-1 h-3.5 rounded-full bg-brand inline-block shrink-0" />
-                  <span className="text-[11px] font-bold text-brand-text uppercase tracking-widest">
-                    {groupName}
-                  </span>
-                </div>
+          {QUICK_ROWS.map((row, rowIndex) => (
+            <div
+              key={row.label}
+              className={`grid grid-cols-4 ${rowIndex < QUICK_ROWS.length - 1 ? "border-b border-brand-border/50" : ""}`}
+            >
+              <div className="px-4 sm:px-5 py-3.5 border-r border-brand-border/50 flex items-center bg-white">
+                <span className="text-sm text-brand-text">{row.label}</span>
               </div>
 
-              {/* Feature rows */}
-              {rows.map(({ label, values }, ri) => {
-                const isLast = gi === groups.length - 1 && ri === rows.length - 1;
-                return (
-                  <div
-                    key={label}
-                    className={`grid grid-cols-4 hover:bg-brand-bg/60 transition-colors duration-150
-                      ${!isLast ? "border-b border-brand-border/50" : ""}`}
-                  >
-                    {/* Label */}
-                    <div className="px-5 py-3.5 flex items-center border-r border-brand-border/50">
-                      <span className="text-sm text-brand-text">{label}</span>
-                    </div>
-
-                    {/* Value cells */}
-                    {values.map((val, vi) => (
-                      <div
-                        key={vi}
-                        className={`px-4 py-3.5 flex items-center justify-center
-                          ${SERVICES[vi].featured ? "bg-brand/[0.05]" : ""}
-                          ${vi < values.length - 1 ? "border-r border-brand-border/50" : ""}
-                        `}
-                      >
-                        <ValueIcon value={val} />
-                      </div>
-                    ))}
-                  </div>
-                );
-              })}
+              {row.values.map((value, valueIndex) => (
+                <div
+                  key={value}
+                  className={`px-4 sm:px-5 py-3.5 flex items-center justify-center text-center ${SERVICES[valueIndex].featured ? "bg-brand/[0.05]" : "bg-white"} ${valueIndex < row.values.length - 1 ? "border-r border-brand-border/50" : ""}`}
+                >
+                  <span className={`text-sm leading-snug ${SERVICES[valueIndex].featured ? "text-brand-text" : "text-brand-muted"}`}>
+                    {value}
+                  </span>
+                </div>
+              ))}
             </div>
           ))}
 
@@ -251,7 +185,7 @@ export default function Compare() {
                     }`}
                 >
                   <Link href={href}>
-                    Quote Now <ArrowRight className="w-3 h-3" />
+                    Quote <ArrowRight className="w-3 h-3" />
                   </Link>
                 </Button>
               </div>
@@ -259,23 +193,6 @@ export default function Compare() {
           </div>
         </div>
 
-        {/* ── Legend ── */}
-        <div className="flex flex-wrap items-center justify-center gap-6 mb-16 text-xs text-brand-muted">
-          <div className="flex items-center gap-1.5">
-            <div className="w-4 h-4 rounded-full bg-brand/15 flex items-center justify-center shrink-0">
-              <Check className="w-2.5 h-2.5 text-brand" strokeWidth={3} />
-            </div>
-            Included
-          </div>
-          <div className="flex items-center gap-1.5">
-            <Minus className="w-3.5 h-3.5 text-brand-muted/40 shrink-0" />
-            Available on request
-          </div>
-          <div className="flex items-center gap-1.5">
-            <X className="w-3.5 h-3.5 text-brand-muted/30 shrink-0" />
-            Not included
-          </div>
-        </div>
       </div>
     </section>
   );

@@ -1,4 +1,5 @@
 import { generatePageMeta } from "@/lib/seo";
+import { BUSINESS_EMAIL, BUSINESS_PHONE } from "@/lib/business";
 import Link from "next/link";
 
 export const metadata = generatePageMeta({
@@ -32,7 +33,7 @@ const SECTIONS = [
   },
   {
     title: "Your Rights",
-    content: `You have the right to access, correct, or delete your personal information at any time. You may also opt out of marketing communications by clicking the unsubscribe link in any email we send, or by contacting us directly. To exercise any of these rights, please contact us at ozclean.au@gmail.com.`,
+    content: `You have the right to access, correct, or delete your personal information at any time. You may also opt out of marketing communications by clicking the unsubscribe link in any email we send, or by contacting us directly. To exercise any of these rights, please contact us at ${BUSINESS_EMAIL}.`,
   },
   {
     title: "Retention",
@@ -44,7 +45,7 @@ const SECTIONS = [
   },
   {
     title: "Contact Us",
-    content: `If you have any questions about this privacy policy or how we handle your personal information, please contact us at ozclean.au@gmail.com or call us on +61 428 276 935.`,
+    content: `If you have any questions about this privacy policy or how we handle your personal information, please contact us at ${BUSINESS_EMAIL} or call us on ${BUSINESS_PHONE}.`,
   },
 ];
 

@@ -11,13 +11,11 @@ import {
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 const FOOTER_LINKS = {
-  Services: [
-    { label: "Residential Cleaning", href: "/services/residential" },
-    { label: "Commercial Cleaning", href: "/services/commercial" },
-    { label: "Deep Cleaning", href: "/services/deep-clean" },
+  "Popular Services": [
+    { label: "AirBnB Cleaning", href: "/services/airbnb" },
     { label: "Move In / Move Out", href: "/services/move" },
-    { label: "Window Cleaning", href: "/services/windows" },
-    { label: "Wheely Bin Cleaning", href: "/services/wheely-bin" },
+    { label: "Residential Cleaning", href: "/services/residential" },
+    { label: "Office & Commercial Cleaning", href: "/services/commercial" },
   ],
   Company: [
     { label: "About Us", href: "/about" },
@@ -39,7 +37,7 @@ const SOCIAL_LINKS = [
 const CONTACT_INFO = [
   { icon: Phone, text: BUSINESS_PHONE, href: BUSINESS_PHONE_HREF },
   { icon: Mail, text: BUSINESS_EMAIL, href: BUSINESS_EMAIL_HREF },
-  { icon: MapPin, text: "Melbourne, VIC, Australia", href: "#" },
+  { icon: MapPin, text: "Hampton Park, VIC, Australia", href: "#" },
 ];
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -69,7 +67,7 @@ export default function Footer() {
             </Link>
 
             <p className="text-white/60 text-sm leading-relaxed max-w-xs">
-              Professional cleaning services that leave your space spotless, fresh, and sparkling. Trusted by thousands of homes and businesses.
+              Professional cleaning services that leave your space spotless, fresh, and sparkling. Trusted by Aussies across Melbourne.
             </p>
 
             {/* Contact Info */}

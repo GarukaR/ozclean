@@ -52,16 +52,25 @@ const TEAM = [
   },
 ];
 
+// Shortened list of service areas (simple list of names).
+// Includes Hampton Park and nearby suburbs.
 const SERVICE_AREAS = [
-  "Melbourne CBD", "Fitzroy", "Richmond", "South Yarra",
-  "St Kilda", "Prahran", "Brunswick", "Collingwood",
-  "Docklands", "Southbank", "Carlton", "Northcote",
+  "Hampton Park",
+  "Hallam",
+  "Endeavour Hills",
+  "Dandenong",
+  "Noble Park",
+  "Keysborough",
+  "Springvale",
+  "Cranbourne",
+  "Narre Warren",
+  "Berwick",
 ];
 
 const STATS = [
   { value: "2019", label: "Founded" },
-  { value: "500+", label: "Cleans completed" },
-  { value: "500+", label: "Happy customers" },
+  { value: "1000+", label: "Cleans completed" },
+  { value: "100+", label: "Happy customers" },
   { value: "4.75★", label: "Average rating" },
 ];
 // ─────────────────────────────────────────────────────────────────────────────
@@ -71,7 +80,7 @@ export default function AboutPage() {
     <main className="min-h-screen">
 
       {/* ── Hero ── */}
-      <section className="bg-brand-bg pt-32 pb-20 relative overflow-hidden">
+      <section className="bg-brand-bg pt-16 pb-20 relative overflow-hidden">
         <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-brand/8 blur-3xl pointer-events-none" />
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -131,7 +140,7 @@ export default function AboutPage() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="relative rounded-3xl overflow-hidden aspect-square shadow-xl">
               <Image
-                src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=800&q=80"
+                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80&q=80"
                 alt="OzClean founder"
                 fill
                 className="object-cover"
@@ -144,13 +153,13 @@ export default function AboutPage() {
               </h2>
               <div className="flex flex-col gap-4 text-brand-muted text-sm leading-relaxed">
                 <p>
-                  OzClean started when our founder Sarah Mitchell couldn&apos;t find a cleaning service she could actually trust. After years of unreliable bookings, inconsistent results, and harsh chemicals, she decided to build something better.
+                  OzClean started when our founder <strong>Kevin</strong> couldn&apos;t find a cleaning service he could actually trust. After years of unreliable bookings, inconsistent results, and harsh chemicals, he decided to build something better.
                 </p>
                 <p>
-                  What began as a one-woman operation in Fitzroy has grown into a team of 30+ dedicated professionals serving hundreds of homes and businesses across greater Melbourne.
+                  What began as a one-man operation in Hampton Park has grown into a team of 30+ dedicated professionals serving hundreds of homes and businesses across greater Melbourne.
                 </p>
                 <p>
-                  The mission hasn&apos;t changed — deliver spotless results, with people you can trust, using products that are safe for your family and the environment.
+                  The mission hasn&apos;t changed, deliver spotless results, with people you can trust, using products that are safe for your family and the environment.
                 </p>
               </div>
               <Button asChild className="bg-brand hover:bg-brand-dark text-white font-semibold gap-2 w-fit">
@@ -217,10 +226,10 @@ export default function AboutPage() {
             <div>
               <p className="text-brand text-sm font-semibold uppercase tracking-widest mb-3">Where We Operate</p>
               <h2 className="text-3xl sm:text-4xl font-bold text-brand-text leading-tight mb-4">
-                Serving greater Melbourne.
+                Serving South-East Melbourne.
               </h2>
               <p className="text-brand-muted text-sm leading-relaxed mb-8">
-                We currently service Melbourne&apos;s inner suburbs and CBD. Don&apos;t see your area? Get in touch, we&apos;re expanding regularly.
+                We currently service Melbourne&apos;s inner suburbs centered around Hampton Park. Don&apos;t see your area? Get in touch, we&apos;re expanding regularly.
               </p>
               <div className="flex flex-wrap gap-2 mb-8">
                 {SERVICE_AREAS.map((area) => (

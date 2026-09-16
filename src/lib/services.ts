@@ -75,10 +75,10 @@ export const SERVICES: Record<string, Service> = {
   commercial: {
     slug: "commercial",
     icon: Building2,
-    title: "Commercial Cleaning",
+    title: "Office & Commercial Cleaning",
     tagline: "A workspace your team deserves.",
     description:
-      "Professional commercial cleaning for offices, retail spaces, and businesses across Melbourne. We work around your schedule — not the other way around.",
+      "Reliable cleaning solutions for offices, retail spaces, and businesses across Melbourne. We work around your schedule — not the other way around.",
     price: "From $150",
     priceLabel: "per visit",
     priceNote: "No lock-in contracts. Cancel or change anytime.",
@@ -141,7 +141,7 @@ export const SERVICES: Record<string, Service> = {
     priceNote: "Hourly rates from $50–60/hr (depending on frequency). Flat-rates from $150–280 based on bedrooms. No commitment required.",
     bookable: true,
     heroImage:
-      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
     included: [
       "All bedrooms cleaned & dusted",
       "Kitchen surfaces, sink & stovetop",
@@ -186,6 +186,63 @@ export const SERVICES: Record<string, Service> = {
     ],
   },
 
+    airbnb: {
+      slug: "airbnb",
+      icon: Building2,
+      title: "Airbnb & Short-Term Rental Cleaning",
+      tagline: "Fast turnovers. Five-star guest impressions.",
+      description:
+        "Professional Airbnb and short-term rental cleaning designed for quick guest turnovers and consistent standards. We reset your property between stays, refresh essentials, and help every check-in feel spotless.",
+      price: "From $60/hr or custom turnover quote",
+      priceLabel: "hourly or turnover rate",
+      priceNote: "Flexible pricing for same-day, next-day, or scheduled changeovers. Request a custom quote based on property size and turnaround needs.",
+      bookable: true,
+      heroImage:
+        "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?auto=format&fit=crop&w=800&q=80",
+      included: [
+        "Bedrooms reset, dusted & vacuumed",
+        "Beds made with fresh linen",
+        "Bathrooms scrubbed, sanitised & restocked",
+        "Kitchen cleaned, surfaces wiped & dishes checked",
+        "Floors vacuumed and mopped throughout",
+        "Bins emptied and liners replaced",
+        "High-touch points sanitised between guests",
+        "Light tidying and presentation ready for check-in",
+      ],
+      highlights: [
+        { icon: "⏱️", label: "Quick guest turnover" },
+        { icon: "✨", label: "Hotel-standard presentation" },
+        { icon: "🔑", label: "Key safe or smart lock access" },
+      ],
+      faqs: [
+        {
+          q: "Can you clean between same-day checkout and check-in?",
+          a: "Yes. We offer fast turnaround cleaning for short-term rentals, subject to availability and access timing.",
+        },
+        {
+          q: "Do you change bed linen and towels?",
+          a: "Yes. We can make beds with supplied linen and replace towels so the property is ready for the next guest.",
+        },
+        {
+          q: "Can you restock guest essentials?",
+          a: "Yes — we can restock toiletries, tea, coffee, paper products, and other host-supplied essentials on request.",
+        },
+        {
+          q: "Do you work with key safes or smart locks?",
+          a: "Yes. We regularly service Airbnb properties with key safes, lockboxes, and smart lock access.",
+        },
+        {
+          q: "What if a guest leaves the property messy?",
+          a: "We can handle heavier reset cleans as needed. If extra work is required, we'll let you know before proceeding.",
+        },
+      ],
+      related: [
+        { slug: "deep-clean", title: "Deep Cleaning", desc: "A thorough top-to-bottom clean." },
+        { slug: "move", title: "Move In / Move Out", desc: "Leave your old place spotless or start fresh." },
+        { slug: "windows", title: "Window Cleaning", desc: "Crystal-clear windows inside and out." },
+      ],
+    },
+
   "deep-clean": {
     slug: "deep-clean",
     icon: Sparkles,
@@ -198,7 +255,7 @@ export const SERVICES: Record<string, Service> = {
     priceNote: "Exact quote provided upfront based on property size.",
     bookable: false,
     heroImage:
-      "https://images.unsplash.com/photo-1585771724684-38269d6639fd?auto=format&fit=crop&w=800&q=80",
+      "https://images.pexels.com/photos/6195951/pexels-photo-6195951.jpeg",
     included: [
       "Inside oven, microwave & fridge",
       "Behind & under all appliances",
@@ -308,13 +365,13 @@ export const SERVICES: Record<string, Service> = {
     title: "Window Cleaning",
     tagline: "See the world crystal clear.",
     description:
-      "Streak-free, sparkling windows for homes and businesses. Our pricing is based on the number of storeys. We use professional-grade tools and purified water — no smears, no residue, guaranteed.",
+      "Streak-free, sparkling windows for homes and businesses. Our pricing is based on the number of storeys. We use professional-grade tools and purified water. No smears, no residue, guaranteed.",
     price: "From $250",
     priceLabel: "per storey",
     priceNote: "Pricing calculated based on your property's storeys and window count. Multi-storey access available.",
     bookable: false,
     heroImage:
-      "https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?auto=format&fit=crop&w=800&q=80",
+      "https://images.pexels.com/photos/31435403/pexels-photo-31435403.jpeg",
     included: [
       "Inside & outside all windows",
       "Streak-free finish guaranteed",
@@ -371,7 +428,7 @@ export const SERVICES: Record<string, Service> = {
     priceNote: "Final price is calculated by number of bins.",
     bookable: true,
     heroImage:
-      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=800&q=80",
+      "https://images.pexels.com/photos/36002401/pexels-photo-36002401.jpeg",
     included: [
       "High-pressure internal wash",
       "External scrub and rinse",
