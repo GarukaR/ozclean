@@ -66,16 +66,21 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header
-      className={`
-        fixed top-0 left-0 right-0 z-50 transition-all duration-500 border-b
-        ${scrolled
-          ? "bg-white/70 dark:bg-black/40 backdrop-blur-xl backdrop-saturate-150 border-black/5 dark:border-white/10 shadow-sm"
-          : "bg-white dark:bg-black border-transparent"
-        }
-      `}
-    >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 grid grid-cols-3 items-center">
+    // z-60 keeps the pill stacked above the mobile Sheet's overlay/content
+    // (both z-40, see SheetOverlay/SheetContent className overrides below)
+    // so the drawer appears to slide out from underneath the pill instead
+    // of its corner overlapping and covering it.
+    <header className="fixed top-0 left-0 right-0 z-[60] px-3 sm:px-6 pt-3 sm:pt-4 pointer-events-none">
+      <div
+        className={`
+          pointer-events-auto max-w-6xl mx-auto px-4 sm:px-6 h-14 sm:h-16 grid grid-cols-3 items-center
+          rounded-full border transition-all duration-500
+          ${scrolled
+            ? "bg-brand-surface/90 backdrop-blur-xl backdrop-saturate-150 border-brand-border shadow-lg shadow-brand-text/10"
+            : "bg-brand-surface border-brand-border shadow-md shadow-brand-text/5"
+          }
+        `}
+      >
 
         {/* ── Logo ── */}
         <Logo className="justify-self-start" />
@@ -113,7 +118,7 @@ export default function Navbar() {
           <Button asChild className="bg-brand-accent hover:bg-brand-accent-dark text-white shadow-sm shadow-brand-accent/25">
             <Link href={ROUTES.QUOTE}>Get a Free Quote</Link>
           </Button>
-          <Button asChild className="bg-brand hover:bg-brand-dark text-white shadow-sm shadow-brand/25">
+          <Button asChild className="bg-brand-text hover:bg-brand-text/90 text-brand-bg shadow-sm shadow-brand-text/20">
             <Link href={ROUTES.BOOKING}>Book Now</Link>
           </Button>
         </div>
@@ -136,14 +141,10 @@ export default function Navbar() {
             {/* Required for accessibility */}
             <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
 
-            <div className="flex flex-col h-full">
-              {/* Sheet Header */}
-              <div className="flex items-center gap-2 px-6 py-5">
-                <Logo size="sm" />
-              </div>
-
-              <Separator />
-
+            {/* Top padding clears the floating navbar pill, which sits
+                above this drawer (z-60 vs z-40) rather than a logo header
+                repeated inside the drawer itself. */}
+            <div className="flex flex-col h-full pt-24 sm:pt-28">
               {/* Mobile Links */}
               <nav className="flex flex-col gap-1 p-4 flex-1">
                 {NAV_LINKS.map(({ label, href }) => (

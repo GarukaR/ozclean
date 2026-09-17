@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Libre_Caslon_Display } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
@@ -18,6 +18,13 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Hero headline only — not a sitewide serif.
+const libreCaslonDisplay = Libre_Caslon_Display({
+  variable: "--font-libre-caslon-display",
+  weight: "400",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = BASE_METADATA;
 
 export default function RootLayout({
@@ -32,10 +39,10 @@ export default function RootLayout({
           {THEME_INIT_SCRIPT}
         </Script>
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col justify-between min-h-screen`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${libreCaslonDisplay.variable} antialiased flex flex-col justify-between min-h-screen`}>
         <Navbar />
-        {/* Pages render their own <main>; this is only the fixed-navbar offset. */}
-        <div className="pt-16">{children}</div>
+        {/* Pages render their own <main>; this is only the floating-pill-navbar offset. */}
+        <div className="pt-20 sm:pt-24">{children}</div>
         <Footer />
         <SpeedInsights />
       </body>
