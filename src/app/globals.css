@@ -96,21 +96,39 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 
-  /* ── Your brand palette (prefixed to avoid shadcn conflicts) ── */
-  --brand: #0EA5E9;
-  --brand-dark: #0369A1;
-  --brand-accent: #14B8A6;
-  --brand-accent-dark: #0F766E;
-  --brand-accent-bg: #F0FDFA;
-  --brand-accent-border: #99F6E4;
-  --brand-bg: #F0F9FF;
+  /* ── Your brand palette (prefixed to avoid shadcn conflicts) ──
+     Calibrated off Tailwind's sky/teal stops rather than reused verbatim,
+     so the palette reads as chosen rather than scaffolding left in place. */
+  --brand: #1298D4;
+  --brand-dark: #0B6C99;
+  --brand-accent: #16AC98;
+  --brand-accent-dark: #0E7368;
+  --brand-accent-bg: #EEFBF8;
+  --brand-accent-border: #93EDDA;
+  --brand-bg: #EEF8FE;
   --brand-surface: #FFFFFF;
   --brand-text: #0C1A2E;
   --brand-muted: #485c7b;
-  --brand-border: #BAE6FD;
+  --brand-border: #B4E1F6;
 }
 
 .dark {
+  /* ── "Ink & Shine": Option D's higher-contrast evening palette ──
+     One saturated signature teal against near-black ink, replacing the
+     Option A daytime sky-blue + soft teal. Applied by the time-based
+     auto-theme script and the manual toggle (see ThemeToggle.tsx). */
+  --brand: #00D9B5;
+  --brand-dark: #00B89C;
+  --brand-accent: #00D9B5;
+  --brand-accent-dark: #00B89C;
+  --brand-accent-bg: rgba(0, 217, 181, 0.12);
+  --brand-accent-border: rgba(0, 217, 181, 0.3);
+  --brand-bg: #0A1220;
+  --brand-surface: #101B2E;
+  --brand-text: #EEF3F2;
+  --brand-muted: #9FB0AD;
+  --brand-border: rgba(238, 243, 242, 0.12);
+
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
@@ -161,5 +179,30 @@
   [data-scroll-locked] {
     padding-right: 0 !important;
     margin-right: 0 !important;
+  }
+}
+
+/* ── Logo hover: the squeegee stroke redraws itself, like one wipe pass ── */
+.ozclean-logo-shaft {
+  stroke-dasharray: 11;
+  stroke-dashoffset: 0;
+}
+.ozclean-logo:hover .ozclean-logo-shaft,
+.ozclean-logo:focus-visible .ozclean-logo-shaft {
+  animation: ozclean-wipe 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes ozclean-wipe {
+  from {
+    stroke-dashoffset: 11;
+    opacity: 0.35;
+  }
+  to {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ozclean-logo-shaft {
+    animation: none !important;
   }
 }

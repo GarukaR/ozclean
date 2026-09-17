@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu } from "lucide-react";
 import { ROUTES } from "@/lib/routes";
 import { SERVICES } from "@/lib/services";
+import ThemeToggle from "@/components/ThemeToggle";
+import Logo from "@/components/Logo";
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -44,11 +45,14 @@ const SERVICE_LINKS = Object.values(SERVICES).map(({ slug, title }) => ({
   href: `${ROUTES.SERVICES}/${slug}`,
 }));
 
-const HOME_SERVICE_SLUGS = new Set(["residential", "deep-clean", "move"]);
+// Airbnb turnovers and Move In/Out are the two services OzClean is built
+// around — group them together in the mobile menu so that framing carries
+// through the nav, not just the homepage.
+const SPECIALTY_SLUGS = new Set(["airbnb", "move"]);
 
 const GROUPED_SERVICE_LINKS = {
-  home: SERVICE_LINKS.filter((service) => HOME_SERVICE_SLUGS.has(service.slug)),
-  specialty: SERVICE_LINKS.filter((service) => !HOME_SERVICE_SLUGS.has(service.slug)),
+  specialty: SERVICE_LINKS.filter((service) => SPECIALTY_SLUGS.has(service.slug)),
+  home: SERVICE_LINKS.filter((service) => !SPECIALTY_SLUGS.has(service.slug)),
 };
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -58,10 +62,6 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const isServicesPath = pathname === ROUTES.SERVICES || pathname.startsWith(`${ROUTES.SERVICES}/`);
-
-  // Homepage: transparent until scrolled. All other pages: always solid.
-  const isHome = pathname === ROUTES.HOME;
-  const showBg = scrolled || !isHome;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -75,30 +75,20 @@ export default function Navbar() {
   return (
     <header
       className={`
-        fixed top-0 left-0 right-0 z-50 transition-all duration-300
-        ${showBg
-          ? "bg-white/90 backdrop-blur-md border-b border-brand-border shadow-sm"
-          : "bg-transparent"
+        fixed top-0 left-0 right-0 z-50 transition-all duration-500 border-b
+        ${scrolled
+          ? "bg-white/70 dark:bg-black/40 backdrop-blur-xl backdrop-saturate-150 border-black/5 dark:border-white/10 shadow-sm"
+          : "bg-white dark:bg-black border-transparent"
         }
       `}
     >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 grid grid-cols-3 items-center">
 
         {/* ── Logo ── */}
-        <Link href={ROUTES.HOME} className="flex items-center gap-2 shrink-0">
-          <Image
-            src="/logo/logo5.svg"
-            alt="Oz Clean"
-            width={32}
-            height={32}
-            className="w-8 h-8 bg-transparent rounded-full p-1"
-            priority
-          />
-          <span className="font-bold text-brand-dark">Oz<span className="font-bold text-brand">CLEAN</span></span>
-        </Link>
+        <Logo className="justify-self-start" />
 
-        {/* ── Desktop Nav (hidden on mobile) ── */}
-        <NavigationMenu className="hidden md:flex">
+        {/* ── Desktop Nav (hidden on mobile) — centered ── */}
+        <NavigationMenu className="hidden md:flex justify-self-center">
           <NavigationMenuList>
             {NAV_LINKS.map(({ label, href }) => (
               <NavigationMenuItem key={label}>
@@ -120,27 +110,29 @@ export default function Navbar() {
         </NavigationMenu>
 
         {/* ── Desktop CTAs ── */}
-        <div className="hidden md:flex items-center gap-3">
+        <div className="hidden md:flex items-center gap-3 justify-self-end">
+          <ThemeToggle />
           <Button asChild className="bg-brand-accent hover:bg-brand-accent-dark text-white shadow-sm shadow-brand-accent/25">
-            <Link href={ROUTES.QUOTE}>Get a Quote</Link>
+            <Link href={ROUTES.QUOTE}>Get a Free Quote</Link>
           </Button>
           <Button asChild className="bg-brand hover:bg-brand-dark text-white shadow-sm shadow-brand/25">
             <Link href={ROUTES.BOOKING}>Book Now</Link>
           </Button>
         </div>
 
-        {/* ── Mobile Menu (Sheet) — hidden on desktop ── */}
-        <Sheet open={open} onOpenChange={setOpen}>
-          <SheetTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden"
-              aria-label="Open menu"
-            >
-              <Menu className="w-5 h-5" />
-            </Button>
-          </SheetTrigger>
+        {/* ── Mobile: theme toggle + Menu (Sheet) — hidden on desktop ── */}
+        <div className="flex md:hidden items-center gap-2 justify-self-end col-start-3">
+          <ThemeToggle />
+          <Sheet open={open} onOpenChange={setOpen}>
+            <SheetTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Open menu"
+              >
+                <Menu className="w-5 h-5" />
+              </Button>
+            </SheetTrigger>
 
           <SheetContent side="right" className="w-72 p-0">
             {/* Required for accessibility */}
@@ -149,15 +141,7 @@ export default function Navbar() {
             <div className="flex flex-col h-full">
               {/* Sheet Header */}
               <div className="flex items-center gap-2 px-6 py-5">
-                <Image
-                  src="/logo/logo5.svg"
-                  alt="Oz Clean"
-                  width={28}
-                  height={28}
-                  className="w-7 h-7 bg-transparent rounded-full p-1"
-                />
-                <span className="font-bold text-brand-dark">Oz<span className="font-bold text-brand">CLEAN</span></span>
-
+                <Logo size="sm" />
               </div>
 
               <Separator />
@@ -204,10 +188,10 @@ export default function Navbar() {
 
                             <div className="mt-1 px-3">
                               <p className="text-[11px] font-semibold uppercase tracking-wide text-brand/70">
-                                Home Cleaning
+                                Our Specialties
                               </p>
                               <div className="mt-1 flex flex-col gap-1">
-                                {GROUPED_SERVICE_LINKS.home.map(({ label: serviceLabel, href: serviceHref }) => (
+                                {GROUPED_SERVICE_LINKS.specialty.map(({ label: serviceLabel, href: serviceHref }) => (
                                   <SheetClose asChild key={serviceHref}>
                                     <Link
                                       href={serviceHref}
@@ -228,10 +212,10 @@ export default function Navbar() {
 
                             <div className="mt-1 px-3">
                               <p className="text-[11px] font-semibold uppercase tracking-wide text-brand/70">
-                                Specialty Cleaning
+                                Other Services
                               </p>
                               <div className="mt-1 flex flex-col gap-1">
-                                {GROUPED_SERVICE_LINKS.specialty.map(({ label: serviceLabel, href: serviceHref }) => (
+                                {GROUPED_SERVICE_LINKS.home.map(({ label: serviceLabel, href: serviceHref }) => (
                                   <SheetClose asChild key={serviceHref}>
                                     <Link
                                       href={serviceHref}
@@ -285,7 +269,8 @@ export default function Navbar() {
               </div>
             </div>
           </SheetContent>
-        </Sheet>
+          </Sheet>
+        </div>
 
       </div>
     </header>
