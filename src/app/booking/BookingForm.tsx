@@ -479,7 +479,7 @@ export default function BookingForm({
                   return (
                     <label
                       key={addon.id}
-                      className="flex items-center justify-between gap-3 rounded-lg border border-brand-border bg-white px-3 py-2 cursor-pointer hover:border-brand/40"
+                      className="flex items-center justify-between gap-3 rounded-lg border border-brand-border bg-brand-surface px-3 py-2 cursor-pointer hover:border-brand/40"
                     >
                       <div className="flex items-center gap-2">
                         <input
@@ -525,7 +525,7 @@ export default function BookingForm({
               </div>
 
               {estimatedTotal !== null && (
-                <div className="bg-white rounded-lg p-3 border border-brand-border">
+                <div className="bg-brand-surface rounded-lg p-3 border border-brand-border">
                   <p className="text-xs text-brand-muted uppercase tracking-wide font-semibold mb-1">Estimated Total</p>
                   <p className="text-2xl font-bold text-brand">
                     ${estimatedTotal.toFixed(0)} AUD
@@ -561,12 +561,12 @@ export default function BookingForm({
           )}
 
           {catalogError && (
-            <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-2">
+            <p className="text-sm text-red-600 bg-red-50 border border-red-200 dark:bg-red-950/40 dark:border-red-800/50 dark:text-red-300 rounded-lg px-4 py-2">
               {catalogError}
             </p>
           )}
 
-          <p className="bg-yellow-50 border border-yellow-200 text-yellow-800 rounded-lg px-4 py-2 text-sm font-medium">
+          <p className="bg-amber-50 border border-amber-200 text-amber-800 dark:bg-amber-950/40 dark:border-amber-800/50 dark:text-amber-200 rounded-lg px-4 py-2 text-sm font-medium">
             For any service not listed, please contact us directly or get a quote.
           </p>
           <FieldWrapper label="Preferred Date" icon={CalendarCheck} error={errors.date?.message}>
@@ -649,8 +649,8 @@ export default function BookingForm({
 
       {/* Submit */}
       {checkoutError && (
-        <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3">
-          <p className="text-sm text-red-600 leading-relaxed">{checkoutError}</p>
+        <div className="bg-red-50 border border-red-200 dark:bg-red-950/40 dark:border-red-800/50 rounded-xl px-4 py-3">
+          <p className="text-sm text-red-600 dark:text-red-300 leading-relaxed">{checkoutError}</p>
         </div>
       )}
       <Button

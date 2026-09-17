@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SERVICES, getAllServiceSlugs } from "@/lib/services";
 import { ROUTES, bookingWithService } from "@/lib/routes";
+import Reveal from "@/components/Reveal";
 
 // ─── Static params for Next.js static export ─────────────────────────────────
 export function generateStaticParams() {
@@ -64,7 +65,7 @@ export default async function ServicePage({
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left — text */}
-            <div className="flex flex-col gap-6">
+            <Reveal className="flex flex-col gap-6">
               <Badge className="bg-brand-accent-bg text-brand-accent-dark border-brand-accent-border w-fit gap-1.5">
                 <Icon className="w-3.5 h-3.5" />
                 {service.title}
@@ -77,7 +78,7 @@ export default async function ServicePage({
                   </span>
                 )}
               </h1>
-                <p className="text-brand-accent-dark text-lg leading-relaxed max-w-md">
+                <p className="text-brand-muted text-lg leading-relaxed max-w-md">
                 {service.description}
               </p>
 
@@ -86,7 +87,7 @@ export default async function ServicePage({
                 {service.highlights.map(({ icon, label }) => (
                   <div
                     key={label}
-                    className="flex items-center gap-1.5 bg-white border border-brand-border rounded-full px-3 py-1.5"
+                    className="flex items-center gap-1.5 bg-brand-surface border border-brand-border rounded-full px-3 py-1.5"
                   >
                     <span>{icon}</span>
                     <span className="text-xs font-medium text-brand-text">
@@ -119,10 +120,10 @@ export default async function ServicePage({
                   <Link href={ROUTES.QUOTE}>Get a Free Quote</Link>
                 </Button>
               </div>
-            </div>
+            </Reveal>
 
             {/* Right — image */}
-            <div className="relative rounded-3xl overflow-hidden aspect-[4/3] shadow-xl shadow-brand/15">
+            <Reveal delay={0.15} className="relative rounded-3xl overflow-hidden aspect-[4/3] shadow-xl shadow-brand/15">
               <Image
                 src={service.heroImage}
                 alt={service.title}
@@ -130,7 +131,7 @@ export default async function ServicePage({
                 fill
               />
               {/* Floating price card */}
-              <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm rounded-2xl px-5 py-3 shadow-lg border border-brand-border">
+              <div className="absolute bottom-4 left-4 bg-brand-surface/95 backdrop-blur-sm rounded-2xl px-5 py-3 shadow-lg border border-brand-border">
                   <p className="text-2xl font-black text-brand-accent-dark leading-none">
                   {service.price}
                 </p>
@@ -138,16 +139,16 @@ export default async function ServicePage({
                   {service.priceLabel}
                 </p>
               </div>
-            </div>
+            </Reveal>
           </div>
         </div>
       </section>
 
       {/* ── What's Included ── */}
-      <section className="bg-white py-20">
+      <section className="bg-brand-surface py-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="grid lg:grid-cols-2 gap-12 items-start">
-            <div>
+            <Reveal>
               <p className="text-brand text-sm font-semibold uppercase tracking-widest mb-3">
                 What&apos;s Included
               </p>
@@ -164,10 +165,10 @@ export default async function ServicePage({
                   </li>
                 ))}
               </ul>
-            </div>
+            </Reveal>
 
             {/* Pricing card */}
-            <div className="bg-gradient-to-br from-brand to-brand-accent rounded-3xl p-8 flex flex-col gap-5 relative overflow-hidden">
+            <Reveal delay={0.15} className="bg-gradient-to-br from-brand to-brand-accent rounded-3xl p-8 flex flex-col gap-5 relative overflow-hidden">
               <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/10 pointer-events-none" />
               <div className="relative flex flex-col gap-4">
                 <p className="text-white/70 text-xs font-semibold uppercase tracking-widest">
@@ -196,7 +197,7 @@ export default async function ServicePage({
                   ))}
                 </ul>
               </div>
-            </div>
+            </Reveal>
           </div>
         </div>
       </section>
@@ -204,17 +205,19 @@ export default async function ServicePage({
       {/* ── FAQs ── */}
       <section className="bg-brand-bg py-20">
         <div className="max-w-3xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12">
+          <Reveal className="text-center mb-12">
             <p className="text-brand text-sm font-semibold uppercase tracking-widest mb-3">
               FAQs
             </p>
             <h2 className="text-3xl sm:text-4xl font-bold text-brand-text">
               Common questions.
             </h2>
-          </div>
+          </Reveal>
           <div className="flex flex-col gap-3">
-            {service.faqs.map((faq) => (
-              <FAQItem key={faq.q} {...faq} />
+            {service.faqs.map((faq, index) => (
+              <Reveal key={faq.q} delay={(index % 4) * 0.06}>
+                <FAQItem {...faq} />
+              </Reveal>
             ))}
           </div>
           <div className="mt-10 text-center">
@@ -235,26 +238,27 @@ export default async function ServicePage({
       </section>
 
       {/* ── Related Services ── */}
-      <section className="bg-white py-16">
+      <section className="bg-brand-surface py-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <p className="text-sm font-semibold text-brand-muted uppercase tracking-widest mb-6">
             Related Services
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {service.related.map(({ slug, title, desc }) => (
-              <Link
-                key={slug}
-                href={`/services/${slug}`}
-                className="group bg-brand-bg rounded-2xl border border-brand-border p-5 hover:border-brand-accent/40 hover:shadow-md transition-all duration-200 flex flex-col gap-2"
-              >
-                <p className="font-semibold text-brand-text group-hover:text-brand-accent-dark transition-colors">
-                  {title}
-                </p>
-                <p className="text-sm text-brand-muted">{desc}</p>
-                <span className="text-xs text-brand font-semibold mt-1 flex items-center gap-1">
-                  Learn more <ArrowRight className="w-3 h-3" />
-                </span>
-              </Link>
+            {service.related.map(({ slug, title, desc }, index) => (
+              <Reveal key={slug} delay={index * 0.08}>
+                <Link
+                  href={`/services/${slug}`}
+                  className="group bg-brand-bg rounded-2xl border border-brand-border p-5 hover:border-brand-accent/40 hover:shadow-md hover:-translate-y-1 motion-reduce:hover:translate-y-0 transition-all duration-300 flex flex-col gap-2"
+                >
+                  <p className="font-semibold text-brand-text group-hover:text-brand-accent-dark transition-colors">
+                    {title}
+                  </p>
+                  <p className="text-sm text-brand-muted">{desc}</p>
+                  <span className="text-xs text-brand font-semibold mt-1 flex items-center gap-1">
+                    Learn more <ArrowRight className="w-3 h-3" />
+                  </span>
+                </Link>
+              </Reveal>
             ))}
           </div>
         </div>

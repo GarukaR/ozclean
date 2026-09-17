@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Phone, CalendarCheck, Sparkles, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/lib/routes";
+import Reveal from "@/components/Reveal";
 
 // ─── Steps config ─────────────────────────────────────────────────────────────
 const STEPS = [
@@ -44,10 +45,7 @@ export default function HowItWorks() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
 
         {/* ── Section Header ── */}
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <p className="text-brand text-sm font-semibold uppercase tracking-widest mb-3">
-            How It Works
-          </p>
+        <Reveal className="text-center max-w-2xl mx-auto mb-16">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-brand-text leading-tight tracking-tight">
             Clean your space in{" "}
             <span className="text-brand">3 simple steps.</span>
@@ -56,7 +54,7 @@ export default function HowItWorks() {
             Whether you know exactly what you need or want to chat first,
             getting started takes just a few minutes.
           </p>
-        </div>
+        </Reveal>
 
         {/* ── Steps ── */}
         <div className="relative">
@@ -70,7 +68,7 @@ export default function HowItWorks() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-6 items-stretch">
             {STEPS.map(({ step, icon: Icon, title, description, cta, alt }, index) => (
-              <div key={step} className="relative flex flex-col items-center text-center lg:items-center gap-5">
+              <Reveal key={step} delay={index * 0.12} className="relative flex flex-col items-center text-center lg:items-center gap-5 h-full">
 
                 {/* Mobile connector */}
                 {index < STEPS.length - 1 && (
@@ -80,14 +78,14 @@ export default function HowItWorks() {
 
 
                 {/* Content card */}
-                <div className="w-full h-full bg-white rounded-3xl border border-brand-border p-7 flex flex-col gap-4 shadow-sm hover:shadow-md hover:border-brand/30 transition-all duration-300">
+                <div className="w-full h-full bg-brand-surface rounded-3xl border border-brand-border p-7 flex flex-col gap-4 shadow-sm hover:shadow-md hover:border-brand/30 hover:-translate-y-1 motion-reduce:hover:translate-y-0 transition-all duration-300">
                   {/* Step circle */}
                   <div className="relative shrink-0 flex items-center justify-center mx-auto">
-                    <div className="w-16 h-16 rounded-2xl bg-white border border-brand/15 shadow-sm flex items-center justify-center transition-colors">
+                    <div className="w-16 h-16 rounded-2xl bg-brand-surface border border-brand/15 shadow-sm flex items-center justify-center transition-colors">
                       <Icon className="w-7 h-7 text-brand" />
                     </div>
                     {/* Step number badge */}
-                    <div className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-brand flex items-center justify-center border-2 border-white shadow-sm">
+                    <div className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-brand flex items-center justify-center border-2 border-brand-surface shadow-sm">
                       <span className="text-white text-[10px] font-bold leading-none">{step}</span>
                     </div>
                   </div>
@@ -136,7 +134,7 @@ export default function HowItWorks() {
                   )}
                 </div>
 
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>

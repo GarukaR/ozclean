@@ -7,6 +7,7 @@ import { AlertTriangle, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/lib/routes";
 import { BUSINESS_PHONE, BUSINESS_PHONE_HREF } from "@/lib/business";
+import Reveal from "@/components/Reveal";
 
 export default function Error({
   error,
@@ -21,8 +22,8 @@ export default function Error({
 
   return (
     <main className="min-h-screen bg-brand-bg flex items-center justify-center px-4 py-24">
-      <div className="max-w-lg w-full bg-white rounded-3xl border border-brand-border shadow-xl shadow-brand/8 p-10 flex flex-col items-center text-center gap-6">
-        <div className="w-20 h-20 rounded-full bg-red-50 flex items-center justify-center">
+      <Reveal className="max-w-lg w-full bg-brand-surface rounded-3xl border border-brand-border shadow-xl shadow-brand/8 p-10 flex flex-col items-center text-center gap-6">
+        <div className="w-20 h-20 rounded-full bg-red-50 dark:bg-red-950/40 flex items-center justify-center">
           <AlertTriangle className="w-10 h-10 text-red-500" />
         </div>
 
@@ -56,7 +57,7 @@ export default function Error({
         >
           Need help now? Call {BUSINESS_PHONE}
         </a>
-      </div>
+      </Reveal>
     </main>
   );
 }

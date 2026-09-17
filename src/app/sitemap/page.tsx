@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { generatePageMeta } from "@/lib/seo";
 import { ROUTES } from "@/lib/routes";
+import Reveal from "@/components/Reveal";
 
 export const metadata = generatePageMeta({
   title: "Sitemap",
@@ -49,19 +50,19 @@ const SITEMAP = [
 export default function SitemapPage() {
   return (
     <main className="min-h-screen bg-brand-bg">
-      <section className="bg-white pt-32 pb-16 border-b border-brand-border">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+      <section className="bg-brand-surface pt-32 pb-16 border-b border-brand-border">
+        <Reveal className="max-w-4xl mx-auto px-4 sm:px-6">
           <p className="text-brand text-sm font-semibold uppercase tracking-widest mb-3">Sitemap</p>
           <h1 className="text-4xl font-bold text-brand-text mb-3">All Pages</h1>
           <p className="text-brand-muted">A full list of every page on the OzClean website.</p>
-        </div>
+        </Reveal>
       </section>
 
       <section className="py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
-            {SITEMAP.map(({ category, links }) => (
-              <div key={category} className="flex flex-col gap-4">
+            {SITEMAP.map(({ category, links }, index) => (
+              <Reveal key={category} delay={(index % 2) * 0.1} className="flex flex-col gap-4">
                 <h2 className="text-sm font-bold text-brand-text uppercase tracking-widest flex items-center gap-2">
                   <span className="w-1 h-4 rounded-full bg-brand inline-block" />
                   {category}
@@ -71,7 +72,7 @@ export default function SitemapPage() {
                     <li key={href}>
                       <Link
                         href={href}
-                        className="group flex items-start justify-between gap-4 bg-white border border-brand-border rounded-xl px-4 py-3 hover:border-brand/40 hover:shadow-sm transition-all duration-200"
+                        className="group flex items-start justify-between gap-4 bg-brand-surface border border-brand-border rounded-xl px-4 py-3 hover:border-brand/40 hover:shadow-sm transition-all duration-200"
                       >
                         <div>
                           <p className="text-sm font-semibold text-brand-text group-hover:text-brand transition-colors">{label}</p>
@@ -82,7 +83,7 @@ export default function SitemapPage() {
                     </li>
                   ))}
                 </ul>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>

@@ -10,6 +10,7 @@ import {
   BUSINESS_PHONE_HREF,
 } from "@/lib/business";
 import ContactForm from "./ContactForm";
+import Reveal from "@/components/Reveal";
 
 export const metadata = generatePageMeta({
   title: "Contact Us",
@@ -72,7 +73,7 @@ const CONNECT_OPTIONS = [
     icon: ArrowRight,
     title: "Book Online",
     desc: "Know what you need? Skip the back-and-forth and book your clean directly.",
-    action: "Book a Clean",
+    action: "Book Now",
     href: ROUTES.BOOKING,
     style: "bg-brand-bg border border-brand-border",
     btnStyle: "bg-brand-accent hover:bg-brand-accent-dark text-white",
@@ -131,9 +132,9 @@ export default function ContactPage() {
     <main className="min-h-screen bg-brand-bg">
 
       {/* ── Hero ── */}
-      <section className="bg-white pt-16 pb-16 border-b border-brand-border">
+      <section className="bg-brand-surface pt-16 pb-16 border-b border-brand-border">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="max-w-2xl">
+          <Reveal className="max-w-2xl">
             <p className="text-brand text-sm font-semibold uppercase tracking-widest mb-3">Contact Us</p>
             <h1 className="text-4xl sm:text-5xl font-bold text-brand-text leading-tight tracking-tight mb-4">
               We&apos;d love to{" "}
@@ -142,7 +143,7 @@ export default function ContactPage() {
             <p className="text-brand-muted text-lg leading-relaxed">
               Whether you have a question, want to book a clean, or just want to say hello, we&apos;re here and happy to help.
             </p>
-          </div>
+          </Reveal>
         </div>
       </section>
 
@@ -150,21 +151,23 @@ export default function ContactPage() {
       <section className="py-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {CONNECT_OPTIONS.map(({ icon: Icon, title, desc, action, href, style, btnStyle }) => {
+            {CONNECT_OPTIONS.map(({ icon: Icon, title, desc, action, href, style, btnStyle }, index) => {
               const isDarkCard = style.includes("text-white");
               return (
-                <div key={title} className={`rounded-3xl p-7 flex flex-col gap-4 ${style}`}>
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isDarkCard ? "bg-white/20" : "bg-brand/10"}`}>
-                    <Icon className={`w-5 h-5 ${isDarkCard ? "text-white" : "text-brand"}`} />
+                <Reveal key={title} delay={index * 0.08} className="h-full">
+                  <div className={`h-full rounded-3xl p-7 flex flex-col gap-4 hover:-translate-y-1 motion-reduce:hover:translate-y-0 transition-transform duration-300 ${style}`}>
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isDarkCard ? "bg-white/20" : "bg-brand/10"}`}>
+                      <Icon className={`w-5 h-5 ${isDarkCard ? "text-white" : "text-brand"}`} />
+                    </div>
+                    <div>
+                      <p className={`font-bold text-lg ${isDarkCard ? "text-white" : "text-brand-text"}`}>{title}</p>
+                      <p className={`text-sm mt-1 leading-relaxed ${isDarkCard ? "text-white/80" : "text-brand-muted"}`}>{desc}</p>
+                    </div>
+                    <Button asChild className={`w-full font-semibold mt-auto ${btnStyle}`}>
+                      <Link href={href}>{action}</Link>
+                    </Button>
                   </div>
-                  <div>
-                    <p className={`font-bold text-lg ${isDarkCard ? "text-white" : "text-brand-text"}`}>{title}</p>
-                    <p className={`text-sm mt-1 leading-relaxed ${isDarkCard ? "text-white/80" : "text-brand-muted"}`}>{desc}</p>
-                  </div>
-                  <Button asChild className={`w-full font-semibold mt-auto ${btnStyle}`}>
-                    <Link href={href}>{action}</Link>
-                  </Button>
-                </div>
+                </Reveal>
               );
             })}
           </div>
@@ -177,15 +180,15 @@ export default function ContactPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
 
             {/* Form */}
-            <div className="lg:col-span-2 bg-white rounded-3xl border border-brand-border shadow-sm overflow-hidden">
+            <Reveal className="lg:col-span-2 bg-brand-surface rounded-3xl border border-brand-border shadow-sm overflow-hidden">
               <ContactForm />
-            </div>
+            </Reveal>
 
             {/* Sidebar */}
             <div className="flex flex-col gap-5">
 
               {/* Contact details */}
-              <div className="bg-white rounded-3xl border border-brand-border p-6 flex flex-col gap-4">
+              <Reveal delay={0.1} className="bg-brand-surface rounded-3xl border border-brand-border p-6 flex flex-col gap-4">
                 <p className="font-bold text-brand-text">Contact Details</p>
                 <ul className="flex flex-col gap-4">
                   {CONTACT_DETAILS.map(({ icon: Icon, label, value, href, sub }) => (
@@ -203,10 +206,10 @@ export default function ContactPage() {
                     </li>
                   ))}
                 </ul>
-              </div>
+              </Reveal>
 
               {/* Business hours */}
-              <div className="bg-white rounded-3xl border border-brand-border p-6 flex flex-col gap-4">
+              <Reveal delay={0.18} className="bg-brand-surface rounded-3xl border border-brand-border p-6 flex flex-col gap-4">
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4 text-brand-accent-dark" />
                   <p className="font-bold text-brand-text">Business Hours</p>
@@ -219,7 +222,7 @@ export default function ContactPage() {
                     </li>
                   ))}
                 </ul>
-              </div>
+              </Reveal>
 
             </div>
           </div>
@@ -229,7 +232,7 @@ export default function ContactPage() {
       {/* Service Areas */}
       <section id="map" className="pb-24">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="bg-white rounded-3xl border border-brand-border p-8 shadow-sm">
+          <Reveal className="bg-brand-surface rounded-3xl border border-brand-border p-8 shadow-sm">
             <h2 className="text-2xl font-bold text-brand-text mb-2">Service Areas</h2>
             <p className="text-brand-muted mb-6">
               We proudly serve the areas listed below. If you&apos;re unsure if we cover your area, just ask!
@@ -248,7 +251,7 @@ export default function ContactPage() {
                 </li>
               ))}
             </ul>
-          </div>
+          </Reveal>
         </div>
       </section>
     </main>

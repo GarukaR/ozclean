@@ -1,133 +1,23 @@
 import Link from "next/link";
-import { Building2, Home, Sparkles, ArrowLeftRight, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ROUTES, bookingWithService } from "@/lib/routes";
+import { SERVICES, type Service } from "@/lib/services";
+import Reveal from "@/components/Reveal";
 
-// ─── Config: Add, remove or edit services here ────────────────────────────────
-type Service = {
-  icon: React.ComponentType<{ className?: string }>;
-  title: string;
-  description: string;
-  features: string[];
-  href: string;
-  featured: boolean;
-  bookable: boolean;
-  price: string | null;
-  priceLabel: string | null;
-};
-
-const SERVICES: Service[] = [
-  {
-    icon: Building2,
-    title: "Short-Term Rental (STR) / Airbnb Cleaning",
-    description:
-      "Specialised turnover cleans for short-term rentals and Airbnb properties: fast, reliable, and guest-ready every time.",
-    features: [
-      "Quick same-day turnovers",
-      "Linen & towel change",
-      "Restock essentials (toiletries, coffee)",
-      "Inspection & guest-ready checklist",
-    ],
-    href: "/services/airbnb",
-    featured: true, // ← only one card should have featured: true
-    bookable: false,
-    price: "From $120",
-    priceLabel: "per turnover",
-  },
-  {
-    icon: ArrowLeftRight,
-    title: "Move In / Move Out(Bond) Cleaning",
-    description:
-      "Leave your old place spotless or start fresh in your new one. We help you meet lease requirements and get your bond back.",
-    features: ["Bond clean guarantee", "Landlord approved", "Flexible timing"],
-    href: "/services/move",
-    featured: false,
-    bookable: false,
-    price: "From $180",
-    priceLabel: "per property",
-  },
-  {
-    icon: Home,
-    title: "Residential Cleaning",
-    description:
-      "Regular home cleaning that keeps every room fresh, tidy, and welcoming. Customised to your home size and preferences.",
-    features: ["All rooms covered", "Fortnightly or weekly", "Same cleaner every time"],
-    href: "/services/residential",
-    featured: false,
-    bookable: true,
-    price: "$50–60/hr or $150–280",
-    priceLabel: "hourly or flat-rate",
-  },
-  {
-    icon: Building2,
-    title: "Office & Commercial Cleaning",
-    description:
-      "Professional cleaning for offices, retail spaces, and commercial properties to keep your workplace spotless and presentable.",
-    features: ["Daily or scheduled cleans", "Office & workspace sanitising", "Custom commercial plans"],
-    href: "/services/commercial",
-    featured: false,
-    bookable: false,
-    price: "From $80",
-    priceLabel: "per visit",
-  },
-  {
-    icon: Sparkles,
-    title: "Spring Deep Cleaning",
-    description:
-      "A thorough top-to-bottom clean for homes or offices that need extra attention. Perfect for spring cleans or before a big event.",
-    features: ["Inside appliances", "Grout & tile scrubbing", "Ceiling to floor"],
-    href: "/services/deep-clean",
-    featured: false,
-    bookable: false,
-    price: "From $200",
-    priceLabel: "per session",
-  },
-  // Window and wheely bin cleaning are hidden from this grid for now; re-import Wind and
-  // Trash2 from lucide-react to restore them.
-  // {
-  //   icon: Wind,
-  //   title: "Window Cleaning",
-  //   description:
-  //     "Crystal-clear windows inside and out. We use streak-free techniques for residential and multi-storey commercial buildings.",
-  //   features: ["Inside & outside", "Streak-free finish", "Multi-storey available"],
-  //   href: "/services/windows",
-  //   featured: false,
-  //   bookable: false,
-  //   price: "From $250",
-  //   priceLabel: "per storey",
-  // },
-  // {
-  //   icon: Trash2,
-  //   title: "Bathroom Deep Cleaning",
-  //   description:
-  //     "Keep your bathroom clean, hygienic, and odour-free with our thorough deep cleaning service.",
-  //   features: ["Tile & grout cleaning", "Fixture sanitisation", "Odour elimination"],
-  //   href: "/services/bathroom-deep-clean",
-  //   featured: false,
-  //   bookable: true,
-  //   price: "From $100",
-  //   priceLabel: "per session",
-  // },
-  // {
-  //   icon: Trash2,
-  //   title: "Kitchen Deep Cleaning",
-  //   description:
-  //     "Keep your kitchen clean, hygienic, and odour-free with our thorough deep cleaning service.",
-  //   features: ["Appliance cleaning", "Countertop sanitisation", "Odour elimination"],
-  //   href: "/services/kitchen-deep-clean",
-  //   featured: false,
-  //   bookable: true,
-  //   price: "From $100",
-  //   priceLabel: "per session",
-  // },
-];
-// ─────────────────────────────────────────────────────────────────────────────
+// ─── Homepage shows a curated subset of the full catalog ──────────────────────
+// Source of truth for title/price/description is lib/services.ts (shared with
+// the /services listing and /services/[slug] detail pages) so pricing can't
+// drift between pages. Window & wheely-bin cleaning are intentionally left off
+// this shortlist — see the full catalog at /services.
+const HOME_SLUGS = ["airbnb", "move", "residential", "commercial", "deep-clean"] as const;
+const FEATURED_SLUG: (typeof HOME_SLUGS)[number] = "airbnb";
 
 function FeaturedCard({ service }: { service: Service }) {
   const Icon = service.icon;
   return (
-    <div className="relative rounded-3xl bg-gradient-to-br from-brand to-brand-accent p-8 flex flex-col gap-6 overflow-hidden shadow-2xl shadow-brand-accent/25 h-full">
+    <div className="relative rounded-3xl bg-gradient-to-br from-brand to-brand-accent p-8 flex flex-col gap-6 overflow-hidden shadow-2xl shadow-brand-accent/25 h-full transition-transform duration-300 hover:-translate-y-1 motion-reduce:hover:translate-y-0">
       {/* Background decoration */}
       <div className="absolute -top-16 -right-16 w-56 h-56 rounded-full bg-white/10 pointer-events-none" />
       <div className="absolute -bottom-10 -left-10 w-40 h-40 rounded-full bg-white/5 pointer-events-none" />
@@ -151,14 +41,14 @@ function FeaturedCard({ service }: { service: Service }) {
 
         {/* Features */}
         <ul className="flex flex-col gap-2.5">
-          {service.features.map((f) => (
-            <li key={f} className="flex items-center gap-2.5 text-sm text-white/85">
+          {service.highlights.map(({ label }) => (
+            <li key={label} className="flex items-center gap-2.5 text-sm text-white/85">
               <div className="w-4 h-4 rounded-full bg-white/20 flex items-center justify-center shrink-0">
                 <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 10 10">
                   <path d="M2 5l2.5 2.5L8 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
-              {f}
+              {label}
             </li>
           ))}
         </ul>
@@ -170,17 +60,17 @@ function FeaturedCard({ service }: { service: Service }) {
             className="bg-white text-brand-accent-dark hover:bg-brand-accent-bg font-semibold shadow-lg gap-1.5 shrink-0"
           >
             <Link href={ROUTES.QUOTE}>
-              Get Quote <ArrowRight className="w-3.5 h-3.5" />
+              Get a Free Quote <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </Button>
           <Link
-            href={service.href}
+            href={`${ROUTES.SERVICES}/${service.slug}`}
             className="flex items-center gap-1.5 text-sm font-semibold text-white hover:gap-2.5 transition-all duration-200"
           >
             Learn more <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
-        
+
       </div>
     </div>
   );
@@ -189,7 +79,7 @@ function FeaturedCard({ service }: { service: Service }) {
 function ServiceCard({ service }: { service: Service }) {
   const Icon = service.icon;
   return (
-    <div className="group relative rounded-3xl border border-brand-border bg-brand-bg p-7 flex flex-col gap-5 hover:border-brand-accent/40 hover:shadow-lg hover:shadow-brand-accent/10 transition-all duration-300 overflow-hidden h-full">
+    <div className="group relative rounded-3xl border border-brand-border bg-brand-bg p-7 flex flex-col gap-5 hover:border-brand-accent/40 hover:shadow-lg hover:shadow-brand-accent/10 hover:-translate-y-1 motion-reduce:hover:translate-y-0 transition-all duration-300 overflow-hidden h-full">
       {/* Hover circle */}
       <div className="absolute -right-8 -bottom-8 w-32 h-32 rounded-full bg-brand-accent/5 group-hover:bg-brand-accent/10 transition-colors duration-300 pointer-events-none" />
 
@@ -207,38 +97,44 @@ function ServiceCard({ service }: { service: Service }) {
 
         {/* Text */}
         <div className="flex flex-col gap-2">
-          <h3 className="text-lg font-bold text-brand-text">{service.title}</h3>
+          <div className="flex items-center gap-2 flex-wrap">
+            <h3 className="text-lg font-bold text-brand-text">{service.title}</h3>
+            {service.slug === "move" && (
+              <Badge className="bg-brand/10 text-brand border-brand/20 text-[10px] font-semibold">
+                Our Specialty
+              </Badge>
+            )}
+          </div>
           <p className="text-brand-muted text-sm leading-relaxed">{service.description}</p>
         </div>
 
         {/* Features */}
         <ul className="flex flex-col gap-2">
-          {service.features.map((f) => (
-            <li key={f} className="flex items-center gap-2 text-xs text-brand-muted">
+          {service.highlights.map(({ label }) => (
+            <li key={label} className="flex items-center gap-2 text-xs text-brand-muted">
               <div className="w-1 h-1 rounded-full bg-brand-accent shrink-0" />
-              {f}
+              {label}
             </li>
           ))}
         </ul>
 
         {/* CTA link */}
         <div className="mt-auto pt-4 border-t border-brand-border flex items-center gap-3 flex-wrap">
-          {service.bookable && (
+          {service.bookable ? (
             <Button asChild size="sm" className="bg-brand-accent hover:bg-brand-accent-dark text-white font-semibold gap-1 h-8 px-3 text-xs">
-              <Link href={bookingWithService(service.href.split('/').pop() ?? "")}>
+              <Link href={bookingWithService(service.slug)}>
                 Book Now
               </Link>
             </Button>
-          )}
-          {!service.bookable && (
+          ) : (
             <Button asChild size="sm" variant="outline" className="border-brand-accent-border text-brand-accent-dark hover:border-brand-accent hover:bg-brand-accent-bg font-semibold gap-1 h-8 px-3 text-xs">
               <Link href={ROUTES.QUOTE}>
-                Get a Quote
+                Get a Free Quote
               </Link>
             </Button>
           )}
           <Link
-            href={service.href}
+            href={`${ROUTES.SERVICES}/${service.slug}`}
             className="flex items-center gap-1.5 text-sm font-semibold text-brand-accent-dark hover:gap-2.5 transition-all duration-200"
           >
             Learn more <ArrowRight className="w-3.5 h-3.5" />
@@ -250,15 +146,16 @@ function ServiceCard({ service }: { service: Service }) {
 }
 
 export default function Services() {
-  const featured = SERVICES.find((s) => s.featured);
-  const regular = SERVICES.filter((s) => !s.featured);
+  const homeServices = HOME_SLUGS.map((slug) => SERVICES[slug]);
+  const featured = homeServices.find((s) => s.slug === FEATURED_SLUG);
+  const regular = homeServices.filter((s) => s.slug !== FEATURED_SLUG);
 
   return (
-    <section className="bg-white py-24 sm:py-32">
+    <section className="bg-brand-surface py-24 sm:py-32">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
 
         {/* ── Section Header ── */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-14">
+        <Reveal className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-14">
           <div className="max-w-xl">
             <p className="text-brand text-sm font-semibold uppercase tracking-widest mb-3">
               What We Offer
@@ -275,24 +172,23 @@ export default function Services() {
           >
             <Link href={ROUTES.SERVICES}>View all services</Link>
           </Button>
-        </div>
+        </Reveal>
 
         {/* ── Cards Grid ── */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:items-stretch">
           {/* Featured card */}
           {featured && (
-            <div className="lg:col-span-1 lg:self-stretch">
+            <Reveal className="lg:col-span-1 lg:self-stretch">
               <FeaturedCard service={featured} />
-            </div>
+            </Reveal>
           )}
 
           {/* Regular cards */}
-          <div
-            className={`grid grid-cols-1 sm:grid-cols-2 gap-6 auto-rows-fr ${featured ? "lg:col-span-2" : "lg:col-span-3"
-              }`}
-          >
-            {regular.map((service) => (
-              <ServiceCard key={service.title} service={service} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 auto-rows-fr lg:col-span-2">
+            {regular.map((service, index) => (
+              <Reveal key={service.slug} delay={0.08 + index * 0.08} className="h-full">
+                <ServiceCard service={service} />
+              </Reveal>
             ))}
           </div>
         </div>
@@ -306,7 +202,7 @@ export default function Services() {
             asChild
             className="bg-brand-accent hover:bg-brand-accent-dark text-white font-semibold shadow-md shadow-brand-accent/20 gap-2"
           >
-            <Link href="/quote">
+            <Link href={ROUTES.QUOTE}>
               Get a Free Quote <ArrowRight className="w-4 h-4" />
             </Link>
           </Button>

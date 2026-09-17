@@ -5,6 +5,7 @@ import { generatePageMeta } from "@/lib/seo";
 import BookingForm from "./BookingForm";
 import { ROUTES } from "@/lib/routes";
 import { prisma } from "@/lib/prisma";
+import Reveal from "@/components/Reveal";
 
 export const metadata = generatePageMeta({
   title: "Book a Clean",
@@ -53,7 +54,7 @@ export default async function BookPage({
         </Link>
 
         {/* ── Page header ── */}
-        <div className="mb-10">
+        <Reveal className="mb-10">
           <div className="flex items-center gap-2 mb-3">
             <div className="w-8 h-8 rounded-lg bg-brand flex items-center justify-center">
               <CalendarCheck className="w-4 h-4 text-white" />
@@ -68,20 +69,20 @@ export default async function BookPage({
           <p className="text-brand-muted mt-2 text-base leading-relaxed">
             Fill in the details below and we&apos;ll confirm your booking within 2 hours.
           </p>
-        </div>
+        </Reveal>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
 
           {/* ── Form ── */}
-          <div className="lg:col-span-2 bg-white rounded-3xl border border-brand-border shadow-sm overflow-hidden">
+          <Reveal delay={0.1} className="lg:col-span-2 bg-brand-surface rounded-3xl border border-brand-border shadow-sm overflow-hidden">
             <BookingForm tierLabel={tier?.label} preselectedService={preselected} />
-          </div>
+          </Reveal>
 
           {/* ── Sidebar ── */}
           <div className="flex flex-col gap-5">
 
             {/* What Happens Next card */}
-            <div className="bg-white rounded-3xl border border-brand-border p-6 flex flex-col gap-4 shadow-sm">
+            <Reveal delay={0.18} className="bg-brand-surface rounded-3xl border border-brand-border p-6 flex flex-col gap-4 shadow-sm">
               <p className="font-bold text-brand-text text-sm">What happens next?</p>
               <ol className="flex flex-col gap-3">
                 {[
@@ -112,7 +113,7 @@ export default async function BookPage({
                   <p className="text-sm font-semibold text-brand-text">+61 428 276 935</p>
                 </div>
               </a>
-            </div>
+            </Reveal>
 
             {/* Quote link */}
             <p className="text-center text-xs text-brand-muted">

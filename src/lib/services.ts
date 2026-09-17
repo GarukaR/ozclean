@@ -54,7 +54,7 @@ export const HOME_PROMO_OFFERS: PromoOffer[] = [
     icon: "users",
     label: "Referral",
     deal: "$30 credit",
-    description: "Refer a friend — both of you get $30 off your next clean.",
+    description: "Refer a friend: you both get $30 off your next clean.",
     code: "REFER30",
     color: "bg-brand-bg text-brand-dark border-brand-border",
     iconBg: "bg-brand/10",
@@ -78,7 +78,7 @@ export const SERVICES: Record<string, Service> = {
     title: "Office & Commercial Cleaning",
     tagline: "A workspace your team deserves.",
     description:
-      "Reliable cleaning solutions for offices, retail spaces, and businesses across Melbourne. We work around your schedule — not the other way around.",
+      "Reliable cleaning solutions for offices, retail spaces, and businesses across Melbourne. We work around your schedule, not the other way around.",
     price: "From $150",
     priceLabel: "per visit",
     priceNote: "No lock-in contracts. Cancel or change anytime.",
@@ -108,19 +108,19 @@ export const SERVICES: Record<string, Service> = {
       },
       {
         q: "Are your staff insured and police-checked?",
-        a: "Yes — every OzClean team member is fully insured, police-checked, and has completed our in-house training program before visiting any commercial site.",
+        a: "Every OzClean team member is fully insured, police-checked, and has completed our in-house training program before visiting any commercial site.",
       },
       {
         q: "Do you bring your own equipment and products?",
-        a: "We bring everything — commercial-grade equipment, eco-friendly cleaning products, and all consumables. You don't need to supply a thing.",
+        a: "We bring everything: commercial-grade equipment, eco-friendly cleaning products, and all consumables. You don't need to supply a thing.",
       },
       {
         q: "Can I get a regular dedicated team?",
-        a: "Yes. We assign you a dedicated team so they get to know your space and your preferences inside out.",
+        a: "We assign you a dedicated team so they get to know your space and your preferences inside out.",
       },
       {
         q: "What if I'm not happy with a clean?",
-        a: "We offer a 100% satisfaction guarantee. If something isn't right, call us within 24 hours and we'll return to fix it at no extra charge.",
+        a: "We back every commercial clean with a 100% satisfaction guarantee, call us within 24 hours of any issue and we'll send the team back at no extra charge.",
       },
     ],
     related: [
@@ -135,7 +135,7 @@ export const SERVICES: Record<string, Service> = {
     title: "Residential Cleaning",
     tagline: "Your home, spotless. Every time.",
     description:
-      "Reliable, friendly home cleaning tailored to your schedule. Choose hourly rates for flexibility or flat-rates based on your home size. Weekly, fortnightly, or one-off — we treat your home like our own.",
+      "Reliable, friendly home cleaning tailored to your schedule. Choose hourly rates for flexibility or flat-rates based on your home size. Weekly, fortnightly, or one-off, we treat your home like our own.",
     price: "$50–60/hr or $150–280",
     priceLabel: "hourly or flat-rate",
     priceNote: "Hourly rates from $50–60/hr (depending on frequency). Flat-rates from $150–280 based on bedrooms. No commitment required.",
@@ -164,7 +164,7 @@ export const SERVICES: Record<string, Service> = {
       },
       {
         q: "Do you use eco-friendly products?",
-        a: "Yes — we use only non-toxic, biodegradable cleaning products that are safe for children, pets, and the environment.",
+        a: "We use only non-toxic, biodegradable cleaning products that are safe for children, pets, and the environment.",
       },
       {
         q: "Will I get the same cleaner each time?",
@@ -172,11 +172,11 @@ export const SERVICES: Record<string, Service> = {
       },
       {
         q: "How long does a standard clean take?",
-        a: "A standard 3-bedroom home typically takes 2–3 hours. Larger homes or deep cleans may take longer — we'll let you know upfront.",
+        a: "A standard 3-bedroom home typically takes 2–3 hours, though larger homes or deep cleans may take longer, and we'll let you know upfront.",
       },
       {
         q: "What if something gets missed?",
-        a: "We have a 100% satisfaction guarantee. If anything isn't up to standard, contact us within 24 hours and we'll return to fix it free of charge.",
+        a: "Every clean comes with a 100% satisfaction guarantee. Contact us within 24 hours of anything not up to standard and we'll come back to fix it, free of charge.",
       },
     ],
     related: [
@@ -217,19 +217,19 @@ export const SERVICES: Record<string, Service> = {
       faqs: [
         {
           q: "Can you clean between same-day checkout and check-in?",
-          a: "Yes. We offer fast turnaround cleaning for short-term rentals, subject to availability and access timing.",
+          a: "We offer fast turnaround cleaning for short-term rentals, subject to availability and access timing.",
         },
         {
           q: "Do you change bed linen and towels?",
-          a: "Yes. We can make beds with supplied linen and replace towels so the property is ready for the next guest.",
+          a: "We can make beds with supplied linen and replace towels so the property is ready for the next guest.",
         },
         {
           q: "Can you restock guest essentials?",
-          a: "Yes — we can restock toiletries, tea, coffee, paper products, and other host-supplied essentials on request.",
+          a: "On request, we can restock toiletries, tea, coffee, paper products, and other host-supplied essentials.",
         },
         {
           q: "Do you work with key safes or smart locks?",
-          a: "Yes. We regularly service Airbnb properties with key safes, lockboxes, and smart lock access.",
+          a: "Yes, we regularly service Airbnb properties with key safes, lockboxes, and smart lock access.",
         },
         {
           q: "What if a guest leaves the property messy?",
@@ -249,7 +249,7 @@ export const SERVICES: Record<string, Service> = {
     title: "Spring Deep Cleaning",
     tagline: "The clean your home actually needs.",
     description:
-      "We go where regular cleaners don't. Inside the oven, behind the fridge, into every grout line — a true reset for your home or office.",
+      "We go where regular cleaners don't. Inside the oven, behind the fridge, into every grout line: a true reset for your home or office.",
     price: "From $200",
     priceLabel: "per session",
     priceNote: "Exact quote provided upfront based on property size.",
@@ -276,11 +276,11 @@ export const SERVICES: Record<string, Service> = {
     faqs: [
       {
         q: "How long does a deep clean take?",
-        a: "A standard 3-bedroom home typically takes 4–6 hours. Larger homes or heavily soiled spaces may take longer — we'll give you an estimate upfront.",
+        a: "A standard 3-bedroom home typically takes 4–6 hours. Larger homes or heavily soiled spaces may take longer, and we'll give you an estimate upfront.",
       },
       {
         q: "How is a deep clean different from a regular clean?",
-        a: "A regular clean covers surfaces and visible areas. A deep clean goes further — inside appliances, behind furniture, grout lines, vents, and areas usually skipped in routine cleans.",
+        a: "A regular clean covers surfaces and visible areas. A deep clean goes further: inside appliances, behind furniture, grout lines, vents, and areas usually skipped in routine cleans.",
       },
       {
         q: "Do I need to do anything to prepare?",
@@ -292,7 +292,7 @@ export const SERVICES: Record<string, Service> = {
       },
       {
         q: "Is the price fixed or variable?",
-        a: "We quote based on the size of your property and its current condition. All pricing is agreed upfront — no surprises.",
+        a: "We quote based on the size of your property and its current condition. All pricing is agreed upfront, no surprises.",
       },
     ],
     related: [
@@ -345,11 +345,11 @@ export const SERVICES: Record<string, Service> = {
       },
       {
         q: "Can you clean an empty property?",
-        a: "Absolutely — in fact it's easier for us. We can access every surface without furniture in the way, which means a more thorough result.",
+        a: "Absolutely, it's actually easier for us. We can access every surface without furniture in the way, which means a more thorough result.",
       },
       {
         q: "Do you clean carpets as part of this service?",
-        a: "We vacuum and spot-clean carpets as standard. For steam cleaning or heavy staining, we offer this as an add-on — just let us know when booking.",
+        a: "We vacuum and spot-clean carpets as standard. Steam cleaning or heavy staining is available as an add-on, just let us know when booking.",
       },
     ],
     related: [
@@ -390,7 +390,7 @@ export const SERVICES: Record<string, Service> = {
     faqs: [
       {
         q: "Do you clean windows on upper floors?",
-        a: "Yes — we have the equipment to safely clean windows on multi-storey residential and commercial buildings. Just mention this when booking.",
+        a: "We have the equipment to safely clean windows on multi-storey residential and commercial buildings, just mention this when booking.",
       },
       {
         q: "What's your streak-free guarantee?",
@@ -406,7 +406,7 @@ export const SERVICES: Record<string, Service> = {
       },
       {
         q: "Do you clean flyscreens?",
-        a: "Yes — flyscreen cleaning can be added to any window clean. Just select this option when booking or mention it in your special instructions.",
+        a: "Flyscreen cleaning can be added to any window clean, just select this option when booking or mention it in your special instructions.",
       },
     ],
     related: [
@@ -472,5 +472,5 @@ export const SERVICES: Record<string, Service> = {
   },
 };
 
-// Helper to get all slugs — used by generateStaticParams
+// Helper to get all slugs, used by generateStaticParams
 export const getAllServiceSlugs = () => Object.keys(SERVICES);

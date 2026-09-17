@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { generatePageMeta } from "@/lib/seo";
 import { ROUTES } from "@/lib/routes";
 import { BUSINESS_PHONE, BUSINESS_PHONE_HREF } from "@/lib/business";
+import Reveal from "@/components/Reveal";
 
 export const metadata = generatePageMeta({
   title: "Booking Confirmed",
@@ -24,7 +25,7 @@ export default async function BookingSuccessPage({
       <div className="max-w-lg w-full">
 
         {/* Success card */}
-        <div className="bg-white rounded-3xl border border-brand-border shadow-xl shadow-brand/8 overflow-hidden">
+        <Reveal className="bg-brand-surface rounded-3xl border border-brand-border shadow-xl shadow-brand/8 overflow-hidden">
 
           {/* Top accent */}
           <div className="h-2 bg-gradient-to-r from-brand to-brand-accent" />
@@ -94,7 +95,7 @@ export default async function BookingSuccessPage({
             </a>
 
           </div>
-        </div>
+        </Reveal>
 
       </div>
     </main>

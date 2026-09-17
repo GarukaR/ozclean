@@ -3,6 +3,7 @@ import { Compass, ArrowRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/lib/routes";
+import Reveal from "@/components/Reveal";
 
 export const metadata = {
   title: "Page Not Found",
@@ -12,7 +13,7 @@ export const metadata = {
 export default function NotFound() {
   return (
     <main className="min-h-screen bg-brand-bg flex items-center justify-center px-4 py-24">
-      <div className="max-w-lg w-full bg-white rounded-3xl border border-brand-border shadow-xl shadow-brand/8 p-10 flex flex-col items-center text-center gap-6">
+      <Reveal className="max-w-lg w-full bg-brand-surface rounded-3xl border border-brand-border shadow-xl shadow-brand/8 p-10 flex flex-col items-center text-center gap-6">
         <div className="w-20 h-20 rounded-full bg-brand/10 flex items-center justify-center">
           <Compass className="w-10 h-10 text-brand" />
         </div>
@@ -34,7 +35,7 @@ export default function NotFound() {
             <Link href={ROUTES.SERVICES}>Browse Services</Link>
           </Button>
         </div>
-      </div>
+      </Reveal>
     </main>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { Star, Quote } from "lucide-react";
+import Reveal from "@/components/Reveal";
 
 type Testimonial = {
   name: string;
@@ -18,16 +19,16 @@ const TESTIMONIALS: Testimonial[] = [
     location: "Berwick, VIC",
     service: "Residential Cleaning",
     rating: 5,
-    text: "OzClean has been a game changer for our family. The team is always on time, thorough, and our house has never looked better. Highly recommend the Standard plan!",
+    text: "Our house has never looked better since we started with OzClean. They're always on time, thorough, and easy to deal with.",
     avatar: "MM",
     avatarBg: "bg-brand/10 text-brand",
   },
   {
     name: "Shiya Okoye",
-    location: "CBD, Melbourne",
+    location: "Dandenong, VIC",
     service: "Commercial Cleaning",
     rating: 5,
-    text: "We use OzClean for our office every week. Professional, discreet, and the results are consistently excellent. Our team loves coming into a clean workspace on Monday mornings.",
+    text: "We've used OzClean for our office every week for over a year now. Professional, discreet, and consistent, exactly what we needed.",
     avatar: "SO",
     avatarBg: "bg-brand-accent-bg text-brand-accent-dark",
   },
@@ -36,7 +37,7 @@ const TESTIMONIALS: Testimonial[] = [
     location: "Cranbourne, VIC",
     service: "Deep Cleaning",
     rating: 4,
-    text: "Booked the deep clean before a big family event and I was blown away. They got into every corner, the grout, inside the oven, behind the fridge. Absolutely spotless.",
+    text: "Booked the deep clean before a big family event. They got into every corner, the grout, inside the oven, behind the fridge, all of it. Genuinely spotless.",
     avatar: "JS",
     avatarBg: "bg-brand-bg text-brand-dark",
   },
@@ -50,38 +51,38 @@ const TESTIMONIALS: Testimonial[] = [
     avatarBg: "bg-brand-accent/10 text-brand-accent-dark",
   },
   {
-    name: "Angela Nguyen",
-    location: "Southbank, VIC",
-    service: "Window Cleaning",
+    name: "Priya Fernando",
+    location: "Noble Park, VIC",
+    service: "Airbnb Cleaning",
     rating: 5,
-    text: "My apartment has floor-to-ceiling windows and I'd been putting off getting them cleaned for months. OzClean did an incredible job, streak-free and so fast.",
-    avatar: "AN",
+    text: "As a host with two listings, turnaround speed is everything. OzClean has our place guest-ready within hours of checkout, every time.",
+    avatar: "PF",
     avatarBg: "bg-brand/10 text-brand-dark",
   },
   {
-    name: "Trony Lee",
-    location: "Clayton, VIC",
+    name: "Tony Lee",
+    location: "Springvale, VIC",
     service: "Commercial Cleaning",
     rating: 4,
-    text: "Running a café means cleanliness is everything. OzClean comes in after close and the place is immaculate every morning. Reliable, thorough, and great value.",
+    text: "Running a café means cleanliness is everything. OzClean comes in after close and the place is immaculate every morning. Reliable and great value.",
     avatar: "TL",
     avatarBg: "bg-brand-bg text-brand",
   },
   {
     name: "Megan Torres",
-    location: "Keyborogh, VIC",
+    location: "Keysborough, VIC",
     service: "Residential Cleaning",
     rating: 5,
-    text: "I've tried three other cleaning services before OzClean. None of them came close. Same cleaner every visit, always remembers my preferences. Genuinely impressed.",
+    text: "I've tried a couple of other cleaning services before OzClean. Same cleaner every visit, and she always remembers how we like things done.",
     avatar: "MT",
     avatarBg: "bg-brand-accent-bg text-brand-accent",
   },
   {
     name: "Chris Halliday",
-    location: "Pakenham, VIC",
+    location: "Narre Warren, VIC",
     service: "Deep Cleaning",
-    rating: 5,
-    text: "Moved into a place that hadn't been cleaned properly in years. OzClean transformed it in one session. I couldn't believe it was the same apartment.",
+    rating: 4,
+    text: "Moved into a place that hadn't been cleaned properly in years. OzClean got it done in one session. Didn't expect it to come up that well.",
     avatar: "CH",
     avatarBg: "bg-brand/10 text-brand-dark",
   },
@@ -90,7 +91,7 @@ const TESTIMONIALS: Testimonial[] = [
 
 function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   return (
-    <div className="w-80 shrink-0 bg-white rounded-3xl border border-brand-border p-6 flex flex-col gap-4 shadow-sm hover:shadow-md hover:border-brand/30 transition-all duration-300">
+    <div className="w-80 shrink-0 bg-brand-surface rounded-3xl border border-brand-border p-6 flex flex-col gap-4 shadow-sm hover:shadow-md hover:border-brand/30 hover:-translate-y-1 motion-reduce:hover:translate-y-0 transition-all duration-300">
 
       {/* Quote icon + Stars */}
       <div className="flex items-start justify-between">
@@ -137,7 +138,7 @@ export default function Testimonials() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 mb-14">
 
         {/* ── Section Header ── */}
-        <div className="text-center max-w-2xl mx-auto">
+        <Reveal className="text-center max-w-2xl mx-auto">
           <p className="text-brand text-sm font-semibold uppercase tracking-widest mb-3">
             Testimonials
           </p>
@@ -152,7 +153,7 @@ export default function Testimonials() {
           </p>
 
           {/* Overall rating */}
-          <div className="mt-6 inline-flex items-center gap-3 bg-white border border-brand-border rounded-2xl px-5 py-3 shadow-sm">
+          <div className="mt-6 inline-flex items-center gap-3 bg-brand-surface border border-brand-border rounded-2xl px-5 py-3 shadow-sm">
             <div className="flex items-center gap-0.5">
               {[...Array(5)].map((_, i) => (
                 <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
@@ -163,7 +164,7 @@ export default function Testimonials() {
             <div className="w-px h-5 bg-brand-border" />
             <p className="text-sm text-brand-muted">100+ reviews</p>
           </div>
-        </div>
+        </Reveal>
       </div>
 
       {/* ── Single scrolling row ── */}

@@ -1,6 +1,7 @@
 import { generatePageMeta } from "@/lib/seo";
 import { BUSINESS_EMAIL, BUSINESS_PHONE } from "@/lib/business";
 import Link from "next/link";
+import Reveal from "@/components/Reveal";
 
 export const metadata = generatePageMeta({
   title: "Terms of Service",
@@ -56,12 +57,12 @@ const SECTIONS = [
 export default function TermsPage() {
   return (
     <main className="min-h-screen bg-brand-bg">
-      <section className="bg-white pt-32 pb-16 border-b border-brand-border">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6">
+      <section className="bg-brand-surface pt-32 pb-16 border-b border-brand-border">
+        <Reveal className="max-w-3xl mx-auto px-4 sm:px-6">
           <p className="text-brand text-sm font-semibold uppercase tracking-widest mb-3">Legal</p>
           <h1 className="text-4xl font-bold text-brand-text mb-3">Terms of Service</h1>
           <p className="text-brand-muted text-sm">Last updated: {LAST_UPDATED}</p>
-        </div>
+        </Reveal>
       </section>
 
       <section className="py-16">

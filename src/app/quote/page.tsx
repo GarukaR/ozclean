@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { generatePageMeta } from "@/lib/seo";
 import { ROUTES } from "@/lib/routes";
 import QuoteForm from "./QuoteForm";
+import Reveal from "@/components/Reveal";
 
 export const metadata = generatePageMeta({
   title: "Get a Free Quote",
@@ -31,7 +32,7 @@ export default function QuotePage() {
         </Link>
 
         {/* ── Page header ── */}
-        <div className="mb-10">
+        <Reveal className="mb-10">
           <div className="flex items-center gap-2 mb-3">
             <div className="w-8 h-8 rounded-lg bg-brand flex items-center justify-center">
               <FileText className="w-4 h-4 text-white" />
@@ -46,19 +47,19 @@ export default function QuotePage() {
           <p className="text-brand-muted mt-2 text-base leading-relaxed">
             Tell us about your <strong>space</strong> and what you <strong>need</strong>, we&apos;ll get back to you with a personalised price.
           </p>
-        </div>
+        </Reveal>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
 
           {/* ── Form ── */}
-          <div className="lg:col-span-2 bg-white rounded-3xl border border-brand-border shadow-sm overflow-hidden">
+          <Reveal delay={0.1} className="lg:col-span-2 bg-brand-surface rounded-3xl border border-brand-border shadow-sm overflow-hidden">
             <QuoteForm />
-          </div>
+          </Reveal>
 
           {/* ── Sidebar ── */}
           <div className="flex flex-col gap-5">
             {/* What happens next */}
-            <div className="bg-white rounded-3xl border border-brand-border p-6 flex flex-col gap-4 shadow-sm">
+            <Reveal delay={0.18} className="bg-brand-surface rounded-3xl border border-brand-border p-6 flex flex-col gap-4 shadow-sm">
               <p className="text-sm font-bold text-brand-text">What happens next?</p>
               <ol className="flex flex-col gap-4">
                 {WHAT_HAPPENS.map((step, i) => (
@@ -70,10 +71,10 @@ export default function QuotePage() {
                   </li>
                 ))}
               </ol>
-            </div>
+            </Reveal>
 
             {/* Already know what you want */}
-            <div className="bg-brand rounded-3xl p-6 flex flex-col gap-3">
+            <Reveal delay={0.26} className="bg-brand rounded-3xl p-6 flex flex-col gap-3">
               <p className="text-white font-bold text-sm">Ready to book directly?</p>
               <p className="text-white/75 text-xs leading-relaxed">
                 Skip the quote and go straight to booking if you already know what you need.
@@ -82,9 +83,9 @@ export default function QuotePage() {
                 asChild
                 className="bg-white text-brand hover:bg-brand-bg font-semibold text-sm w-full"
               >
-                <Link href={ROUTES.BOOKING}>Book a Clean →</Link>
+                <Link href={ROUTES.BOOKING}>Book Now →</Link>
               </Button>
-            </div>
+            </Reveal>
           </div>
 
         </div>

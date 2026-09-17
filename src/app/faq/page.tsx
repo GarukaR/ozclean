@@ -4,10 +4,11 @@ import { BUSINESS_PHONE_HREF } from "@/lib/business";
 import { ChevronDown, Phone, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { generatePageMeta } from "@/lib/seo";
+import Reveal from "@/components/Reveal";
 
 export const metadata = generatePageMeta({
   title: "FAQ",
-  description: "Answers to common questions about OzClean — booking, our cleaners, products, pricing, and our satisfaction guarantee.",
+  description: "Answers to common questions about OzClean: booking, our cleaners, products, pricing, and our satisfaction guarantee.",
   path: "/faq",
 });
 
@@ -18,15 +19,15 @@ const FAQ_CATEGORIES = [
     faqs: [
       {
         q: "How do I book a clean?",
-        a: "You can book online through our booking page in just a few minutes — pick your service, choose a date and time, and confirm. You can also call us or request a free quote if you're not sure which service you need.",
+        a: "You can book online through our booking page in just a few minutes: pick your service, choose a date and time, and confirm. You can also call us or request a free quote if you're not sure which service you need.",
       },
       {
         q: "Can I reschedule or cancel my booking?",
-        a: "Yes — you can reschedule or cancel for free up to 24 hours before your appointment. Just contact us by phone or email and we'll sort it out straight away.",
+        a: "You can reschedule or cancel for free up to 24 hours before your appointment. Just contact us by phone or email and we'll sort it out straight away.",
       },
       {
         q: "How far in advance do I need to book?",
-        a: "We recommend booking at least 48 hours in advance. Same-day bookings are available subject to availability — give us a call and we'll do our best.",
+        a: "We recommend booking at least 48 hours in advance. Same-day bookings are available subject to availability, give us a call and we'll do our best.",
       },
       {
         q: "Do you offer recurring bookings?",
@@ -39,7 +40,7 @@ const FAQ_CATEGORIES = [
     faqs: [
       {
         q: "Are your cleaners vetted and insured?",
-        a: "Yes — every OzClean team member is background-checked, fully insured, and completes our in-house training program before their first job.",
+        a: "Every OzClean team member is background-checked, fully insured, and completes our in-house training program before their first job.",
       },
       {
         q: "Will I get the same cleaner each visit?",
@@ -47,7 +48,7 @@ const FAQ_CATEGORIES = [
       },
       {
         q: "Do I need to be home when the cleaner arrives?",
-        a: "Not necessarily. Many clients provide a key or access code. We handle your home with complete care and professionalism — you can trust us whether you're home or not.",
+        a: "Not necessarily. Many clients provide a key or access code. We handle your home with complete care and professionalism, so you can trust us whether you're home or not.",
       },
     ],
   },
@@ -56,7 +57,7 @@ const FAQ_CATEGORIES = [
     faqs: [
       {
         q: "Do you bring your own cleaning products?",
-        a: "Yes — we bring everything we need including all equipment and cleaning products. You don't need to supply anything.",
+        a: "We bring everything we need, including all equipment and cleaning products. You don't need to supply anything.",
       },
       {
         q: "Are your products safe for children and pets?",
@@ -64,7 +65,7 @@ const FAQ_CATEGORIES = [
       },
       {
         q: "Can I request specific products or brands?",
-        a: "Yes — if you have specific product preferences or allergies, just let us know when booking and we'll accommodate where possible.",
+        a: "If you have specific product preferences or allergies, just let us know when booking and we'll accommodate where possible.",
       },
     ],
   },
@@ -77,7 +78,7 @@ const FAQ_CATEGORIES = [
       },
       {
         q: "Are there any hidden fees?",
-        a: "Never. We agree on the price upfront before any work begins. The quote you receive is the price you pay — no surprises.",
+        a: "Never. We agree on the price upfront before any work begins. The quote you receive is the price you pay, no surprises.",
       },
       {
         q: "How do I pay?",
@@ -85,7 +86,7 @@ const FAQ_CATEGORIES = [
       },
       {
         q: "Do you offer discounts?",
-        a: "Yes — we offer 20% off your first clean, a bundle deal (book 3 get 1 free), and a $30 referral credit for both you and the friend you refer. Check our offers section for current promotions.",
+        a: "We run a few standing offers: 20% off your first clean, a bundle deal (book 3, get the 4th free), and a $30 referral credit for both you and the friend you refer. Mention any of these when you book or request a quote and we'll apply it.",
       },
     ],
   },
@@ -128,8 +129,8 @@ export default function FAQPage() {
     <main className="min-h-screen bg-brand-bg">
 
       {/* ── Hero ── */}
-      <section className="bg-white pt-32 pb-16 border-b border-brand-border">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6">
+      <section className="bg-brand-surface pt-32 pb-16 border-b border-brand-border">
+        <Reveal className="max-w-3xl mx-auto px-4 sm:px-6">
           <p className="text-brand text-sm font-semibold uppercase tracking-widest mb-3">FAQ</p>
           <h1 className="text-4xl sm:text-5xl font-bold text-brand-text leading-tight tracking-tight mb-4">
             Frequently asked{" "}
@@ -138,14 +139,14 @@ export default function FAQPage() {
           <p className="text-brand-muted text-lg leading-relaxed">
             Everything you need to know about booking, our team, products, and our guarantee. Can&apos;t find your answer? We&apos;re happy to help.
           </p>
-        </div>
+        </Reveal>
       </section>
 
       {/* ── FAQ Categories ── */}
       <section className="py-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 flex flex-col gap-12">
-          {FAQ_CATEGORIES.map(({ category, faqs }) => (
-            <div key={category} className="flex flex-col gap-4">
+          {FAQ_CATEGORIES.map(({ category, faqs }, index) => (
+            <Reveal key={category} delay={(index % 3) * 0.08} className="flex flex-col gap-4">
               <h2 className="text-lg font-bold text-brand-text flex items-center gap-3">
                 <span className="w-1 h-5 rounded-full bg-brand-accent inline-block" />
                 {category}
@@ -155,18 +156,18 @@ export default function FAQPage() {
                   <FAQItem key={faq.q} {...faq} />
                 ))}
               </div>
-            </div>
+            </Reveal>
           ))}
         </div>
       </section>
 
       {/* ── Still have questions ── */}
       <section className="pb-20">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6">
+        <Reveal className="max-w-3xl mx-auto px-4 sm:px-6">
           <div className="bg-gradient-to-r from-brand to-brand-accent rounded-3xl p-8 flex flex-col sm:flex-row items-center justify-between gap-6">
             <div>
               <h3 className="text-xl font-bold text-white">Still have a question?</h3>
-              <p className="text-white/70 text-sm mt-1">Our team is happy to help — reach out any time.</p>
+              <p className="text-white/70 text-sm mt-1">Our team is happy to help, reach out any time.</p>
             </div>
             <div className="flex flex-wrap gap-3">
               <Button asChild className="bg-white text-brand-accent-dark hover:bg-brand-accent-bg font-semibold gap-2">
@@ -181,7 +182,7 @@ export default function FAQPage() {
               </Button>
             </div>
           </div>
-        </div>
+        </Reveal>
       </section>
 
     </main>

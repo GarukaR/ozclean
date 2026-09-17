@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Clock, Home, ChevronUp, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/lib/routes";
+import Reveal from "@/components/Reveal";
 
 type ApiServiceOption = {
   id: string;
@@ -24,7 +25,7 @@ type ApiAddonOption = {
 const HOURLY_PERFECT_FOR =
   "Cleaning specific areas of your home, quick and flexible cleaning sessions.";
 
-const HOURLY_MORE = `Our hourly service is time-based — your cleaner will perform any cleaning task you direct them to, working as efficiently as possible while maintaining quality. This is ideal if you need specific areas cleaned such as bathrooms, kitchen, or living areas. You provide the checklist or we can suggest one. Minimum booking is 2 hours.`;
+const HOURLY_MORE = `Our hourly service is time-based: your cleaner will perform any cleaning task you direct them to, working as efficiently as possible while maintaining quality. This is ideal if you need specific areas cleaned such as bathrooms, kitchen, or living areas. You provide the checklist or we can suggest one. Minimum booking is 2 hours.`;
 
 const FLAT_PERFECT_FOR =
   "A full clean of your entire home. Our satisfaction guarantee applies.";
@@ -96,38 +97,42 @@ export default function Pricing() {
   }, [services]);
 
   return (
-    <section className="bg-white py-24 sm:py-32">
+    <section className="bg-brand-surface py-24 sm:py-32">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
 
         {/* ── Header ── */}
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <p className="text-brand text-sm font-semibold uppercase tracking-widest mb-3">
-            Transparent Pricing
-          </p>
+        <Reveal className="text-center max-w-2xl mx-auto mb-14">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-brand-text leading-tight tracking-tight">
-            Affordable general cleaning prices{" "}
+            Residential cleaning prices{" "}
             <span className="text-brand">made simple.</span>
           </h2>
           <p className="mt-4 text-brand-muted text-base leading-relaxed max-w-xl mx-auto">
-            <strong>Get flexible prices of general house/apt cleaning service</strong> — know exactly what you&apos;re paying for.
-            Both hourly and flat-rate options available so you can pick what works best for you.
+            These hourly and flat-rate options are for regular home (residential) cleaning. Looking for{" "}
+            <Link href="/services/airbnb" className="text-brand-accent-dark font-semibold hover:underline underline-offset-2">
+              Airbnb turnover
+            </Link>{" "}
+            or{" "}
+            <Link href="/services/move" className="text-brand-accent-dark font-semibold hover:underline underline-offset-2">
+              move-out
+            </Link>{" "}
+            pricing? Those are quoted separately on their own pages.
           </p>
-        </div>
+        </Reveal>
 
         {/* ── Two panels ── */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
 
           {/* ── Hourly Panel ── */}
-          <div className="rounded-2xl border border-brand-border bg-white flex flex-col overflow-hidden">
+          <Reveal className="rounded-2xl border border-brand-border bg-brand-surface flex flex-col overflow-hidden">
             {/* Panel header */}
             <div className="px-7 pt-7 pb-5 border-b border-brand-border">
               <div className="flex items-center gap-2 mb-3">
                 <Clock className="w-5 h-5 text-brand" />
-                <h3 className="text-xl font-bold text-brand-text">Hourly Cleaning</h3>
+                <h3 className="text-xl font-bold text-brand-text">Residential Hourly Cleaning</h3>
               </div>
               <p className="text-sm text-brand-muted leading-relaxed">
                 Charged by the hour. Your cleaner follows tasks you provide or our standard
-                checklist — giving you full control. Minimum 2 hours.
+                checklist, giving you full control. Minimum 2 hours.
               </p>
             </div>
 
@@ -136,7 +141,7 @@ export default function Pricing() {
               {hourlyRates.map(({ label, price }) => (
                 <div
                   key={label}
-                  className="bg-white px-6 py-5 flex flex-col gap-1"
+                  className="bg-brand-surface px-6 py-5 flex flex-col gap-1"
                 >
                   <p className="text-sm text-brand-muted">{label}</p>
                   <p className="text-3xl font-black text-brand-text">{price}</p>
@@ -180,15 +185,15 @@ export default function Pricing() {
                 <Link href={ROUTES.BOOKING}>Book Now</Link>
               </Button>
             </div>
-          </div>
+          </Reveal>
 
           {/* ── Flat Rate Panel ── */}
-          <div className="rounded-2xl border border-brand-accent-border bg-white flex flex-col overflow-hidden shadow-sm shadow-brand-accent/10">
+          <Reveal delay={0.1} className="rounded-2xl border border-brand-accent-border bg-brand-surface flex flex-col overflow-hidden shadow-sm shadow-brand-accent/10">
             {/* Panel header */}
             <div className="px-7 pt-7 pb-5 border-b border-brand-accent-border bg-brand-accent-bg/40">
               <div className="flex items-center gap-2 mb-3">
                 <Home className="w-5 h-5 text-brand-accent" />
-                <h3 className="text-xl font-bold text-brand-text">Flat-Rate Cleaning</h3>
+                <h3 className="text-xl font-bold text-brand-text">Residential Flat-Rate Cleaning</h3>
               </div>
               <p className="text-sm text-brand-muted leading-relaxed">
                 Your cleaner follows our full checklist covering all aspects of general cleaning
@@ -205,7 +210,7 @@ export default function Pricing() {
                 return (
                   <div
                     key={label}
-                    className={`bg-white px-6 py-5 flex flex-col gap-1
+                    className={`bg-brand-surface px-6 py-5 flex flex-col gap-1
                       ${isLast && isOdd ? "col-span-2" : ""}`}
                   >
                     <p className="text-sm text-brand-muted">{label}</p>
@@ -251,7 +256,7 @@ export default function Pricing() {
                 <Link href={ROUTES.BOOKING}>Book Now</Link>
               </Button>
             </div>
-          </div>
+          </Reveal>
         </div>
 
         {/* ── Add-ons ── */}
