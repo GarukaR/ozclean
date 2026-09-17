@@ -23,7 +23,7 @@ export default function Specialties() {
   const move = SERVICES.move;
 
   return (
-    <section className="bg-brand-bg py-24 sm:py-32">
+    <section className="bg-brand-bg pt-10 pb-16 sm:py-24 lg:py-32">
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
 
         {/* ── Header ── */}

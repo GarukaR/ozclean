@@ -107,7 +107,7 @@ export default function Testimonials() {
   const duplicated = [...TESTIMONIALS, ...TESTIMONIALS];
 
   return (
-    <section className="bg-brand-bg py-24 sm:py-32 overflow-hidden">
+    <section className="bg-brand-bg py-16 sm:py-24 lg:py-32 overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 mb-14">
 
         {/* ── Section Header ── */}

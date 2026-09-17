@@ -19,8 +19,12 @@ const WHAT_HAPPENS = [
 ];
 
 export default function QuotePage() {
+  // pt-6/8 below is deliberate breathing room, not navbar clearance — the
+  // root layout's wrapper already reserves space for the floating pill, so
+  // stacking a second large offset here pushed this page's content
+  // needlessly far down, most noticeably on mobile.
   return (
-    <main className="min-h-screen bg-brand-bg pt-24 pb-16">
+    <main className="min-h-screen bg-brand-bg pt-6 sm:pt-8 pb-16">
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
 
         {/* ── Back link ── */}

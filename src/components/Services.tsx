@@ -151,7 +151,7 @@ export default function Services() {
   const regular = homeServices.filter((s) => s.slug !== FEATURED_SLUG);
 
   return (
-    <section className="bg-brand-surface py-24 sm:py-32">
+    <section className="bg-brand-surface py-16 sm:py-24 lg:py-32">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
 
         {/* ── Section Header ── */}

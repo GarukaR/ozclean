@@ -28,11 +28,14 @@ export default function Hero() {
   const reduceMotion = useReducedMotion();
 
   return (
-    <section className="bg-brand-bg pt-2 pb-12 sm:pb-16">
+    <section className="bg-brand-bg pt-2 pb-8 sm:pb-10">
       <div className="max-w-[1040px] mx-auto px-4 sm:px-6">
-        {/* ── "Lens capsule": photo held in an oversized rounded shape ── */}
+        {/* ── "Lens capsule": photo held in an oversized rounded shape ──
+            Taller than the original cut, so the hero carries more visual
+            weight and the page doesn't need a big empty gap afterward to
+            feel intentional before Specialties starts. */}
         <motion.div
-          className="relative h-[380px] sm:h-[460px] md:h-[560px] rounded-[60px] md:rounded-[260px] overflow-hidden bg-brand-text"
+          className="relative h-[440px] sm:h-[520px] md:h-[600px] rounded-[60px] md:rounded-[260px] overflow-hidden bg-brand-text"
           initial={reduceMotion ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.97 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7, delay: 0.1, ease: EASE }}

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Phone, Star } from "lucide-react";
+import { Menu, X, Phone } from "lucide-react";
 import { ROUTES } from "@/lib/routes";
 import { SERVICES } from "@/lib/services";
 import { BUSINESS_PHONE, BUSINESS_PHONE_HREF } from "@/lib/business";
@@ -293,10 +293,10 @@ export default function Navbar() {
               </nav>
 
               {/* Fills what used to be dead space below a short link list
-                  with content visitors actually want mid-decision: a direct
-                  call option and the same trust signal shown on the
-                  homepage — instead of an empty void before the CTAs. */}
-              <div className="flex-1 flex flex-col justify-end gap-4 px-4 py-4">
+                  with content a visitor actually wants mid-decision: a
+                  direct call option instead of an empty void before the
+                  CTAs. */}
+              <div className="flex-1 flex flex-col justify-end px-4 py-4">
                 <a
                   href={BUSINESS_PHONE_HREF}
                   className="flex items-center gap-3 rounded-xl border border-brand-border bg-brand-bg px-4 py-3 transition-colors hover:border-brand-accent"
@@ -313,17 +313,6 @@ export default function Navbar() {
                     </span>
                   </span>
                 </a>
-
-                <div className="flex items-center gap-2 px-1">
-                  <div className="flex items-center gap-0.5">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                    ))}
-                  </div>
-                  <p className="text-xs text-brand-muted">
-                    <span className="font-semibold text-brand-text">4.75/5</span> from 100+ reviews
-                  </p>
-                </div>
               </div>
 
               <Separator />

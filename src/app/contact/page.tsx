@@ -132,7 +132,12 @@ export default function ContactPage() {
     <main className="min-h-screen bg-brand-bg">
 
       {/* ── Hero ── */}
-      <section className="bg-brand-surface pt-16 pb-16 border-b border-brand-border">
+      {/* bg-brand-bg (not brand-surface) so this band matches the body
+          background the seamless floating navbar sits on — otherwise the
+          gap the navbar clears shows as a mismatched color strip above a
+          white band. The border-b below still marks where the next
+          section begins. */}
+      <section className="bg-brand-bg pt-16 pb-16 border-b border-brand-border">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <Reveal className="max-w-2xl">
             <p className="text-brand text-sm font-semibold uppercase tracking-widest mb-3">Contact Us</p>

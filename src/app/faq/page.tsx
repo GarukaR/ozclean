@@ -129,7 +129,10 @@ export default function FAQPage() {
     <main className="min-h-screen bg-brand-bg">
 
       {/* ── Hero ── */}
-      <section className="bg-brand-surface pt-32 pb-16 border-b border-brand-border">
+      {/* bg-brand-bg (not brand-surface) to match the body background the
+          seamless floating navbar sits on — avoids a mismatched color strip
+          in the navbar's clearance gap above this band. */}
+      <section className="bg-brand-bg pt-32 pb-16 border-b border-brand-border">
         <Reveal className="max-w-3xl mx-auto px-4 sm:px-6">
           <p className="text-brand text-sm font-semibold uppercase tracking-widest mb-3">FAQ</p>
           <h1 className="text-4xl sm:text-5xl font-bold text-brand-text leading-tight tracking-tight mb-4">
