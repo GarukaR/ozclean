@@ -50,12 +50,12 @@ export default function Logo({ size = "default", className = "" }: LogoProps) {
           strokeLinecap="round"
         />
         <rect
-          x="14"
-          y="6.2"
-          width="5.4"
-          height="2.3"
-          rx="0.8"
-          transform="rotate(45 14 6.2)"
+          x="10.3"
+          y="8"
+          width="10"
+          height="1.4"
+          rx="0.6"
+          transform="rotate(45 15.3 8.7)"
           fill="var(--brand-accent)"
         />
       </svg>

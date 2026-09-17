@@ -19,13 +19,6 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
-import {
   Accordion,
   AccordionContent,
   AccordionItem,
@@ -88,26 +81,31 @@ export default function Navbar() {
         <Logo className="justify-self-start" />
 
         {/* ── Desktop Nav (hidden on mobile) — centered ── */}
-        <NavigationMenu className="hidden md:flex justify-self-center">
-          <NavigationMenuList>
-            {NAV_LINKS.map(({ label, href }) => (
-              <NavigationMenuItem key={label}>
-                <NavigationMenuLink
-                  asChild
-                  className={`
-                    ${navigationMenuTriggerStyle()}
-                    ${pathname === href || pathname.startsWith(href + "/")
-                      ? "text-brand font-semibold"
-                      : ""
-                    }
-                  `}
-                >
-                  <Link href={href}>{label}</Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-            ))}
-          </NavigationMenuList>
-        </NavigationMenu>
+        {/* Plain links, not shadcn's NavigationMenu — its default trigger
+            style bakes in a bg-background pill that reads as a button
+            floating over the navbar. An underline affordance keeps these
+            visibly clickable while staying flush with the navbar itself. */}
+        <nav className="hidden md:flex items-center gap-8 justify-self-center">
+          {NAV_LINKS.map(({ label, href }) => {
+            const active = pathname === href || pathname.startsWith(href + "/");
+            return (
+              <Link
+                key={label}
+                href={href}
+                className={`
+                  relative py-2 text-sm transition-colors
+                  after:absolute after:left-0 after:right-0 after:-bottom-0.5 after:h-0.5 after:rounded-full after:bg-brand after:transition-transform after:duration-300 after:origin-left
+                  ${active
+                    ? "text-brand font-semibold after:scale-x-100"
+                    : "font-medium text-brand-text/80 hover:text-brand after:scale-x-0 hover:after:scale-x-100"
+                  }
+                `}
+              >
+                {label}
+              </Link>
+            );
+          })}
+        </nav>
 
         {/* ── Desktop CTAs ── */}
         <div className="hidden md:flex items-center gap-3 justify-self-end">
