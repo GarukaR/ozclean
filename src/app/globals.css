@@ -170,7 +170,13 @@
     scrollbar-gutter: stable;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    /* Page canvas is the brand background, not shadcn's neutral --background
+       token — every section (Hero included) is built on bg-brand-bg, so the
+       body needs to match it or the strip behind the fixed floating navbar
+       (and any gap before a section's own background kicks in) shows a
+       mismatched white/near-black seam instead of blending in. */
+    background: var(--brand-bg);
     overflow-y: scroll; /* forces scrollbar to always reserve space */
   }
 

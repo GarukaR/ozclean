@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { ROUTES } from "@/lib/routes";
 import { SERVICES } from "@/lib/services";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -76,8 +76,15 @@ export default function Navbar() {
           pointer-events-auto max-w-6xl mx-auto px-4 sm:px-6 h-14 sm:h-16 grid grid-cols-3 items-center
           rounded-full border transition-all duration-500
           ${scrolled
-            ? "bg-brand-surface/90 backdrop-blur-xl backdrop-saturate-150 border-brand-border shadow-lg shadow-brand-text/10"
-            : "bg-brand-surface border-brand-border shadow-md shadow-brand-text/5"
+            // Liquid glass: a translucent, blurred material — not a solid
+            // brand-colored card — so it reads as frosted glass sitting
+            // over whatever scrolls beneath it, the way iOS/macOS chrome
+            // does. White tint in light mode, dark tint in dark mode.
+            ? "bg-white/70 dark:bg-white/[0.06] backdrop-blur-2xl backdrop-saturate-150 border-white/60 dark:border-white/10 shadow-lg shadow-black/10"
+            // At rest: no card at all — logo/links sit directly on the
+            // page background so the strip behind the nav blends seamlessly
+            // into the hero instead of floating a visible pill on top of it.
+            : "bg-transparent border-transparent shadow-none"
           }
         `}
       >
@@ -127,17 +134,31 @@ export default function Navbar() {
         <div className="flex md:hidden items-center gap-2 justify-self-end col-start-3">
           <ThemeToggle />
           <Sheet open={open} onOpenChange={setOpen}>
+            {/* One button drives both states: it doubles as the drawer's
+                close control (via SheetTrigger, which toggles the open
+                Sheet), so there's no separate X inside the panel. */}
             <SheetTrigger asChild>
               <Button
                 variant="ghost"
                 size="icon"
-                aria-label="Open menu"
+                aria-label={open ? "Close menu" : "Open menu"}
               >
-                <Menu className="w-5 h-5" />
+                <span className="relative w-5 h-5 block">
+                  <Menu
+                    className={`w-5 h-5 absolute inset-0 transition-all duration-300 ${
+                      open ? "opacity-0 rotate-45 scale-75" : "opacity-100 rotate-0 scale-100"
+                    }`}
+                  />
+                  <X
+                    className={`w-5 h-5 absolute inset-0 transition-all duration-300 ${
+                      open ? "opacity-100 rotate-0 scale-100" : "opacity-0 -rotate-45 scale-75"
+                    }`}
+                  />
+                </span>
               </Button>
             </SheetTrigger>
 
-          <SheetContent side="right" className="w-72 p-0">
+          <SheetContent side="right" className="w-72 p-0" showCloseButton={false}>
             {/* Required for accessibility */}
             <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
 
