@@ -81,13 +81,16 @@ export default function AboutPage() {
     <main className="min-h-screen">
 
       {/* ── Hero ── */}
-      <section className="bg-brand-bg pt-16 pb-20 relative overflow-hidden">
-        {/* top-0, not a negative offset — a negative top gets hard-cropped
-            by this section's own overflow-hidden right at its top edge,
-            which reads as a seam against the plain (glow-less) navbar
-            clearance gap directly above. Fully inside the section, the
-            blur fades out on its own with no crop line. */}
-        <div className="absolute top-0 -right-32 w-[500px] h-[500px] rounded-full bg-brand/8 blur-3xl pointer-events-none" />
+      {/* No overflow-hidden here — CSS only lets one axis clip independently
+          if you accept the other one silently becoming "auto" (which still
+          clips), so a same-axis fix isn't possible. Instead the glow sits
+          flush at right-0 and its width is capped at 88vw, so it can never
+          exceed the viewport on narrow screens — nothing needs clipping,
+          and its negative top offset can bleed upward past this section's
+          edge into the navbar's clearance gap, fading out naturally instead
+          of being hard-cropped at a seam. */}
+      <section className="bg-brand-bg pt-16 pb-20 relative">
+        <div className="absolute -top-32 right-0 w-[min(500px,88vw)] h-[min(500px,88vw)] rounded-full bg-brand/8 blur-3xl pointer-events-none" />
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <Reveal className="flex flex-col gap-6">
