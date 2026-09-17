@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Phone, Mail, MapPin, Facebook, Instagram } from "lucide-react";
+import { Phone, Mail, MapPin, Facebook, Instagram, Github } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import Logo from "@/components/Logo";
 import {
@@ -42,6 +42,8 @@ const SOCIAL_LINKS = [
   { icon: Instagram, href: "https://www.instagram.com/ozclean.au?igsh=MTN5Mzg0b20xZ3Vvdw==", label: "Instagram" },
   { icon: TikTokIcon, href: "https://www.tiktok.com/@oz.clean.au?_r=1&_t=ZS-96DcjiQnrcr", label: "TikTok" },
 ];
+
+const CREATOR_GITHUB_URL = "https://github.com/GarukaR";
 
 const CONTACT_INFO = [
   { icon: Phone, text: BUSINESS_PHONE, href: BUSINESS_PHONE_HREF },
@@ -131,7 +133,18 @@ export default function Footer() {
         <Separator className="mt-10 mb-6 bg-white/10" />
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/40">
-          <p>© {new Date().getFullYear()} OzClean. All rights reserved.</p>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <p>© {new Date().getFullYear()} OzClean. All rights reserved.</p>
+            <a
+              href={CREATOR_GITHUB_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-full bg-white/5 px-2.5 py-1 text-white/60 transition-colors hover:bg-brand-accent hover:text-[#06231e]"
+            >
+              <Github className="w-3.5 h-3.5 shrink-0" />
+              Site built by GarukaR
+            </a>
+          </div>
           <div className="flex items-center gap-4">
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
             <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
