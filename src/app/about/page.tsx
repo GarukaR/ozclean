@@ -82,7 +82,12 @@ export default function AboutPage() {
 
       {/* ── Hero ── */}
       <section className="bg-brand-bg pt-16 pb-20 relative overflow-hidden">
-        <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-brand/8 blur-3xl pointer-events-none" />
+        {/* top-0, not a negative offset — a negative top gets hard-cropped
+            by this section's own overflow-hidden right at its top edge,
+            which reads as a seam against the plain (glow-less) navbar
+            clearance gap directly above. Fully inside the section, the
+            blur fades out on its own with no crop line. */}
+        <div className="absolute top-0 -right-32 w-[500px] h-[500px] rounded-full bg-brand/8 blur-3xl pointer-events-none" />
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <Reveal className="flex flex-col gap-6">

@@ -60,7 +60,12 @@ export default async function ServicePage({
     <main className="min-h-screen">
       {/* ── Hero ── */}
       <section className="bg-brand-bg pt-32 pb-20 overflow-hidden relative">
-        <div className="absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full bg-brand/8 blur-3xl pointer-events-none" />
+        {/* top-0, not a negative offset — a negative top gets hard-cropped
+            by this section's own overflow-hidden right at its top edge,
+            which reads as a seam against the plain (glow-less) navbar
+            clearance gap directly above. Fully inside the section, the
+            blur fades out on its own with no crop line. */}
+        <div className="absolute top-0 -right-32 w-[600px] h-[600px] rounded-full bg-brand/8 blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -left-24 w-[420px] h-[420px] rounded-full bg-brand-accent/10 blur-3xl pointer-events-none" />
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
