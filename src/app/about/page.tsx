@@ -147,17 +147,9 @@ export default function AboutPage() {
               <h2 className="text-3xl sm:text-4xl font-bold text-brand-text leading-tight">
                 Started in 2019 with a mop and a mission.
               </h2>
-              <div className="flex flex-col gap-4 text-brand-muted text-sm leading-relaxed">
-                <p>
-                  OzClean started when our founder <strong>Kevin</strong> couldn&apos;t find a cleaning service he could actually trust. After years of unreliable bookings, inconsistent results, and harsh chemicals, he decided to build something better.
-                </p>
-                <p>
-                  What began as a one-man operation in Hampton Park has grown into a small, dedicated team serving hundreds of homes and businesses across greater Melbourne.
-                </p>
-                <p>
-                  The mission hasn&apos;t changed: deliver spotless results, with people you can trust, using products that are safe for your family and the environment.
-                </p>
-              </div>
+              <p className="text-brand-muted text-sm leading-relaxed">
+                <strong>Kevin</strong> started OzClean in Hampton Park after one too many unreliable cleaners. What began as a one-man operation is now a small, trusted team serving homes and businesses across Melbourne.
+              </p>
               <Button asChild className="bg-brand hover:bg-brand-dark text-white font-semibold gap-2 w-fit">
                 <Link href={ROUTES.SERVICES}>See Our Services <ArrowRight className="w-4 h-4" /></Link>
               </Button>
@@ -229,7 +221,7 @@ export default function AboutPage() {
                 Serving South-East Melbourne.
               </h2>
               <p className="text-brand-muted text-sm leading-relaxed mb-8">
-                We currently service Melbourne&apos;s inner suburbs centered around Hampton Park. Don&apos;t see your area? Get in touch, we&apos;re expanding regularly.
+                Don&apos;t see your area? Get in touch, we&apos;re expanding regularly.
               </p>
               <div className="flex flex-wrap gap-2 mb-8">
                 {SERVICE_AREAS.map((area) => (

@@ -89,7 +89,7 @@ export default function Hero() {
 
             {/* Subheading */}
             <motion.p variants={item} className="text-brand-muted text-lg leading-relaxed max-w-md">
-              Fast, reliable turnovers for <strong>Airbnb hosts</strong> and bond-back <strong>move-out cleans</strong>, plus commercial and residential cleaning across Hampton Park.
+              Fast <strong>Airbnb turnovers</strong> and bond-back <strong>move-out cleans</strong> across Melbourne.
             </motion.p>
 
             {/* CTA Buttons */}

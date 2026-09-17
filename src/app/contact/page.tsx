@@ -54,7 +54,7 @@ const CONNECT_OPTIONS = [
   {
     icon: Phone,
     title: "Call Us",
-    desc: "Prefer to talk? Give us a call and we'll sort out your booking or query on the spot.",
+    desc: "Sort out your booking or query on the spot.",
     action: `Call ${BUSINESS_PHONE}`,
     href: BUSINESS_PHONE_HREF,
     style: "bg-gradient-to-br from-brand to-brand-accent text-white",
@@ -63,7 +63,7 @@ const CONNECT_OPTIONS = [
   {
     icon: Mail,
     title: "Email Us",
-    desc: "Send us an email and we'll get back to you within 2 business hours.",
+    desc: "We reply within 2 business hours.",
     action: BUSINESS_EMAIL,
     href: BUSINESS_EMAIL_HREF,
     style: "bg-brand-accent-bg border border-brand-accent-border",
@@ -72,7 +72,7 @@ const CONNECT_OPTIONS = [
   {
     icon: ArrowRight,
     title: "Book Online",
-    desc: "Know what you need? Skip the back-and-forth and book your clean directly.",
+    desc: "Skip the back-and-forth, book your clean directly.",
     action: "Book Now",
     href: ROUTES.BOOKING,
     style: "bg-brand-bg border border-brand-border",

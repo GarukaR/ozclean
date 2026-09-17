@@ -77,8 +77,7 @@ export const SERVICES: Record<string, Service> = {
     icon: Building2,
     title: "Office & Commercial Cleaning",
     tagline: "A workspace your team deserves.",
-    description:
-      "Reliable cleaning solutions for offices, retail spaces, and businesses across Melbourne. We work around your schedule, not the other way around.",
+    description: "Reliable office and retail cleaning, scheduled around your business hours.",
     price: "From $150",
     priceLabel: "per visit",
     priceNote: "No lock-in contracts. Cancel or change anytime.",
@@ -134,8 +133,7 @@ export const SERVICES: Record<string, Service> = {
     icon: Home,
     title: "Residential Cleaning",
     tagline: "Your home, spotless. Every time.",
-    description:
-      "Reliable, friendly home cleaning tailored to your schedule. Choose hourly rates for flexibility or flat-rates based on your home size. Weekly, fortnightly, or one-off, we treat your home like our own.",
+    description: "Flexible home cleaning, weekly to one-off, on your schedule.",
     price: "$50–60/hr or $150–280",
     priceLabel: "hourly or flat-rate",
     priceNote: "Hourly rates from $50–60/hr (depending on frequency). Flat-rates from $150–280 based on bedrooms. No commitment required.",
@@ -191,8 +189,7 @@ export const SERVICES: Record<string, Service> = {
       icon: Building2,
       title: "Airbnb & Short-Term Rental Cleaning",
       tagline: "Fast turnovers. Five-star guest impressions.",
-      description:
-        "Professional Airbnb and short-term rental cleaning designed for quick guest turnovers and consistent standards. We reset your property between stays, refresh essentials, and help every check-in feel spotless.",
+      description: "Fast, consistent turnovers between guest stays: reset, restocked, ready.",
       price: "From $60/hr or custom turnover quote",
       priceLabel: "hourly or turnover rate",
       priceNote: "Flexible pricing for same-day, next-day, or scheduled changeovers. Request a custom quote based on property size and turnaround needs.",
@@ -248,8 +245,7 @@ export const SERVICES: Record<string, Service> = {
     icon: Sparkles,
     title: "Spring Deep Cleaning",
     tagline: "The clean your home actually needs.",
-    description:
-      "We go where regular cleaners don't. Inside the oven, behind the fridge, into every grout line: a true reset for your home or office.",
+    description: "A top-to-bottom reset: ovens, fridges, grout, every missed spot.",
     price: "From $200",
     priceLabel: "per session",
     priceNote: "Exact quote provided upfront based on property size.",
@@ -307,8 +303,7 @@ export const SERVICES: Record<string, Service> = {
     icon: ArrowLeftRight,
     title: "Move In / Move Out",
     tagline: "Get your bond back. Guaranteed.",
-    description:
-      "Stress-free end-of-lease and move-in cleaning across Melbourne. We follow the real estate checklist so you don't have to worry.",
+    description: "End-of-lease cleaning that follows the real estate checklist.",
     price: "From $180",
     priceLabel: "per property",
     priceNote: "Exact quote based on number of rooms and property condition.",
@@ -364,8 +359,7 @@ export const SERVICES: Record<string, Service> = {
     icon: Wind,
     title: "Window Cleaning",
     tagline: "See the world crystal clear.",
-    description:
-      "Streak-free, sparkling windows for homes and businesses. Our pricing is based on the number of storeys. We use professional-grade tools and purified water. No smears, no residue, guaranteed.",
+    description: "Streak-free windows, inside and out, guaranteed.",
     price: "From $250",
     priceLabel: "per storey",
     priceNote: "Pricing calculated based on your property's storeys and window count. Multi-storey access available.",
@@ -421,8 +415,7 @@ export const SERVICES: Record<string, Service> = {
     icon: Trash2,
     title: "Wheely Bin Cleaning",
     tagline: "Fresh bins. Cleaner property.",
-    description:
-      "High-pressure wheely bin cleaning and sanitising for homes and small businesses. We remove grime, bacteria, and bad odours so your bins stay hygienic.",
+    description: "High-pressure cleaning and sanitising to keep bins fresh.",
     price: "From $35",
     priceLabel: "per bin",
     priceNote: "Final price is calculated by number of bins.",

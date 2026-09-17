@@ -19,7 +19,7 @@ const TESTIMONIALS: Testimonial[] = [
     location: "Berwick, VIC",
     service: "Residential Cleaning",
     rating: 5,
-    text: "Our house has never looked better since we started with OzClean. They're always on time, thorough, and easy to deal with.",
+    text: "Our house has never looked better. Always on time, thorough, easy to deal with.",
     avatar: "MM",
     avatarBg: "bg-brand/10 text-brand",
   },
@@ -28,7 +28,7 @@ const TESTIMONIALS: Testimonial[] = [
     location: "Dandenong, VIC",
     service: "Commercial Cleaning",
     rating: 5,
-    text: "We've used OzClean for our office every week for over a year now. Professional, discreet, and consistent, exactly what we needed.",
+    text: "Weekly office cleans for over a year now. Professional, discreet, consistent.",
     avatar: "SO",
     avatarBg: "bg-brand-accent-bg text-brand-accent-dark",
   },
@@ -37,7 +37,7 @@ const TESTIMONIALS: Testimonial[] = [
     location: "Cranbourne, VIC",
     service: "Deep Cleaning",
     rating: 4,
-    text: "Booked the deep clean before a big family event. They got into every corner, the grout, inside the oven, behind the fridge, all of it. Genuinely spotless.",
+    text: "Booked before a big family event. Every corner, the grout, inside the oven. Genuinely spotless.",
     avatar: "JS",
     avatarBg: "bg-brand-bg text-brand-dark",
   },
@@ -46,7 +46,7 @@ const TESTIMONIALS: Testimonial[] = [
     location: "Hampton Park, VIC",
     service: "Move Out Clean",
     rating: 5,
-    text: "Got our full bond back thanks to OzClean. The landlord inspection went perfectly. Worth every cent, stress-free and professional from start to finish.",
+    text: "Got our full bond back. Landlord inspection went perfectly, stress-free start to finish.",
     avatar: "TB",
     avatarBg: "bg-brand-accent/10 text-brand-accent-dark",
   },
@@ -55,35 +55,8 @@ const TESTIMONIALS: Testimonial[] = [
     location: "Noble Park, VIC",
     service: "Airbnb Cleaning",
     rating: 5,
-    text: "As a host with two listings, turnaround speed is everything. OzClean has our place guest-ready within hours of checkout, every time.",
+    text: "Turnaround speed is everything with two listings. Guest-ready within hours of checkout, every time.",
     avatar: "PF",
-    avatarBg: "bg-brand/10 text-brand-dark",
-  },
-  {
-    name: "Tony Lee",
-    location: "Springvale, VIC",
-    service: "Commercial Cleaning",
-    rating: 4,
-    text: "Running a café means cleanliness is everything. OzClean comes in after close and the place is immaculate every morning. Reliable and great value.",
-    avatar: "TL",
-    avatarBg: "bg-brand-bg text-brand",
-  },
-  {
-    name: "Megan Torres",
-    location: "Keysborough, VIC",
-    service: "Residential Cleaning",
-    rating: 5,
-    text: "I've tried a couple of other cleaning services before OzClean. Same cleaner every visit, and she always remembers how we like things done.",
-    avatar: "MT",
-    avatarBg: "bg-brand-accent-bg text-brand-accent",
-  },
-  {
-    name: "Chris Halliday",
-    location: "Narre Warren, VIC",
-    service: "Deep Cleaning",
-    rating: 4,
-    text: "Moved into a place that hadn't been cleaned properly in years. OzClean got it done in one session. Didn't expect it to come up that well.",
-    avatar: "CH",
     avatarBg: "bg-brand/10 text-brand-dark",
   },
 ];
@@ -147,10 +120,6 @@ export default function Testimonials() {
             <span className="text-brand">Victorians</span>
             {""}.
           </h2>
-          <p className="mt-4 text-brand-muted text-lg leading-relaxed">
-            Don&apos;t just take our word for it, here&apos;s what our customers say
-            about their OzClean experience.
-          </p>
 
           {/* Overall rating */}
           <div className="mt-6 inline-flex items-center gap-3 bg-brand-surface border border-brand-border rounded-2xl px-5 py-3 shadow-sm">

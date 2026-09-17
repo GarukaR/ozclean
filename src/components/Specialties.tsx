@@ -35,9 +35,6 @@ export default function Specialties() {
             Airbnb turnover, or{" "}
             <span className="text-brand-accent-dark">moving out?</span>
           </h2>
-          <p className="mt-4 text-brand-muted text-lg leading-relaxed">
-            These are the two cleans we&apos;re known for. Here&apos;s how to tell which one fits.
-          </p>
         </Reveal>
 
         {/* ── Compact comparison card ── */}

@@ -130,15 +130,6 @@ export default async function ServicePage({
                 className="object-cover"
                 fill
               />
-              {/* Floating price card */}
-              <div className="absolute bottom-4 left-4 bg-brand-surface/95 backdrop-blur-sm rounded-2xl px-5 py-3 shadow-lg border border-brand-border">
-                  <p className="text-2xl font-black text-brand-accent-dark leading-none">
-                  {service.price}
-                </p>
-                <p className="text-xs text-brand-muted mt-1">
-                  {service.priceLabel}
-                </p>
-              </div>
             </Reveal>
           </div>
         </div>
@@ -185,17 +176,6 @@ export default async function ServicePage({
                 <p className="text-white/75 text-sm leading-relaxed">
                   {service.priceNote}
                 </p>
-                <div className="h-px bg-white/20" />
-                <ul className="flex flex-col gap-2.5">
-                  {service.highlights.map(({ icon, label }) => (
-                    <li
-                      key={label}
-                      className="flex items-center gap-2.5 text-sm text-white/90"
-                    >
-                      <span>{icon}</span> {label}
-                    </li>
-                  ))}
-                </ul>
               </div>
             </Reveal>
           </div>

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Clock, Home, ChevronUp, ChevronDown } from "lucide-react";
+import { Clock, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/lib/routes";
 import Reveal from "@/components/Reveal";
@@ -22,21 +22,13 @@ type ApiAddonOption = {
   priceCents: number;
 };
 
-const HOURLY_PERFECT_FOR =
-  "Cleaning specific areas of your home, quick and flexible cleaning sessions.";
+const HOURLY_PERFECT_FOR = "Specific areas, quick and flexible sessions.";
 
-const HOURLY_MORE = `Our hourly service is time-based: your cleaner will perform any cleaning task you direct them to, working as efficiently as possible while maintaining quality. This is ideal if you need specific areas cleaned such as bathrooms, kitchen, or living areas. You provide the checklist or we can suggest one. Minimum booking is 2 hours.`;
-
-const FLAT_PERFECT_FOR =
-  "A full clean of your entire home. Our satisfaction guarantee applies.";
-
-const FLAT_MORE = `The flat-rate option is perfect for having your entire home professionally cleaned from top to bottom. Pricing is based on the number of bedrooms in your home and our team will complete a full general clean following our detailed checklist. Additional services such as inside oven, fridge, and window cleaning can be added on. If your home hasn't had a deep or thorough clean in over a month, we recommend booking a deep clean first for the best results.`;
+const FLAT_PERFECT_FOR = "A full clean, top to bottom. Guaranteed.";
 
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function Pricing() {
-  const [hourlyOpen, setHourlyOpen] = useState(false);
-  const [flatOpen, setFlatOpen]     = useState(false);
   const [services, setServices] = useState<ApiServiceOption[]>([]);
   const [addons, setAddons] = useState<ApiAddonOption[]>([]);
   const [catalogError, setCatalogError] = useState<string | null>(null);
@@ -106,17 +98,6 @@ export default function Pricing() {
             Residential cleaning prices{" "}
             <span className="text-brand">made simple.</span>
           </h2>
-          <p className="mt-4 text-brand-muted text-base leading-relaxed max-w-xl mx-auto">
-            These hourly and flat-rate options are for regular home (residential) cleaning. Looking for{" "}
-            <Link href="/services/airbnb" className="text-brand-accent-dark font-semibold hover:underline underline-offset-2">
-              Airbnb turnover
-            </Link>{" "}
-            or{" "}
-            <Link href="/services/move" className="text-brand-accent-dark font-semibold hover:underline underline-offset-2">
-              move-out
-            </Link>{" "}
-            pricing? Those are quoted separately on their own pages.
-          </p>
         </Reveal>
 
         {/* ── Two panels ── */}
@@ -157,27 +138,8 @@ export default function Pricing() {
               <p className="text-sm text-brand-text leading-relaxed">{HOURLY_PERFECT_FOR}</p>
             </div>
 
-            {/* Read more toggle */}
-            <div className="px-6 pb-2">
-              <button
-                onClick={() => setHourlyOpen((v) => !v)}
-                className="flex items-center gap-1.5 text-sm text-brand font-semibold hover:underline underline-offset-2 mb-3"
-              >
-                {hourlyOpen ? "Read less" : "Read more"}
-                {hourlyOpen
-                  ? <ChevronUp className="w-3.5 h-3.5" />
-                  : <ChevronDown className="w-3.5 h-3.5" />
-                }
-              </button>
-              {hourlyOpen && (
-                <p className="text-sm text-brand-muted leading-relaxed mb-4">
-                  {HOURLY_MORE}
-                </p>
-              )}
-            </div>
-
             {/* CTA */}
-            <div className="px-6 pb-7 mt-auto">
+            <div className="px-6 pt-2 pb-7 mt-auto">
               <Button
                 asChild
                 className="w-full bg-brand hover:bg-brand-dark text-white font-semibold h-11 shadow-md shadow-brand/20"
@@ -228,27 +190,8 @@ export default function Pricing() {
               <p className="text-sm text-brand-text leading-relaxed">{FLAT_PERFECT_FOR}</p>
             </div>
 
-            {/* Read more toggle */}
-            <div className="px-6 pb-2">
-              <button
-                onClick={() => setFlatOpen((v) => !v)}
-                className="flex items-center gap-1.5 text-sm text-brand-accent-dark font-semibold hover:underline underline-offset-2 mb-3"
-              >
-                {flatOpen ? "Read less" : "Read more"}
-                {flatOpen
-                  ? <ChevronUp className="w-3.5 h-3.5" />
-                  : <ChevronDown className="w-3.5 h-3.5" />
-                }
-              </button>
-              {flatOpen && (
-                <p className="text-sm text-brand-muted leading-relaxed mb-4">
-                  {FLAT_MORE}
-                </p>
-              )}
-            </div>
-
             {/* CTA */}
-            <div className="px-6 pb-7 mt-auto">
+            <div className="px-6 pt-2 pb-7 mt-auto">
               <Button
                 asChild
                 className="w-full bg-brand-accent hover:bg-brand-accent-dark text-white font-semibold h-11 shadow-md shadow-brand-accent/20"

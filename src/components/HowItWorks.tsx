@@ -10,8 +10,7 @@ const STEPS = [
     step: "01",
     icon: Phone,
     title: "Call Us or Get a Quote",
-    description:
-      "Not sure what you need? Give us a call or request a free quote. We'll recommend the right service and answer any questions.",
+    description: "Tell us what you need. We'll recommend the right service.",
     cta: { label: "Get a Free Quote", href: ROUTES.QUOTE },
     alt: {
       label: "Or browse services first",
@@ -22,8 +21,7 @@ const STEPS = [
     step: "02",
     icon: CalendarCheck,
     title: "Book Your Clean",
-    description:
-      "Pick your service, choose a date and time that suits you, and confirm your booking online in minutes. No phone call required.",
+    description: "Pick a date and time, and confirm online in minutes.",
     cta: { label: "Book Now", href: ROUTES.BOOKING },
     alt: null,
   },
@@ -31,8 +29,7 @@ const STEPS = [
     step: "03",
     icon: Sparkles,
     title: "We Clean, You Relax",
-    description:
-      "Our vetted professionals arrive on time and get to work. You'll come back to a spotless & fresh space, guaranteed.",
+    description: "We arrive on time and get to work. Spotless, guaranteed.",
     cta: null,
     alt: null,
   },
@@ -50,10 +47,6 @@ export default function HowItWorks() {
             Clean your space in{" "}
             <span className="text-brand">3 simple steps.</span>
           </h2>
-          <p className="mt-4 text-brand-muted text-lg leading-relaxed">
-            Whether you know exactly what you need or want to chat first,
-            getting started takes just a few minutes.
-          </p>
         </Reveal>
 
         {/* ── Steps ── */}

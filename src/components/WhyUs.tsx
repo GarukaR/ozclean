@@ -6,8 +6,7 @@ const FEATURES = [
   {
     icon: Zap,
     title: "Fast & Reliable Service",
-    description:
-      "We show up on time, every time. Our trained professionals work efficiently without cutting corners, your space is spotless before you know it.",
+    description: "On time, every time, without cutting corners.",
     stat: "98%",
     statLabel: "On-time arrival rate",
     accent: "bg-brand/10 text-brand",
@@ -15,8 +14,7 @@ const FEATURES = [
   {
     icon: CalendarClock,
     title: "Flexible Scheduling",
-    description:
-      "Early morning, evenings, weekends, because we work around your life. Book online in minutes and reschedule anytime, no hassle.",
+    description: "Early mornings, evenings, weekends. Book and reschedule online anytime.",
     stat: "Easy and Quick",
     statLabel: "Booking available",
     accent: "bg-brand-accent/10 text-brand-accent",
@@ -24,8 +22,7 @@ const FEATURES = [
   {
     icon: Leaf,
     title: "Eco-Friendly Products",
-    description:
-      "We use only non-toxic, biodegradable cleaning products that are safe for your family, pets, and the planet. Clean home, clean conscience.",
+    description: "Non-toxic, biodegradable products, safe for family and pets.",
     stat: "100%",
     statLabel: "Non-toxic products",
     accent: "bg-brand-accent-bg text-brand-accent",
@@ -33,8 +30,7 @@ const FEATURES = [
   {
     icon: ShieldCheck,
     title: "Insured & Vetted Staff",
-    description:
-      "Every cleaner is background-checked(Police Checked), fully insured, and trained to our high standards. You can trust who we send into your home or office.",
+    description: "Police-checked, fully insured, and trained to our standards.",
     stat: "Punctual & Friendly",
     statLabel: "Verified professionals",
     accent: "bg-brand/10 text-brand",
@@ -53,9 +49,6 @@ export default function WhyUs() {
             <span className="text-brand-accent-dark">count on,</span>
             <br />every single visit.
           </h2>
-          <p className="mt-4 text-brand-muted text-lg leading-relaxed">
-            We built OzClean around the things that matter most to our customers: <strong>reliability, professionalism, and exceptional results.</strong>
-          </p>
         </Reveal>
 
         {/* ── Feature List ── */}
@@ -81,22 +74,6 @@ export default function WhyUs() {
               </div>
             </Reveal>
           ))}
-        </div>
-
-        {/* ── Bottom Social Proof Strip ── */}
-        <div className="mt-12 rounded-2xl bg-gradient-to-r from-brand to-brand-accent px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex flex-wrap justify-center sm:justify-start gap-8">
-            {[
-              { value: "1,000+", label: "Cleans completed" },
-              { value: "7+ years", label: "In business" },
-              { value: "4.75★", label: "Average rating" },
-            ].map(({ value, label }) => (
-              <div key={label} className="text-center sm:text-left">
-                <p className="text-white font-bold text-2xl leading-none">{value}</p>
-                <p className="text-white/70 text-xs mt-1">{label}</p>
-              </div>
-            ))}
-          </div>
         </div>
 
       </div>
