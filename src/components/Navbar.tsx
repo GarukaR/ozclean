@@ -3,9 +3,10 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Phone, Star } from "lucide-react";
 import { ROUTES } from "@/lib/routes";
 import { SERVICES } from "@/lib/services";
+import { BUSINESS_PHONE, BUSINESS_PHONE_HREF } from "@/lib/business";
 import ThemeToggle from "@/components/ThemeToggle";
 import Logo from "@/components/Logo";
 
@@ -75,11 +76,15 @@ export default function Navbar() {
         className={`
           pointer-events-auto max-w-6xl mx-auto px-4 sm:px-6 h-14 sm:h-16 grid grid-cols-3 items-center
           rounded-full border transition-all duration-500
-          ${scrolled
+          ${scrolled || open
             // Liquid glass: a translucent, blurred material — not a solid
             // brand-colored card — so it reads as frosted glass sitting
             // over whatever scrolls beneath it, the way iOS/macOS chrome
             // does. White tint in light mode, dark tint in dark mode.
+            // Also applied while the mobile drawer is open — the drawer sits
+            // just behind this pill (z-40 vs z-60), so an opaque/glass pill
+            // is what actually masks it; a transparent pill would let the
+            // drawer's own panel bleed through right behind the logo/links.
             ? "bg-white/70 dark:bg-white/[0.06] backdrop-blur-2xl backdrop-saturate-150 border-white/60 dark:border-white/10 shadow-lg shadow-black/10"
             // At rest: no card at all — logo/links sit directly on the
             // page background so the strip behind the nav blends seamlessly
@@ -158,7 +163,18 @@ export default function Navbar() {
               </Button>
             </SheetTrigger>
 
-          <SheetContent side="right" className="w-72 p-0" showCloseButton={false}>
+          <SheetContent
+            side="right"
+            // Narrower than the shadcn default so a visible slice of the
+            // page — including the logo, which stays on the pill above —
+            // always remains in view instead of the drawer swallowing most
+            // of the screen. Capped both ends: min-width keeps the
+            // accordion's longer service names from wrapping awkwardly on
+            // small phones, max-width stops it stretching too wide on
+            // larger ones.
+            className="w-[66%] min-w-[248px] max-w-[320px] p-0"
+            showCloseButton={false}
+          >
             {/* Required for accessibility */}
             <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
 
@@ -167,7 +183,7 @@ export default function Navbar() {
                 repeated inside the drawer itself. */}
             <div className="flex flex-col h-full pt-24 sm:pt-28">
               {/* Mobile Links */}
-              <nav className="flex flex-col gap-1 p-4 flex-1">
+              <nav className="flex flex-col gap-1 px-4 pb-2">
                 {NAV_LINKS.map(({ label, href }) => (
                   label === "Services" ? (
                     <Accordion
@@ -275,6 +291,40 @@ export default function Navbar() {
                   )
                 ))}
               </nav>
+
+              {/* Fills what used to be dead space below a short link list
+                  with content visitors actually want mid-decision: a direct
+                  call option and the same trust signal shown on the
+                  homepage — instead of an empty void before the CTAs. */}
+              <div className="flex-1 flex flex-col justify-end gap-4 px-4 py-4">
+                <a
+                  href={BUSINESS_PHONE_HREF}
+                  className="flex items-center gap-3 rounded-xl border border-brand-border bg-brand-bg px-4 py-3 transition-colors hover:border-brand-accent"
+                >
+                  <span className="w-9 h-9 rounded-full bg-brand-accent-bg flex items-center justify-center shrink-0">
+                    <Phone className="w-4 h-4 text-brand-accent-dark" />
+                  </span>
+                  <span className="flex flex-col min-w-0">
+                    <span className="text-[11px] font-semibold uppercase tracking-wide text-brand-muted">
+                      Call us
+                    </span>
+                    <span className="text-sm font-semibold text-brand-text truncate">
+                      {BUSINESS_PHONE}
+                    </span>
+                  </span>
+                </a>
+
+                <div className="flex items-center gap-2 px-1">
+                  <div className="flex items-center gap-0.5">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                    ))}
+                  </div>
+                  <p className="text-xs text-brand-muted">
+                    <span className="font-semibold text-brand-text">4.75/5</span> from 100+ reviews
+                  </p>
+                </div>
+              </div>
 
               <Separator />
 
