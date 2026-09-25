@@ -451,7 +451,7 @@ export default function BookingForm({
                 setServiceCount(nextConfig ? String(nextConfig.min) : "1");
               }}
             >
-              <SelectTrigger className="border-brand-border focus:border-brand focus:ring-brand">
+              <SelectTrigger className="w-full border-brand-border focus:border-brand focus:ring-brand">
                 <SelectValue placeholder={isCatalogLoading ? "Loading services..." : "Select a service"} />
               </SelectTrigger>
               <SelectContent>
@@ -594,7 +594,7 @@ export default function BookingForm({
                 setValue("time", v, { shouldValidate: true });
               }}
             >
-              <SelectTrigger className="border-brand-border focus:border-brand focus:ring-brand">
+              <SelectTrigger className="w-full border-brand-border focus:border-brand focus:ring-brand">
                 <SelectValue
                   placeholder={
                     !selectedDate
@@ -656,7 +656,7 @@ export default function BookingForm({
       <Button
         type="submit"
         disabled={isSubmitting}
-        className="w-full bg-brand hover:bg-brand-dark text-white font-semibold h-12 text-base shadow-md shadow-brand/20 transition-all"
+        className="w-full bg-brand-accent hover:bg-brand-accent-dark text-white font-semibold h-12 text-base shadow-lg shadow-brand-accent/30 transition-all"
       >
         {isSubmitting ? "Redirecting to payment..." : "Confirm Booking →"}
       </Button>

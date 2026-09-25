@@ -52,7 +52,7 @@ export default async function BookPage({
         {/* ── Back link ── */}
         <Link
           href={ROUTES.HOME}
-          className="inline-flex items-center gap-1.5 text-sm text-brand-muted hover:text-brand transition-colors mb-8"
+          className="inline-flex items-center gap-1.5 py-2.5 text-sm text-brand-muted hover:text-brand transition-colors mb-5"
         >
           <ArrowLeft className="w-3.5 h-3.5" /> Back to home
         </Link>

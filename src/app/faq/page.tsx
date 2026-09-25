@@ -110,14 +110,16 @@ const FAQ_CATEGORIES = [
 ];
 // ─────────────────────────────────────────────────────────────────────────────
 
+const categoryId = (category: string) => category.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+
 function FAQItem({ q, a }: { q: string; a: string }) {
   return (
     <details className="group border border-brand-border rounded-2xl overflow-hidden">
-      <summary className="flex items-center justify-between gap-4 px-6 py-5 cursor-pointer list-none hover:bg-brand-bg transition-colors">
+      <summary className="flex items-center justify-between gap-4 px-4 sm:px-6 py-4 sm:py-5 cursor-pointer list-none hover:bg-brand-bg transition-colors">
         <span className="font-semibold text-brand-text text-sm">{q}</span>
         <ChevronDown className="w-4 h-4 text-brand-muted shrink-0 transition-transform duration-200 group-open:rotate-180" />
       </summary>
-      <div className="px-6 pb-5">
+      <div className="px-4 sm:px-6 pb-4 sm:pb-5">
         <p className="text-sm text-brand-muted leading-relaxed">{a}</p>
       </div>
     </details>
@@ -142,15 +144,27 @@ export default function FAQPage() {
           <p className="text-brand-muted text-lg leading-relaxed">
             Everything you need to know about booking, our team, products, and our guarantee. Can&apos;t find your answer? We&apos;re happy to help.
           </p>
+          {/* Jump to a category: swipeable row on phones, wraps on desktop */}
+          <nav aria-label="FAQ categories" className="mt-6 -mx-4 px-4 sm:mx-0 sm:px-0 flex sm:flex-wrap gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {FAQ_CATEGORIES.map(({ category }) => (
+              <a
+                key={category}
+                href={`#${categoryId(category)}`}
+                className="shrink-0 rounded-full border border-brand-border bg-brand-surface px-4 py-2 text-sm font-medium text-brand-text hover:border-brand-accent hover:text-brand-accent-dark transition-colors"
+              >
+                {category}
+              </a>
+            ))}
+          </nav>
         </Reveal>
       </section>
 
       {/* ── FAQ Categories ── */}
-      <section className="py-16">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 flex flex-col gap-12">
+      <section className="py-10 sm:py-16">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 flex flex-col gap-10 sm:gap-12">
           {FAQ_CATEGORIES.map(({ category, faqs }, index) => (
             <Reveal key={category} delay={(index % 3) * 0.08} className="flex flex-col gap-4">
-              <h2 className="text-lg font-bold text-brand-text flex items-center gap-3">
+              <h2 id={categoryId(category)} className="scroll-mt-28 text-lg font-bold text-brand-text flex items-center gap-3">
                 <span className="w-1 h-5 rounded-full bg-brand-accent inline-block" />
                 {category}
               </h2>

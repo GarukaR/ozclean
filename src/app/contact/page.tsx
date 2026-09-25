@@ -1,6 +1,4 @@
-import Link from "next/link";
-import { Phone, Mail, MapPin, Clock, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Phone, Mail, MapPin, Clock, ArrowRight, ChevronRight } from "lucide-react";
 import { generatePageMeta } from "@/lib/seo";
 import { ROUTES } from "@/lib/routes";
 import {
@@ -65,8 +63,8 @@ const CONNECT_OPTIONS = [
   {
     icon: ArrowRight,
     title: "Book Online",
-    desc: "Skip the back-and-forth, book your clean directly.",
-    action: "Book Now",
+    desc: "Home cleans can be booked and paid online in a few minutes.",
+    action: "Book a Home Clean",
     href: ROUTES.BOOKING,
     style: "bg-brand-bg border border-brand-border",
     btnStyle: "bg-brand-accent hover:bg-brand-accent-dark text-white",
@@ -102,25 +100,34 @@ export default function ContactPage() {
       </section>
 
       {/* ── Connect Options ── */}
-      <section className="py-12">
+      <section className="py-8 sm:py-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-4">
             {CONNECT_OPTIONS.map(({ icon: Icon, title, desc, action, href, style, btnStyle }, index) => {
               const isDarkCard = style.includes("text-white");
               return (
                 <Reveal key={title} delay={index * 0.08} className="h-full">
-                  <div className={`h-full rounded-3xl p-7 flex flex-col gap-4 hover:-translate-y-1 motion-reduce:hover:translate-y-0 transition-transform duration-300 ${style}`}>
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isDarkCard ? "bg-white/20" : "bg-brand/10"}`}>
+                  {/* The whole card is the link. Phones get a compact row with a
+                      chevron; wider screens get the full card with a button. */}
+                  <a
+                    href={href}
+                    className={`group h-full rounded-2xl sm:rounded-3xl p-4 sm:p-7 flex flex-row sm:flex-col items-center sm:items-stretch gap-3 sm:gap-4 hover:-translate-y-1 motion-reduce:hover:translate-y-0 transition-transform duration-300 ${style}`}
+                  >
+                    <div className={`w-10 h-10 rounded-xl shrink-0 flex items-center justify-center ${isDarkCard ? "bg-white/20" : "bg-brand/10"}`}>
                       <Icon className={`w-5 h-5 ${isDarkCard ? "text-white" : "text-brand"}`} />
                     </div>
-                    <div>
-                      <p className={`font-bold text-lg ${isDarkCard ? "text-white" : "text-brand-text"}`}>{title}</p>
-                      <p className={`text-sm mt-1 leading-relaxed ${isDarkCard ? "text-white/80" : "text-brand-muted"}`}>{desc}</p>
+                    <div className="flex-1 min-w-0">
+                      <p className={`font-bold sm:text-lg ${isDarkCard ? "text-white" : "text-brand-text"}`}>{title}</p>
+                      <p className={`text-sm sm:mt-1 leading-snug sm:leading-relaxed truncate sm:whitespace-normal ${isDarkCard ? "text-white/80" : "text-brand-muted"}`}>
+                        <span className="sm:hidden">{action}</span>
+                        <span className="hidden sm:inline">{desc}</span>
+                      </p>
                     </div>
-                    <Button asChild className={`w-full font-semibold mt-auto ${btnStyle}`}>
-                      <Link href={href}>{action}</Link>
-                    </Button>
-                  </div>
+                    <ChevronRight className={`sm:hidden w-5 h-5 shrink-0 ${isDarkCard ? "text-white/80" : "text-brand-muted"}`} />
+                    <span className={`hidden sm:flex h-9 items-center justify-center rounded-md text-sm w-full font-semibold mt-auto transition-colors ${btnStyle}`}>
+                      {action}
+                    </span>
+                  </a>
                 </Reveal>
               );
             })}

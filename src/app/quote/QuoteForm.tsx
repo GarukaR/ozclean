@@ -155,7 +155,7 @@ export default function QuoteForm() {
         <div className="flex flex-col gap-4">
           <FieldWrapper label="Service Interested In" icon={Sparkles} error={errors.service?.message}>
             <Select onValueChange={(v) => setValue("service", v, { shouldValidate: true })}>
-              <SelectTrigger className="border-brand-border focus:border-brand focus:ring-brand">
+              <SelectTrigger className="w-full border-brand-border focus:border-brand focus:ring-brand">
                 <SelectValue placeholder="Select a service" />
               </SelectTrigger>
               <SelectContent>
@@ -180,7 +180,7 @@ export default function QuoteForm() {
       <Button
         type="submit"
         disabled={isSubmitting}
-        className="w-full bg-brand hover:bg-brand-dark text-white font-semibold h-12 text-base shadow-md shadow-brand/20"
+        className="w-full bg-brand-accent hover:bg-brand-accent-dark text-white font-semibold h-12 text-base shadow-lg shadow-brand-accent/30"
       >
         {isSubmitting ? "Sending..." : "Request My Free Quote →"}
       </Button>

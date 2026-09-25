@@ -141,7 +141,7 @@ export default function AreaChecker({
       {/* ── Full list, collapsed ── */}
       {showAllAreas && (
         <details className={`group text-sm ${centerOnMobile ? "text-center lg:text-left" : ""}`}>
-          <summary className="cursor-pointer list-none inline-flex items-center gap-1.5 font-semibold text-brand-accent-dark hover:underline underline-offset-2">
+          <summary className="cursor-pointer list-none inline-flex items-center gap-1.5 py-2.5 font-semibold text-brand-accent-dark hover:underline underline-offset-2">
             <MapPin className="w-4 h-4" />
             See all {ALL_SERVICE_AREAS.length} areas we cover
           </summary>

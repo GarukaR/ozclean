@@ -107,14 +107,14 @@ function SpecialtyCard({ card }: { card: Card }) {
 
         {/* CTA row — every specialty is quote-only */}
         <div className="mt-auto pt-4 border-t border-brand-border flex items-center gap-3 flex-wrap">
-          <Button asChild size="sm" className="bg-brand-accent hover:bg-brand-accent-dark text-white font-semibold gap-1.5">
+          <Button asChild className="h-10 bg-brand-accent hover:bg-brand-accent-dark text-white font-semibold gap-1.5">
             <Link href={ROUTES.QUOTE}>
               Get a Free Quote <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </Button>
           <Link
             href={href}
-            className="flex items-center gap-1.5 text-sm font-semibold text-brand-accent-dark hover:gap-2.5 transition-all duration-200"
+            className="flex items-center gap-1.5 py-2.5 text-sm font-semibold text-brand-accent-dark hover:gap-2.5 transition-all duration-200"
           >
             Learn more <ArrowRight className="w-3.5 h-3.5" />
           </Link>

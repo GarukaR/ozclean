@@ -101,7 +101,7 @@ export default function AboutPage() {
             </Reveal>
 
             {/* Photo with a liquid-glass panel, same treatment as the service pages */}
-            <Reveal delay={0.15} className="relative rounded-3xl overflow-hidden aspect-[4/3] shadow-xl shadow-brand/15">
+            <Reveal delay={0.15} className="relative rounded-3xl overflow-hidden aspect-[16/10] sm:aspect-[4/3] shadow-xl shadow-brand/15">
               <Image
                 src="https://images.pexels.com/photos/6195951/pexels-photo-6195951.jpeg"
                 alt="OzClean cleaner at work in a Melbourne home"
