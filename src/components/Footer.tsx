@@ -55,29 +55,68 @@ const CONTACT_INFO = [
 ];
 // ─────────────────────────────────────────────────────────────────────────────
 
+function FooterColumn({ heading, links }: { heading: string; links: { label: string; href: string }[] }) {
+  return (
+    <div className="flex flex-col gap-3 sm:gap-4">
+      <h4 className="text-xs sm:text-sm font-semibold text-white tracking-wide uppercase">{heading}</h4>
+      <ul className="flex flex-col gap-2 sm:gap-2.5">
+        {links.map(({ label, href }) => (
+          <li key={label}>
+            <Link
+              href={href}
+              className="text-sm text-white/55 hover:text-white transition-colors hover:translate-x-0.5 inline-block py-0.5"
+            >
+              {label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 // Footer is a fixed near-black anchor band, independent of the site's light/dark theme toggle.
 export default function Footer() {
   return (
     <footer className="bg-[#0a0a0a] text-white">
       {/* ── Main Footer Grid ── */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-14">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+        {/* Phones: brand block full width, then two link columns side by side
+            (services | company + support). Desktop: five columns. */}
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-x-6 gap-y-8 sm:gap-10">
 
           {/* Brand Column */}
-          <div className="lg:col-span-2 flex flex-col gap-5">
+          <div className="col-span-2 flex flex-col gap-4 sm:gap-5">
             {/* Logo — pinned to a light colour here since the footer stays a
                 fixed dark band regardless of the site's light/dark toggle,
                 whereas the logo's stroke colour otherwise follows that toggle. */}
-            <div style={{ "--brand-text": "#ffffff" } as React.CSSProperties}>
-              <Logo />
+            <div className="flex items-center justify-between gap-4">
+              <div style={{ "--brand-text": "#ffffff" } as React.CSSProperties}>
+                <Logo />
+              </div>
+              {/* Socials sit beside the logo on phones to save a row */}
+              <div className="flex items-center gap-2 lg:hidden">
+                {SOCIAL_LINKS.map(({ icon: Icon, href, label }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    className="w-9 h-9 rounded-lg bg-white/5 hover:bg-brand flex items-center justify-center transition-colors"
+                  >
+                    <Icon className="w-4 h-4 text-white/60" />
+                  </a>
+                ))}
+              </div>
             </div>
 
             <p className="text-white/60 text-sm leading-relaxed max-w-xs">
-              Professional cleaning services that leave your space spotless, fresh, and sparkling. Trusted by Aussies across Melbourne.
+              Airbnb, end of lease, home and business cleaning across South East Melbourne. Based in Hampton Park.
             </p>
 
             {/* Contact Info */}
-            <ul className="flex flex-col gap-3">
+            <ul className="flex flex-col gap-2 sm:gap-3">
               {CONTACT_INFO.map(({ icon: Icon, text, href }) => (
                 <li key={text}>
                   <a
@@ -93,8 +132,8 @@ export default function Footer() {
               ))}
             </ul>
 
-            {/* Social Links */}
-            <div className="flex items-center gap-2">
+            {/* Social Links (desktop; phones show them beside the logo) */}
+            <div className="hidden lg:flex items-center gap-2">
               {SOCIAL_LINKS.map(({ icon: Icon, href, label }) => (
                 <a
                   key={label}
@@ -111,29 +150,16 @@ export default function Footer() {
           </div>
 
           {/* Link Columns */}
-          {Object.entries(FOOTER_LINKS).map(([heading, links]) => (
-            <div key={heading} className="flex flex-col gap-4">
-              <h4 className="text-sm font-semibold text-white tracking-wide uppercase">
-                {heading}
-              </h4>
-              <ul className="flex flex-col gap-2.5">
-                {links.map(({ label, href }) => (
-                  <li key={label}>
-                    <Link
-                      href={href}
-                      className="text-sm text-white/55 hover:text-white transition-colors hover:translate-x-0.5 inline-block"
-                    >
-                      {label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          <FooterColumn heading="Popular Services" links={FOOTER_LINKS["Popular Services"]} />
+          {/* Company + Support share one column on phones; separate columns on desktop */}
+          <div className="flex flex-col gap-8 lg:contents">
+            <FooterColumn heading="Company" links={FOOTER_LINKS.Company} />
+            <FooterColumn heading="Support" links={FOOTER_LINKS.Support} />
+          </div>
         </div>
 
         {/* ── Bottom Bar ── */}
-        <Separator className="mt-10 mb-6 bg-white/10" />
+        <Separator className="mt-8 sm:mt-10 mb-5 sm:mb-6 bg-white/10" />
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/40">
           <div className="flex flex-wrap items-center justify-center gap-3">
