@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { Phone, CalendarCheck, Sparkles, ArrowRight, Check } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/lib/routes";
 
 // ─── How it works: three steps that *show* what happens ──────────────────────
@@ -13,7 +12,7 @@ import { ROUTES } from "@/lib/routes";
 // static for visitors who prefer reduced motion.
 
 const EASE = [0.16, 1, 0.3, 1] as const;
-const STEP_DELAY = 0.45; // seconds between steps
+const STEP_DELAY = 0.9; // seconds between steps (leaves time for each arrow to draw)
 
 const STEPS = [
   {
@@ -40,11 +39,11 @@ const STEPS = [
 
 function ChatScene({ delay, reduce }: { delay: number; reduce: boolean }) {
   return (
-    <div className="relative h-9 sm:h-10 flex items-center">
+    <div className="relative h-9 sm:h-10 flex items-center justify-center">
       {/* Typing dots, replaced by the message */}
       {!reduce && (
         <motion.div
-          className="absolute left-0 flex gap-1 rounded-2xl rounded-bl-md bg-brand-bg border border-brand-border px-3 py-2.5"
+          className="absolute left-1/2 -translate-x-1/2 flex gap-1 rounded-2xl rounded-bl-md bg-brand-bg border border-brand-border px-3 py-2.5"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: [0, 1, 1, 0] }}
           viewport={{ once: true }}
@@ -76,7 +75,7 @@ function ChatScene({ delay, reduce }: { delay: number; reduce: boolean }) {
 function QuoteScene({ delay, reduce }: { delay: number; reduce: boolean }) {
   const lines = ["Upfront price", "Tue 9:00am booked"];
   return (
-    <div className="flex flex-wrap gap-1.5 sm:gap-2">
+    <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2">
       {lines.map((line, i) => (
         <motion.span
           key={line}
@@ -141,6 +140,66 @@ function SparkleScene({ delay, reduce }: { delay: number; reduce: boolean }) {
 
 const SCENES = [ChatScene, QuoteScene, SparkleScene];
 
+// ── Hand-drawn loopy arrows between steps ────────────────────────────────────
+// Stroke draws itself (pathLength 0 → 1), then the arrowhead flicks on.
+
+function DrawnArrow({
+  d,
+  head,
+  viewBox,
+  className,
+  delay,
+  reduce,
+}: {
+  d: string;
+  head: string;
+  viewBox: string;
+  className: string;
+  delay: number;
+  reduce: boolean;
+}) {
+  return (
+    <svg aria-hidden="true" viewBox={viewBox} fill="none" className={`text-brand-accent ${className}`}>
+      <motion.path
+        d={d}
+        stroke="currentColor"
+        strokeWidth={2.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        initial={reduce ? false : { pathLength: 0, opacity: 0 }}
+        whileInView={{ pathLength: 1, opacity: 1 }}
+        viewport={{ once: true, amount: 0.6 }}
+        transition={{ pathLength: { duration: 0.8, delay, ease: "easeInOut" }, opacity: { duration: 0.1, delay } }}
+      />
+      <motion.path
+        d={head}
+        stroke="currentColor"
+        strokeWidth={2.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        initial={reduce ? false : { opacity: 0, scale: 0.4 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true, amount: 0.6 }}
+        transition={{ duration: 0.2, delay: reduce ? 0 : delay + 0.75 }}
+        style={{ transformBox: "fill-box", transformOrigin: "center" }}
+      />
+    </svg>
+  );
+}
+
+// Vertical (phones): swoops down one side with a twirl, ending by the next icon.
+const V_ARROW = {
+  viewBox: "0 0 100 72",
+  d: "M92 4 C 44 0, 12 18, 22 36 C 30 50, 52 42, 44 30 C 36 20, 16 40, 30 54 C 42 64, 62 66, 86 62",
+  head: "M76 55 L87 62 L76 69",
+};
+// Horizontal (desktop): loops across to the next column.
+const H_ARROW = {
+  viewBox: "0 0 200 56",
+  d: "M4 34 C 38 6, 78 4, 96 22 C 110 38, 86 48, 84 32 C 82 14, 132 6, 188 28",
+  head: "M176 18 L189 29 L175 35",
+};
+
 // ── Section ──────────────────────────────────────────────────────────────────
 
 export default function HowItWorks() {
@@ -174,32 +233,13 @@ export default function HowItWorks() {
           {STEPS.map(({ icon: Icon, title, description, short }, index) => {
             const Scene = SCENES[index];
             const delay = index * STEP_DELAY;
+            const hasNext = index < STEPS.length - 1;
+            // Arrows alternate sides on phones, like a hand-drawn zigzag.
+            const leftSide = index % 2 === 0;
             return (
               <li key={title} className="relative">
-                {/* Connector that draws itself to the next step */}
-                {index < STEPS.length - 1 && (
-                  <>
-                    <motion.span
-                      aria-hidden="true"
-                      className="lg:hidden absolute left-6 top-14 bottom-2 border-l-2 border-dashed border-brand/30 origin-top"
-                      initial={reduce ? false : { scaleY: 0 }}
-                      whileInView={{ scaleY: 1 }}
-                      viewport={{ once: true, amount: 0.5 }}
-                      transition={{ duration: 0.5, delay: delay + 0.3, ease: EASE }}
-                    />
-                    <motion.span
-                      aria-hidden="true"
-                      className="hidden lg:block absolute top-7 left-[calc(50%+2.75rem)] right-[calc(-50%+0.75rem)] border-t-2 border-dashed border-brand/30 origin-left"
-                      initial={reduce ? false : { scaleX: 0 }}
-                      whileInView={{ scaleX: 1 }}
-                      viewport={{ once: true, amount: 0.5 }}
-                      transition={{ duration: 0.5, delay: delay + 0.3, ease: EASE }}
-                    />
-                  </>
-                )}
-
                 <motion.div
-                  className="flex gap-4 pb-6 sm:pb-8 lg:pb-0 lg:flex-col lg:items-center lg:text-center"
+                  className="flex flex-col items-center text-center gap-3"
                   custom={index}
                   variants={fadeUp}
                   initial={reduce ? "visible" : "hidden"}
@@ -220,9 +260,9 @@ export default function HowItWorks() {
                     </span>
                   </motion.div>
 
-                  <div className="flex flex-col gap-1.5 sm:gap-2 pt-0.5 lg:pt-3 lg:items-center min-w-0">
+                  <div className="flex flex-col items-center gap-1.5 sm:gap-2 min-w-0">
                     <h3 className="text-base sm:text-lg font-bold text-brand-text leading-snug">{title}</h3>
-                    {/* The scene below carries the message, so phones skip the text;
+                    {/* The scene carries the message, so phones skip the text;
                         larger screens get one short line. The full description stays
                         in the page for screen readers and search engines. */}
                     <p className="hidden sm:block text-brand-muted text-sm leading-snug lg:max-w-xs">{short}</p>
@@ -232,26 +272,38 @@ export default function HowItWorks() {
                     </div>
                   </div>
                 </motion.div>
+
+                {hasNext && (
+                  <>
+                    {/* Phones: arrow in the gap below, curling down one side */}
+                    <div className="lg:hidden relative h-14 my-1">
+                      <DrawnArrow
+                        {...V_ARROW}
+                        delay={delay + 0.45}
+                        reduce={reduce}
+                        className={`absolute top-0 w-[78px] h-14 ${leftSide ? "right-1/2 mr-3" : "left-1/2 ml-3 -scale-x-100"}`}
+                      />
+                    </div>
+                    {/* Desktop: arrow looping across to the next column */}
+                    <DrawnArrow
+                      {...H_ARROW}
+                      delay={delay + 0.45}
+                      reduce={reduce}
+                      className="hidden lg:block absolute top-0 left-[calc(50%+3rem)] w-[calc(100%-4rem)] max-w-[220px] h-14"
+                    />
+                  </>
+                )}
               </li>
             );
           })}
         </ol>
 
-        {/* ── One CTA row for all steps ── */}
-        <div className="mt-4 lg:mt-12 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <Button asChild size="lg" className="w-full sm:w-auto bg-brand-accent hover:bg-brand-accent-dark text-white font-semibold gap-2 shadow-lg shadow-brand-accent/30">
-            <Link href={ROUTES.QUOTE}>
-              Get a Free Quote <ArrowRight className="w-4 h-4" />
-            </Link>
-          </Button>
-          <Button asChild size="lg" variant="outline" className="w-full sm:w-auto border-brand-accent-border text-brand-text hover:border-brand-accent hover:text-brand-accent-dark font-semibold">
-            <Link href={ROUTES.BOOKING}>Book a Home Clean</Link>
-          </Button>
-        </div>
-        <p className="text-center text-brand-muted text-sm mt-4 sm:mt-5">
-          Questions first?{" "}
-          <Link href={ROUTES.CONTACT} className="text-brand font-semibold hover:underline underline-offset-2">
-            Talk to our team →
+        {/* One-line nudge instead of a button row: the hero, navbar and the price
+            strip right after this already carry the Quote / Book buttons. */}
+        <p className="text-center text-brand-muted text-sm mt-6 lg:mt-10">
+          Ready for step 1?{" "}
+          <Link href={ROUTES.QUOTE} className="inline-flex items-center gap-1 text-brand-accent-dark font-semibold hover:underline underline-offset-2">
+            Get a free quote <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </p>
 
