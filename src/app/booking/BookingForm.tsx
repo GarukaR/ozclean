@@ -5,27 +5,43 @@ import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
+  ArrowLeft,
+  ArrowRight,
   CalendarCheck,
-  User, Mail, Phone, MapPin, Clock, Sparkles, FileText
+  ChevronDown,
+  Clock,
+  Home,
+  Mail,
+  MapPin,
+  Minus,
+  Phone,
+  Plus,
+  Sparkles,
+  User,
 } from "lucide-react";
-
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { BOOKING_TIME_SLOTS, getMinimumBookingDate } from "@/lib/booking-slots";
 import { BUSINESS_PHONE } from "@/lib/business";
+import { ROUTES } from "@/lib/routes";
+import {
+  ChoiceCard,
+  FormAlert,
+  FormField,
+  OptionTile,
+  SegmentedTabs,
+  Stepper,
+  StickyActions,
+  TextArea,
+  TextInput,
+  primarySubmitClass,
+} from "@/components/form/FormKit";
+
+// ─── Guided booking: Service → Date & time → Your details → Review & pay ─────
+// Only the presentation changed. The catalogue/availability fetches, price
+// maths, validation schema and the /api/create-checkout payload (then the
+// redirect to Square) are the same as the previous single-page form.
 
 type ApiServiceOption = {
   id: string;
@@ -67,6 +83,14 @@ const bookingSchema = z.object({
 type BookingFormData = z.infer<typeof bookingSchema>;
 
 const PLANS = new Set(["Essential Plan", "Standard Plan", "Premium Plan"]);
+
+const STEPS = ["Service", "Date & time", "Your details", "Review & pay"];
+const STEP_FIELDS: (keyof BookingFormData)[][] = [
+  ["service"],
+  ["date", "time"],
+  ["name", "email", "phone", "address", "suburb", "state", "postcode"],
+  [],
+];
 
 const UNIT_LABELS: Record<string, string> = {
   hour: "hours",
@@ -112,22 +136,30 @@ function getUnitSuffix(pricingUnit: string): string {
   return unit === "hour" || unit === "hr" ? "hr" : unit;
 }
 
-function FieldWrapper({ label, icon: Icon, error, children }: {
-  label: string;
-  icon: React.ElementType;
-  error?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <Label className="text-sm font-medium text-brand-text flex items-center gap-1.5">
-        <Icon className="w-3.5 h-3.5 text-brand-muted" />
-        {label}
-      </Label>
-      {children}
-      {error && <p className="text-xs text-red-500 mt-0.5">{error}</p>}
-    </div>
-  );
+// Short tile title, e.g. "3 bed · 2-storey", "Weekly", "Wheelie bins".
+function tileTitle(service: ApiServiceOption): string {
+  const unit = service.pricingUnit.trim().toLowerCase();
+  if (unit === "service") {
+    const beds = service.name.match(/(\d+)\s*Bedroom/i)?.[1];
+    if (beds) return `${beds} bed${/2-Storey/i.test(service.name) ? " · 2-storey" : ""}`;
+  }
+  if (unit === "hour" || unit === "hr") {
+    return service.name.replace("Hourly Cleaning", "").replace(/[()]/g, "").trim() || service.name;
+  }
+  if (unit === "bin") return "Wheelie bins";
+  return service.name;
+}
+
+function formatPrice(service: ApiServiceOption): string {
+  const dollars = `$${(service.basePriceCents / 100).toFixed(0)}`;
+  const unit = service.pricingUnit.trim().toLowerCase();
+  return unit === "service" ? dollars : `${dollars}/${getUnitSuffix(unit)}`;
+}
+
+function formatDateLong(value: string): string {
+  if (!value) return "";
+  const [y, m, d] = value.split("-").map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString("en-AU", { weekday: "long", day: "numeric", month: "long" });
 }
 
 export default function BookingForm({
@@ -136,6 +168,10 @@ export default function BookingForm({
   tierLabel?: string;
   preselectedService?: string;
 }) {
+  const [step, setStep] = useState(0);
+  const [serviceTab, setServiceTab] = useState("");
+  const [showAddOns, setShowAddOns] = useState(false);
+  const [showNote, setShowNote] = useState(false);
   const [selectedService, setSelectedService] = useState(preselectedService ?? "");
   const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
   const [serviceCount, setServiceCount] = useState("1");
@@ -203,17 +239,24 @@ export default function BookingForm({
       (service) => !isFlatRate(service) && !isHourly(service)
     );
 
+    const onlyBins = additional.length > 0 && additional.every((s) => s.pricingUnit.trim().toLowerCase() === "bin");
     const groups = [
       {
-        label: "Residential Cleaning - Flat Rate",
+        id: "flat",
+        tab: "By bedrooms",
+        label: "Flat rate by number of bedrooms",
         options: flatRates.map((option) => option.value),
       },
       {
-        label: "Residential Cleaning - Hourly Rate",
+        id: "hourly",
+        tab: "Hourly",
+        label: "Hourly rate, you choose the tasks",
         options: hourly.map((service) => service.code),
       },
       {
-        label: "Additional Services",
+        id: "other",
+        tab: onlyBins ? "Bins" : "Other",
+        label: onlyBins ? "Wheelie bin cleaning" : "Other services",
         options: additional.map((service) => service.code),
       },
     ].filter((group) => group.options.length > 0);
@@ -225,6 +268,10 @@ export default function BookingForm({
       serviceLookup: new Map(services.map((service) => [service.code, service])),
     };
   }, [services, addons]);
+
+  const selectedGroupId = serviceGroups.find((g) => g.options.includes(selectedService))?.id;
+  const activeTab = serviceTab || selectedGroupId || serviceGroups[0]?.id || "";
+  const activeGroup = serviceGroups.find((g) => g.id === activeTab);
 
   const selectedServiceRecord = serviceLookup.get(selectedService);
   const countConfig = getCountConfig(selectedServiceRecord);
@@ -238,7 +285,6 @@ export default function BookingForm({
     return sum + (addonLookup.get(addOnId) ?? 0);
   }, 0);
 
-  const estimatedTotal = baseServiceTotal;
   const grandTotal = baseServiceTotal !== null ? baseServiceTotal + addOnTotal : null;
 
   const {
@@ -246,10 +292,12 @@ export default function BookingForm({
     register,
     handleSubmit,
     setValue,
+    trigger,
+    getValues,
     formState: { errors, isSubmitting },
   } = useForm<BookingFormData>({
     resolver: zodResolver(bookingSchema),
-    defaultValues: { service: preselectedService ?? "" },
+    defaultValues: { service: preselectedService ?? "", state: "VIC" },
   });
 
   const selectedDate = useWatch({ control, name: "date" });
@@ -320,6 +368,9 @@ export default function BookingForm({
     setCheckoutError(null);
     const payload = {
       ...data,
+      // Optional unit line is new on the form; omit it when blank so the
+      // payload matches what the old form sent.
+      addressLine2: data.addressLine2?.trim() || undefined,
       addOns: selectedAddOns,
       ...(countConfig
         ? {
@@ -358,8 +409,71 @@ export default function BookingForm({
     }
   };
 
+  // ── Step navigation (validates only the current step's fields) ──
+  const goTo = (target: number) => {
+    setStep(target);
+    if (typeof window !== "undefined") {
+      document.getElementById("booking-form-top")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+  const next = async () => {
+    if (await trigger(STEP_FIELDS[step])) goTo(step + 1);
+  };
+
+  const chooseService = (code: string) => {
+    setValue("service", code, { shouldValidate: true });
+    setSelectedService(code);
+    const nextConfig = getCountConfig(serviceLookup.get(code));
+    setServiceCount(nextConfig ? String(nextConfig.min) : "1");
+  };
+
+  const toggleAddOn = (code: string) =>
+    setSelectedAddOns((prev) => (prev.includes(code) ? prev.filter((id) => id !== code) : [...prev, code]));
+
+  const adjustCount = (direction: 1 | -1) => {
+    if (!countConfig) return;
+    const stepSize = Number(countConfig.step);
+    const min = countConfig.min;
+    // Functional update so quick repeated taps each count.
+    setServiceCount((prev) => String(Math.max(min, (Number(prev) || min) + direction * stepSize)));
+  };
+
+  const allSlotsBooked = Boolean(
+    selectedDate && slotAvailability && Object.values(slotAvailability).every((available) => !available)
+  );
+  const selectedSlotLabel = BOOKING_TIME_SLOTS.find((slot) => slot.value === selectedTime)?.label;
+  const serviceDisplayName = selectedServiceRecord?.name ?? selectedService;
+
+  // Compact running total inside the sticky action bar
+  const TotalSummary = (
+    <div className="min-w-0 flex-1">
+      <p className="text-[11px] font-semibold uppercase tracking-widest text-brand-muted">Total</p>
+      <p className="text-xl font-black text-brand-accent-dark leading-tight">
+        {grandTotal !== null ? `$${grandTotal.toFixed(0)}` : "—"}
+      </p>
+    </div>
+  );
+  const BackButton = ({ to }: { to: number }) => (
+    <Button type="button" variant="outline" onClick={() => goTo(to)} aria-label="Back" className="h-12 w-12 shrink-0 rounded-xl border-brand-border p-0">
+      <ArrowLeft className="w-4 h-4" />
+    </Button>
+  );
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="p-8 flex flex-col gap-6">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      noValidate
+      // Enter in a text field moves to the next step instead of submitting early
+      onKeyDown={(e) => {
+        if (e.key === "Enter" && step < STEPS.length - 1 && (e.target as HTMLElement).tagName === "INPUT") {
+          e.preventDefault();
+          void next();
+        }
+      }}
+      className="p-5 sm:p-8 flex flex-col gap-6 scroll-mt-28"
+      id="booking-form-top"
+    >
+      <Stepper steps={STEPS} current={step} />
 
       {/* Plan banner */}
       {PLANS.has(selectedService) && (
@@ -371,310 +485,357 @@ export default function BookingForm({
         </div>
       )}
 
-      {/* Personal details */}
-      <div>
-        <p className="text-xs font-semibold text-brand-muted uppercase tracking-widest mb-4">
-          Your Details
-        </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <FieldWrapper label="Full Name" icon={User} error={errors.name?.message}>
-            <Input
-              {...register("name")}
-              placeholder="Jane Smith"
-              className="border-brand-border focus:border-brand focus:ring-brand"
-            />
-          </FieldWrapper>
-          <FieldWrapper label="Email Address" icon={Mail} error={errors.email?.message}>
-            <Input
-              {...register("email")}
-              type="email"
-              placeholder="jane@email.com"
-              className="border-brand-border focus:border-brand focus:ring-brand"
-            />
-          </FieldWrapper>
-          <FieldWrapper label="Phone Number" icon={Phone} error={errors.phone?.message}>
-            <Input
-              {...register("phone")}
-              type="tel"
-              placeholder="+61 4XX XXX XXX"
-              className="border-brand-border focus:border-brand focus:ring-brand"
-            />
-          </FieldWrapper>
-          <FieldWrapper label="Address / Suburb" icon={MapPin} error={errors.address?.message}>
-            <Input
-              {...register("address")}
-              placeholder="123 Main St"
-              className="border-brand-border focus:border-brand focus:ring-brand"
-            />
-          </FieldWrapper>
-          <FieldWrapper label="Suburb" icon={MapPin} error={errors.suburb?.message}>
-            <Input
-              {...register("suburb")}
-              placeholder="Richmond"
-              className="border-brand-border focus:border-brand focus:ring-brand"
-            />
-          </FieldWrapper>
-          <FieldWrapper label="State" icon={MapPin} error={errors.state?.message}>
-            <Input
-              {...register("state")}
-              placeholder="VIC"
-              className="border-brand-border focus:border-brand focus:ring-brand"
-            />
-          </FieldWrapper>
-          <FieldWrapper label="Postcode" icon={MapPin} error={errors.postcode?.message}>
-            <Input
-              {...register("postcode")}
-              placeholder="3121"
-              className="border-brand-border focus:border-brand focus:ring-brand"
-            />
-          </FieldWrapper>
+      {/* ── Step 1: Service ── */}
+      <section className={step === 0 ? "flex flex-col gap-6" : "hidden"} aria-label="Choose a service">
+        <div>
+          <h2 className="text-xl font-bold text-brand-text">What would you like cleaned?</h2>
+          <p className="text-sm text-brand-muted mt-1">Prices include everything on our standard checklist.</p>
         </div>
-      </div>
 
-      <div className="h-px bg-brand-border" />
+        {isCatalogLoading && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2" aria-busy="true">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="h-[68px] rounded-2xl bg-brand-bg border border-brand-border animate-pulse" />
+            ))}
+          </div>
+        )}
+        {catalogError && <FormAlert>{catalogError}</FormAlert>}
 
-      {/* Service & scheduling */}
-      <div>
-        <p className="text-xs font-semibold text-brand-muted uppercase tracking-widest mb-4">
-          Service & Schedule
-        </p>
-        <div className="grid grid-cols-1 gap-4">
-          
-          <FieldWrapper label="Service Type" icon={Sparkles} error={errors.service?.message}>
-            <Select
-              disabled={isCatalogLoading}
-              defaultValue={preselectedService}
-              onValueChange={(v) => {
-                setValue("service", v, { shouldValidate: true });
-                setSelectedService(v);
-                const nextConfig = getCountConfig(serviceLookup.get(v));
-                setServiceCount(nextConfig ? String(nextConfig.min) : "1");
-              }}
-            >
-              <SelectTrigger className="w-full border-brand-border focus:border-brand focus:ring-brand">
-                <SelectValue placeholder={isCatalogLoading ? "Loading services..." : "Select a service"} />
-              </SelectTrigger>
-              <SelectContent>
-                {serviceGroups.map(({ label, options }) => (
-                  <SelectGroup key={label}>
-                    <SelectLabel>{label}</SelectLabel>
-                    {options.map((s) => (
-                      <SelectItem key={s} value={s}>{s}</SelectItem>
-                    ))}
-                  </SelectGroup>
-                ))}
-              </SelectContent>
-            </Select>
-          </FieldWrapper>
-
-          {selectedService && (
-            <div className="space-y-2">
-              <p className="text-xs font-semibold text-brand-muted uppercase tracking-widest">
-                Optional Add-ons
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {addons.map((addon) => {
-                  const checked = selectedAddOns.includes(addon.code);
-                  const addonPrice = addon.priceCents / 100;
-                  return (
-                    <label
-                      key={addon.id}
-                      className="flex items-center justify-between gap-3 rounded-lg border border-brand-border bg-brand-surface px-3 py-2 cursor-pointer hover:border-brand/40"
-                    >
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="checkbox"
-                          checked={checked}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setSelectedAddOns((prev) => [...prev, addon.code]);
-                              return;
-                            }
-                            setSelectedAddOns((prev) => prev.filter((id) => id !== addon.code));
-                          }}
-                          className="h-4 w-4 accent-brand"
-                        />
-                        <span className="text-sm text-brand-text">{addon.name}</span>
-                      </div>
-                      <span className="text-sm font-semibold text-brand">+${addonPrice}</span>
-                    </label>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* Count-based services: show quantity input and estimated total */}
-          {countConfig && (
-            <div className="bg-brand/8 border border-brand/20 rounded-xl p-4 space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <FieldWrapper label={countConfig.label} icon={countConfig.unit === "hours" ? Clock : Sparkles}>
-                  <Input
-                    type="number"
-                    min={String(countConfig.min)}
-                    step={countConfig.step}
-                    value={serviceCount}
-                    onChange={(e) => setServiceCount(e.target.value)}
-                    placeholder={String(countConfig.min)}
-                    className="border-brand-border focus:border-brand focus:ring-brand"
+        {serviceGroups.length > 1 && (
+          <SegmentedTabs
+            label="Service type"
+            active={activeTab}
+            onChange={setServiceTab}
+            tabs={serviceGroups.map((g) => ({ id: g.id, label: g.tab, badge: g.id === selectedGroupId }))}
+          />
+        )}
+        {activeGroup && (
+          <div role="radiogroup" aria-label={activeGroup.label} className="flex flex-col gap-2">
+            <p className="text-xs text-brand-muted">{activeGroup.label}</p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {activeGroup.options.map((code) => {
+                const record = serviceLookup.get(code);
+                if (!record) return null;
+                return (
+                  <OptionTile
+                    key={code}
+                    title={tileTitle(record)}
+                    meta={formatPrice(record)}
+                    selected={selectedService === code}
+                    onSelect={() => chooseService(code)}
                   />
-                  <p className="text-xs text-brand-muted mt-1">
-                    Minimum {countConfig.min} {countConfig.unit}
-                  </p>
-                </FieldWrapper>
-              </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+        {errors.service?.message && <FormAlert>{errors.service.message}</FormAlert>}
 
-              {estimatedTotal !== null && (
-                <div className="bg-brand-surface rounded-lg p-3 border border-brand-border">
-                  <p className="text-xs text-brand-muted uppercase tracking-wide font-semibold mb-1">Estimated Total</p>
-                  <p className="text-2xl font-bold text-brand">
-                    ${estimatedTotal.toFixed(0)} AUD
-                  </p>
-                  <p className="text-xs text-brand-muted mt-1">
-                    {parsedServiceCount} {countConfig.unit} × ${serviceRate}/
-                    {getUnitSuffix(selectedServiceRecord?.pricingUnit ?? "")}
-                  </p>
-                </div>
-              )}
+        {/* Quantity (hours / bins) */}
+        {countConfig && (
+          <div className="rounded-2xl border border-brand-border bg-brand-bg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <p className="text-sm font-semibold text-brand-text">{countConfig.label}</p>
+              <p className="text-xs text-brand-muted">
+                Minimum {countConfig.min} {countConfig.unit} · ${serviceRate}/{getUnitSuffix(selectedServiceRecord?.pricingUnit ?? "")}
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => adjustCount(-1)}
+                disabled={parsedServiceCount <= countConfig.min}
+                aria-label={`Fewer ${countConfig.unit}`}
+                className="w-11 h-11 rounded-xl border border-brand-border bg-brand-surface flex items-center justify-center text-brand-text hover:border-brand-accent disabled:opacity-40"
+              >
+                <Minus className="w-4 h-4" />
+              </button>
+              <input
+                type="number"
+                inputMode="decimal"
+                aria-label={countConfig.label}
+                min={String(countConfig.min)}
+                step={countConfig.step}
+                value={serviceCount}
+                onChange={(e) => setServiceCount(e.target.value)}
+                className="w-16 h-11 rounded-xl border border-brand-border bg-brand-surface text-center text-lg font-bold text-brand-text focus:outline-none focus:ring-4 focus:ring-brand-accent/15 focus:border-brand-accent"
+              />
+              <button
+                type="button"
+                onClick={() => adjustCount(1)}
+                aria-label={`More ${countConfig.unit}`}
+                className="w-11 h-11 rounded-xl border border-brand-border bg-brand-surface flex items-center justify-center text-brand-text hover:border-brand-accent"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Add-ons, folded away by default (most people skip them) */}
+        {selectedService && addons.length > 0 && (
+          <div className="rounded-2xl border border-brand-border">
+            <button
+              type="button"
+              onClick={() => setShowAddOns((v) => !v)}
+              aria-expanded={showAddOns}
+              className="w-full flex items-center justify-between gap-3 px-4 py-3.5 text-left"
+            >
+              <span>
+                <span className="block text-sm font-semibold text-brand-text">Add extras <span className="font-normal text-brand-muted">(optional)</span></span>
+                <span className="block text-xs text-brand-muted">
+                  {selectedAddOns.length ? `${selectedAddOns.length} selected · +$${addOnTotal.toFixed(0)}` : "Oven, fridge, windows, garage and more"}
+                </span>
+              </span>
+              <ChevronDown className={`w-5 h-5 text-brand-muted transition-transform ${showAddOns ? "rotate-180" : ""}`} />
+            </button>
+            {showAddOns && (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 px-3 pb-3">
+                {addons.map((addon) => (
+                  <OptionTile
+                    key={addon.id}
+                    title={addon.name}
+                    meta={`+$${(addon.priceCents / 100).toFixed(0)}`}
+                    selected={selectedAddOns.includes(addon.code)}
+                    onSelect={() => toggleAddOn(addon.code)}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-2.5 text-sm text-amber-800 dark:border-amber-800/50 dark:bg-amber-950/40 dark:text-amber-200">
+          Need Airbnb, end of lease, business or carpet cleaning?{" "}
+          <Link href={ROUTES.QUOTE} className="font-semibold underline underline-offset-2">Get a free quote</Link>.
+        </p>
+
+        <StickyActions>
+          <div className="flex items-center gap-3">
+            {TotalSummary}
+            <Button type="button" onClick={next} className={`${primarySubmitClass} w-auto flex-1`}>
+              Next: time <ArrowRight className="w-4 h-4" />
+            </Button>
+          </div>
+        </StickyActions>
+      </section>
+
+      {/* ── Step 2: Date & time ── */}
+      <section className={step === 1 ? "flex flex-col gap-6" : "hidden"} aria-label="Pick a date and time">
+        <div>
+          <h2 className="text-xl font-bold text-brand-text">When suits you?</h2>
+          <p className="text-sm text-brand-muted mt-1">Book at least one day ahead. You&apos;ll only see times that are free.</p>
+        </div>
+
+        <FormField label="Date" htmlFor="booking-date" error={errors.date?.message}>
+          <TextInput
+            id="booking-date"
+            icon={CalendarCheck}
+            type="date"
+            // Disallow same-day bookings: only allow dates from tomorrow onwards, computed in
+            // the booking timezone so the picker matches what the server accepts.
+            min={getMinimumBookingDate()}
+            invalid={!!errors.date}
+            {...register("date")}
+          />
+        </FormField>
+
+        <div className="flex flex-col gap-2">
+          <p className="text-sm font-semibold text-brand-text">Time</p>
+          {!selectedDate && <p className="text-sm text-brand-muted">Choose a date to see available times.</p>}
+          {selectedDate && (
+            <div role="radiogroup" aria-label="Time slot" className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              {BOOKING_TIME_SLOTS.map((slot) => {
+                const isAvailable = slotAvailability?.[slot.value] ?? false;
+                return (
+                  <ChoiceCard
+                    key={slot.value}
+                    compact
+                    icon={Clock}
+                    title={slot.label}
+                    subtitle={isAvailabilityLoading ? "Checking…" : isAvailable ? "Available" : "Booked"}
+                    disabled={isAvailabilityLoading || !isAvailable}
+                    selected={selectedTime === slot.value}
+                    onSelect={() => {
+                      setSelectedTime(slot.value);
+                      setValue("time", slot.value, { shouldValidate: true });
+                    }}
+                  />
+                );
+              })}
             </div>
           )}
+          {selectedDate && !isAvailabilityLoading && allSlotsBooked && !availabilityError && (
+            <FormAlert>No time slots are available on this date. Please choose another day.</FormAlert>
+          )}
+          {availabilityError && <FormAlert>{availabilityError}</FormAlert>}
+          {errors.time?.message && !availabilityError && (
+            <p role="alert" className="text-xs font-medium text-red-600 dark:text-red-400">{errors.time.message}</p>
+          )}
+        </div>
+
+        <StickyActions>
+          <div className="flex items-center gap-3">
+            <BackButton to={0} />
+            {TotalSummary}
+            <Button type="button" onClick={next} className={`${primarySubmitClass} w-auto flex-1`}>
+              Next: details <ArrowRight className="w-4 h-4" />
+            </Button>
+          </div>
+        </StickyActions>
+      </section>
+
+      {/* ── Step 3: Your details ── */}
+      <section className={step === 2 ? "flex flex-col gap-5" : "hidden"} aria-label="Your details">
+        <div>
+          <h2 className="text-xl font-bold text-brand-text">Your details</h2>
+          <p className="text-sm text-brand-muted mt-1">So we know who to confirm with and where to go.</p>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-6 gap-x-3 gap-y-4">
+          <FormField label="Full name" htmlFor="booking-name" error={errors.name?.message} className="col-span-2 sm:col-span-3">
+            <TextInput id="booking-name" icon={User} autoComplete="name" placeholder="First and last name" invalid={!!errors.name} {...register("name")} />
+          </FormField>
+          <FormField label="Phone" htmlFor="booking-phone" error={errors.phone?.message} className="col-span-2 sm:col-span-3">
+            <TextInput id="booking-phone" icon={Phone} type="tel" inputMode="tel" autoComplete="tel" placeholder="04XX XXX XXX" invalid={!!errors.phone} {...register("phone")} />
+          </FormField>
+          <FormField label="Email" htmlFor="booking-email" error={errors.email?.message} className="col-span-2 sm:col-span-6">
+            <TextInput id="booking-email" icon={Mail} type="email" inputMode="email" autoComplete="email" placeholder="For your booking confirmation" invalid={!!errors.email} {...register("email")} />
+          </FormField>
+
+          <p className="col-span-2 sm:col-span-6 -mb-1 pt-1 text-xs font-semibold uppercase tracking-widest text-brand-muted">Address</p>
+          <FormField label="Street address" htmlFor="booking-address" error={errors.address?.message} className="col-span-2 sm:col-span-4">
+            <TextInput id="booking-address" icon={Home} autoComplete="address-line1" placeholder="Street number and name" invalid={!!errors.address} {...register("address")} />
+          </FormField>
+          <FormField label="Unit" optional htmlFor="booking-address2" className="col-span-1 sm:col-span-2">
+            <TextInput id="booking-address2" autoComplete="address-line2" placeholder="Unit no." {...register("addressLine2")} />
+          </FormField>
+          <FormField label="Postcode" htmlFor="booking-postcode" error={errors.postcode?.message} className="col-span-1 sm:col-span-2 sm:order-last">
+            <TextInput id="booking-postcode" inputMode="numeric" autoComplete="postal-code" placeholder="e.g. 3806" maxLength={4} invalid={!!errors.postcode} {...register("postcode")} />
+          </FormField>
+          <FormField label="Suburb" htmlFor="booking-suburb" error={errors.suburb?.message} className="col-span-1 sm:col-span-3">
+            <TextInput id="booking-suburb" icon={MapPin} autoComplete="address-level2" placeholder="e.g. Berwick" invalid={!!errors.suburb} {...register("suburb")} />
+          </FormField>
+          <FormField label="State" htmlFor="booking-state" error={errors.state?.message} className="col-span-1 sm:col-span-1">
+            <TextInput id="booking-state" autoComplete="address-level1" placeholder="VIC" invalid={!!errors.state} {...register("state")} />
+          </FormField>
+        </div>
+
+        {/* Note folded away unless wanted (the field stays registered either way) */}
+        <div className={showNote ? "" : "hidden"}>
+          <FormField label="Anything we should know?" optional htmlFor="booking-instructions" error={errors.instructions?.message}>
+            <TextArea
+              id="booking-instructions"
+              rows={3}
+              placeholder="Pets, parking, how to get in, or areas to focus on"
+              {...register("instructions")}
+            />
+          </FormField>
+        </div>
+        {!showNote && (
+          <button
+            type="button"
+            onClick={() => setShowNote(true)}
+            className="w-fit inline-flex items-center gap-1.5 py-2 text-sm font-semibold text-brand-accent-dark hover:underline underline-offset-2"
+          >
+            <Plus className="w-4 h-4" /> Add a note for the cleaner (optional)
+          </button>
+        )}
+
+        <StickyActions>
+          <div className="flex items-center gap-3">
+            <BackButton to={1} />
+            {TotalSummary}
+            <Button type="button" onClick={next} className={`${primarySubmitClass} w-auto flex-1`}>
+              Review <ArrowRight className="w-4 h-4" />
+            </Button>
+          </div>
+        </StickyActions>
+      </section>
+
+      {/* ── Step 4: Review & pay ── */}
+      {step === 3 && (
+        <section className="flex flex-col gap-5" aria-label="Review and pay">
+          <div>
+            <h2 className="text-xl font-bold text-brand-text">Review your booking</h2>
+            <p className="text-sm text-brand-muted mt-1">Check everything looks right, then pay securely to confirm.</p>
+          </div>
+
+          <dl className="rounded-2xl border border-brand-border divide-y divide-brand-border overflow-hidden text-sm">
+            {[
+              {
+                label: "Service",
+                value: (
+                  <>
+                    {serviceDisplayName}
+                    {countConfig && ` · ${serviceCount} ${countConfig.unit}`}
+                  </>
+                ),
+                edit: 0,
+              },
+              {
+                label: "Add-ons",
+                value: selectedAddOns.length
+                  ? selectedAddOns.map((code) => addons.find((a) => a.code === code)?.name ?? code).join(", ")
+                  : "None",
+                edit: 0,
+              },
+              { label: "When", value: `${formatDateLong(selectedDate)} · ${selectedSlotLabel ?? ""}`, edit: 1 },
+              {
+                label: "Where",
+                value: [getValues("address"), getValues("addressLine2"), `${getValues("suburb")} ${getValues("state")} ${getValues("postcode")}`]
+                  .filter(Boolean)
+                  .join(", "),
+                edit: 2,
+              },
+              { label: "Contact", value: `${getValues("name")} · ${getValues("phone")} · ${getValues("email")}`, edit: 2 },
+            ].map(({ label, value, edit }) => (
+              <div key={label} className="flex items-start gap-3 px-4 py-3 bg-brand-surface">
+                <dt className="w-20 shrink-0 text-brand-muted">{label}</dt>
+                <dd className="flex-1 min-w-0 font-medium text-brand-text break-words">{value}</dd>
+                <button type="button" onClick={() => goTo(edit)} className="shrink-0 text-xs font-semibold text-brand-accent-dark hover:underline underline-offset-2 py-1">
+                  Edit
+                </button>
+              </div>
+            ))}
+          </dl>
 
           {grandTotal !== null && (
-            <div className="bg-brand-accent-bg border border-brand-accent-border rounded-xl p-4 space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-widest text-brand-accent-dark">
-                Booking Total Preview
-              </p>
+            <div className="rounded-2xl border border-brand-accent-border bg-brand-accent-bg p-4 flex flex-col gap-2">
               <div className="flex items-center justify-between text-sm text-brand-text">
-                <span>Service total</span>
-                <span>${baseServiceTotal?.toFixed(0)} AUD</span>
+                <span>Service</span>
+                <span>${baseServiceTotal?.toFixed(0)}</span>
               </div>
               <div className="flex items-center justify-between text-sm text-brand-text">
-                <span>Add-ons total</span>
-                <span>${addOnTotal.toFixed(0)} AUD</span>
+                <span>Add-ons</span>
+                <span>${addOnTotal.toFixed(0)}</span>
               </div>
               <div className="h-px bg-brand-accent-border" />
               <div className="flex items-center justify-between">
-                <span className="font-semibold text-brand-text">Estimated total</span>
-                <span className="text-xl font-black text-brand-accent-dark">${grandTotal.toFixed(0)} AUD</span>
+                <span className="font-semibold text-brand-text">Total (AUD)</span>
+                <span className="text-2xl font-black text-brand-accent-dark">${grandTotal.toFixed(0)}</span>
               </div>
             </div>
           )}
 
-          {catalogError && (
-            <p className="text-sm text-red-600 bg-red-50 border border-red-200 dark:bg-red-950/40 dark:border-red-800/50 dark:text-red-300 rounded-lg px-4 py-2">
-              {catalogError}
-            </p>
-          )}
+          {checkoutError && <FormAlert>{checkoutError}</FormAlert>}
 
-          <p className="bg-amber-50 border border-amber-200 text-amber-800 dark:bg-amber-950/40 dark:border-amber-800/50 dark:text-amber-200 rounded-lg px-4 py-2 text-sm font-medium">
-            For any service not listed, please contact us directly or get a quote.
+          <p className="text-center text-xs text-brand-muted">
+            You&apos;ll pay the full amount on Square&apos;s secure checkout to confirm this booking. By continuing you agree to our{" "}
+            <Link href="/terms" className="text-brand hover:underline underline-offset-2">Terms of Service</Link> and{" "}
+            <Link href="/privacy" className="text-brand hover:underline underline-offset-2">Privacy Policy</Link>.
           </p>
-          <FieldWrapper label="Preferred Date" icon={CalendarCheck} error={errors.date?.message}>
-            <Input
-              {...register("date")}
-              type="date"
-              // Disallow same-day bookings: only allow dates from tomorrow onwards, computed in
-              // the booking timezone so the picker matches what the server accepts.
-              min={getMinimumBookingDate()}
-              className="border-brand-border focus:border-brand focus:ring-brand"
-            />
-            <p className="text-xs text-brand-muted mt-1">Same-day bookings are not accepted. Please select at least one day in advance.</p>
-          </FieldWrapper>
-          
-          <FieldWrapper label="Preferred Time" icon={Clock} error={errors.time?.message}>
-            <Select
-              disabled={
-                !selectedDate ||
-                isAvailabilityLoading ||
-                Boolean(selectedDate && slotAvailability && Object.values(slotAvailability).every((available) => !available))
-              }
-              value={selectedTime}
-              onValueChange={(v) => {
-                setSelectedTime(v);
-                setValue("time", v, { shouldValidate: true });
-              }}
-            >
-              <SelectTrigger className="w-full border-brand-border focus:border-brand focus:ring-brand">
-                <SelectValue
-                  placeholder={
-                    !selectedDate
-                      ? "Select a date first"
-                      : isAvailabilityLoading
-                        ? "Checking availability..."
-                        : availabilityError && !slotAvailability
-                          ? "Availability unavailable"
-                          : "Select a time slot"
-                  }
-                />
-              </SelectTrigger>
-              <SelectContent>
-                {BOOKING_TIME_SLOTS.map((slot) => {
-                  const isAvailable = selectedDate ? slotAvailability?.[slot.value] ?? false : false;
 
-                  return (
-                    <SelectItem key={slot.value} value={slot.value} disabled={!isAvailable}>
-                      {slot.label}{!isAvailable ? " (Booked)" : ""}
-                    </SelectItem>
-                  );
-                })}
-              </SelectContent>
-            </Select>
-            {selectedDate && !isAvailabilityLoading && slotAvailability && Object.values(slotAvailability).every((available) => !available) && (
-              <p className="text-xs text-red-600 mt-1">No time slots are available on this date.</p>
-            )}
-            {availabilityError && (
-              <p className="text-xs text-red-600 mt-1">{availabilityError}</p>
-            )}
-            {selectedDate && !availabilityError && !isAvailabilityLoading && (
-              <p className="text-xs text-brand-muted mt-1">
-                Only unbooked time slots can be selected.
-              </p>
-            )}
-          </FieldWrapper>
-        
-        </div>
-      </div>
-
-      <div className="h-px bg-brand-border" />
-
-      {/* Special instructions */}
-      <FieldWrapper label="Special Instructions (optional)" icon={FileText} error={errors.instructions?.message}>
-        <Textarea
-          {...register("instructions")}
-          placeholder="E.g. pet in the house, focus on the kitchen, access code is 1234..."
-          rows={4}
-          className="border-brand-border focus:border-brand focus:ring-brand resize-none"
-        />
-      </FieldWrapper>
-
-      {/* Submit */}
-      {checkoutError && (
-        <div className="bg-red-50 border border-red-200 dark:bg-red-950/40 dark:border-red-800/50 rounded-xl px-4 py-3">
-          <p className="text-sm text-red-600 dark:text-red-300 leading-relaxed">{checkoutError}</p>
-        </div>
+          <StickyActions>
+            <div className="flex items-center gap-3">
+              <BackButton to={2} />
+              <Button type="submit" disabled={isSubmitting} className={`${primarySubmitClass} w-auto flex-1`}>
+                {isSubmitting ? "Redirecting to payment..." : <>Confirm &amp; pay {grandTotal !== null ? `$${grandTotal.toFixed(0)}` : ""} <ArrowRight className="w-4 h-4" /></>}
+              </Button>
+            </div>
+          </StickyActions>
+        </section>
       )}
-      <Button
-        type="submit"
-        disabled={isSubmitting}
-        className="w-full bg-brand-accent hover:bg-brand-accent-dark text-white font-semibold h-12 text-base shadow-lg shadow-brand-accent/30 transition-all"
-      >
-        {isSubmitting ? "Redirecting to payment..." : "Confirm Booking →"}
-      </Button>
-
-      <p className="text-center text-xs text-brand-muted">
-        You&apos;ll pay the full amount securely at checkout to confirm this booking.
-      </p>
-
-      <p className="text-center text-xs text-brand-muted">
-        By submitting you agree to our{" "}
-        <Link href="/terms" className="text-brand hover:underline underline-offset-2">
-          Terms of Service
-        </Link>{" "}
-        and{" "}
-        <Link href="/privacy" className="text-brand hover:underline underline-offset-2">
-          Privacy Policy
-        </Link>.
-      </p>
     </form>
   );
 }

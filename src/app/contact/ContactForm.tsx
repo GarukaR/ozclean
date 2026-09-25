@@ -1,73 +1,42 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
-import { Phone, Mail, MessageSquare, User, CheckCircle2 } from "lucide-react";
+import { ArrowRight, Mail, Phone, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { ROUTES } from "@/lib/routes";
 import { contactSchema, type ContactFormData } from "@/lib/contact";
+import { FormAlert, FormField, SuccessPanel, TextArea, TextInput, primarySubmitClass } from "@/components/form/FormKit";
 
-function FieldWrapper({ label, icon: Icon, error, children }: {
-  label: string;
-  icon: React.ElementType;
-  error?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <Label className="text-sm font-medium text-brand-text flex items-center gap-1.5">
-        <Icon className="w-3.5 h-3.5 text-brand-muted" />
-        {label}
-      </Label>
-      {children}
-      {error && <p className="text-xs text-red-500 mt-0.5">{error}</p>}
-    </div>
-  );
-}
+// Payload unchanged: { name, email, phone?, message } posted to /api/contact.
 
-function SuccessState() {
-  return (
-    <div className="flex flex-col items-center justify-center text-center py-12 px-6 gap-5">
-      <div className="w-16 h-16 rounded-full bg-brand/10 flex items-center justify-center">
-        <CheckCircle2 className="w-8 h-8 text-brand" />
-      </div>
-      <div>
-        <h3 className="text-xl font-bold text-brand-text">Message Sent!</h3>
-        <p className="text-brand-muted text-sm mt-1 max-w-xs">
-          Thanks for reaching out. We&apos;ll get back to you within 2 hours.
-        </p>
-      </div>
-      <Button asChild className="bg-brand hover:bg-brand-dark text-white">
-        <Link href="/">Back to Home</Link>
-      </Button>
-    </div>
-  );
-}
+// One-tap starters for the message box (the most common reasons people write).
+const TOPICS = ["A quick question", "Booking help", "Business / commercial enquiry", "Feedback"];
 
 export default function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const {
+    control,
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
+    defaultValues: { message: "" },
   });
+
+  const message = useWatch({ control, name: "message" }) ?? "";
 
   const onSubmit = async (data: ContactFormData) => {
     setSubmitError(null);
 
     const response = await fetch("/api/contact", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
 
@@ -80,59 +49,64 @@ export default function ContactForm() {
     setSubmitted(true);
   };
 
-  if (submitted) return <SuccessState />;
+  if (submitted) {
+    return (
+      <SuccessPanel
+        title="Message sent!"
+        message="Thanks for reaching out. We'll get back to you within 2 hours."
+        actions={[{ label: "Back to Home", href: ROUTES.HOME, primary: true }]}
+      />
+    );
+  }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="p-8 flex flex-col gap-5">
+    <form onSubmit={handleSubmit(onSubmit)} className="p-5 sm:p-8 flex flex-col gap-5" noValidate>
       <div>
-        <p className="font-bold text-brand-text text-lg mb-1">Send us a message</p>
-        <p className="text-brand-muted text-sm">Fill in the form and we&apos;ll get back to you within 2 hours.</p>
+        <h2 className="text-xl font-bold text-brand-text">Send us a message</h2>
+        <p className="text-brand-muted text-sm mt-1">We reply within 2 business hours.</p>
       </div>
-      <div className="h-px bg-brand-border" />
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <FieldWrapper label="Full Name" icon={User} error={errors.name?.message}>
-          <Input
-            {...register("name")}
-            placeholder="Don Bradman"
-            className="border-brand-border focus:border-brand"
-          />
-        </FieldWrapper>
-        <FieldWrapper label="Email Address" icon={Mail} error={errors.email?.message}>
-          <Input
-            {...register("email")}
-            type="email"
-            placeholder="don_bradman@email.com"
-            className="border-brand-border focus:border-brand"
-          />
-        </FieldWrapper>
-      </div>
-      <FieldWrapper label="Phone (optional)" icon={Phone} error={errors.phone?.message}>
-        <Input
-          {...register("phone")}
-          type="tel"
-          placeholder="+61 4XX XXX XXX"
-          className="border-brand-border focus:border-brand"
-        />
-      </FieldWrapper>
-      <FieldWrapper label="Your Message" icon={MessageSquare} error={errors.message?.message}>
-        <Textarea
-          {...register("message")}
-          placeholder="How can we help? Tell us about your cleaning needs, ask a question, or just say hello..."
-          rows={5}
-          className="border-brand-border focus:border-brand resize-none"
-        />
-      </FieldWrapper>
-      <Button
-        type="submit"
-        disabled={isSubmitting}
-        className="w-full bg-brand-accent hover:bg-brand-accent-dark text-white font-semibold h-12 text-base shadow-lg shadow-brand-accent/30"
-      >
-        {isSubmitting ? "Sending..." : "Send Message →"}
-      </Button>
 
-      {submitError && (
-        <p className="text-center text-sm text-red-600">{submitError}</p>
-      )}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <FormField label="Full name" htmlFor="contact-name" error={errors.name?.message}>
+          <TextInput id="contact-name" icon={User} autoComplete="name" placeholder="First and last name" invalid={!!errors.name} {...register("name")} />
+        </FormField>
+        <FormField label="Email" htmlFor="contact-email" error={errors.email?.message}>
+          <TextInput id="contact-email" icon={Mail} type="email" inputMode="email" autoComplete="email" placeholder="So we can reply" invalid={!!errors.email} {...register("email")} />
+        </FormField>
+      </div>
+      <FormField label="Phone" optional htmlFor="contact-phone" error={errors.phone?.message} hint="Add it if you'd like a call back.">
+        <TextInput id="contact-phone" icon={Phone} type="tel" inputMode="tel" autoComplete="tel" placeholder="04XX XXX XXX" invalid={!!errors.phone} {...register("phone")} />
+      </FormField>
+
+      <FormField label="Your message" htmlFor="contact-message" error={errors.message?.message}>
+        {!message && (
+          <div className="flex flex-wrap gap-1.5 mb-1">
+            {TOPICS.map((topic) => (
+              <button
+                key={topic}
+                type="button"
+                onClick={() => setValue("message", `${topic}: `)}
+                className="rounded-full border border-brand-border bg-brand-bg px-3 py-1.5 text-xs font-medium text-brand-text hover:border-brand-accent hover:text-brand-accent-dark transition-colors"
+              >
+                {topic}
+              </button>
+            ))}
+          </div>
+        )}
+        <TextArea
+          id="contact-message"
+          {...register("message")}
+          invalid={!!errors.message}
+          rows={5}
+          placeholder="Your question or what you need cleaned"
+        />
+      </FormField>
+
+      {submitError && <FormAlert>{submitError}</FormAlert>}
+
+      <Button type="submit" disabled={isSubmitting} className={primarySubmitClass}>
+        {isSubmitting ? "Sending..." : <>Send message <ArrowRight className="w-4 h-4" /></>}
+      </Button>
     </form>
   );
 }

@@ -14,7 +14,7 @@ import type { Service } from "@/lib/services";
 export function primaryAction(service: Service) {
   return service.bookable
     ? { label: "Book Now", href: bookingWithService(service.slug) }
-    : { label: "Get a Free Quote", href: ROUTES.QUOTE };
+    : { label: "Get a Free Quote", href: `${ROUTES.QUOTE}?service=${service.slug}` };
 }
 
 export const PRIMARY_CTA_CLASS =
@@ -33,7 +33,7 @@ export default function ServiceCTAs({ service, size = "lg" }: { service: Service
       </Button>
       {service.bookable ? (
         <Button asChild size={size} variant="outline" className={`border-brand-accent-border text-brand-text hover:border-brand-accent hover:text-brand-accent-dark font-semibold ${tall}`}>
-          <Link href={ROUTES.QUOTE}>Get a Free Quote</Link>
+          <Link href={`${ROUTES.QUOTE}?service=${service.slug}`}>Get a Free Quote</Link>
         </Button>
       ) : (
         <Button asChild size={size} variant="outline" className={`border-brand-accent-border text-brand-text hover:border-brand-accent hover:text-brand-accent-dark font-semibold gap-2 ${tall}`}>

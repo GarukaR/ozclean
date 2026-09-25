@@ -71,14 +71,14 @@ export default async function BookPage({
             Let&apos;s get your space sparkling.
           </h1>
           <p className="text-brand-muted mt-2 text-base leading-relaxed">
-            Fill in the details below and we&apos;ll confirm your booking within 2 hours.
+            Four quick steps: pick a service, choose a time, add your details, then pay securely.
           </p>
         </Reveal>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
 
           {/* ── Form ── */}
-          <Reveal delay={0.1} className="lg:col-span-2 bg-brand-surface rounded-3xl border border-brand-border shadow-sm overflow-hidden">
+          <Reveal delay={0.1} className="lg:col-span-2 bg-brand-surface rounded-3xl border border-brand-border shadow-sm">
             <BookingForm tierLabel={tier?.label} preselectedService={preselected} />
           </Reveal>
 

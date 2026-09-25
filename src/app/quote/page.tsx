@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { FileText, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -56,8 +57,11 @@ export default function QuotePage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
 
           {/* ── Form ── */}
-          <Reveal delay={0.1} className="lg:col-span-2 bg-brand-surface rounded-3xl border border-brand-border shadow-sm overflow-hidden">
-            <QuoteForm />
+          <Reveal delay={0.1} className="lg:col-span-2 bg-brand-surface rounded-3xl border border-brand-border shadow-sm">
+            {/* Suspense: QuoteForm reads ?service= to preselect a service */}
+            <Suspense fallback={<div className="p-8 text-sm text-brand-muted">Loading…</div>}>
+              <QuoteForm />
+            </Suspense>
           </Reveal>
 
           {/* ── Sidebar ── */}

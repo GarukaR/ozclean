@@ -1,94 +1,82 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
-import { CheckCircle2, User, Mail, Phone, MapPin, Sparkles, MessageSquare } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { ArrowLeft, ArrowRight, HelpCircle, Mail, MapPin, Phone, Plus, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { ROUTES } from "@/lib/routes";
-import { SERVICES as SERVICE_CATALOG } from "@/lib/services";
+import { SERVICES, SERVICE_GROUPS, serviceShortName } from "@/lib/services";
 import { quoteSchema, type QuoteFormData } from "@/lib/quote";
+import {
+  FormAlert,
+  FormField,
+  OptionTile,
+  SegmentedTabs,
+  Stepper,
+  StickyActions,
+  SuccessPanel,
+  TextArea,
+  TextInput,
+  primarySubmitClass,
+} from "@/components/form/FormKit";
 
-const SERVICE_OPTIONS = [
-  ...Object.values(SERVICE_CATALOG).map((service) => service.title),
-  "Not sure — need advice",
-];
+// ─── Two-step quote request ───────────────────────────────────────────────────
+// Step 1: what you need (service cards + description). Step 2: your details.
+// The submitted payload is unchanged: { name, email, phone, address, service,
+// message } with `service` set to the service title, posted to /api/quote.
 
-function FieldWrapper({ label, icon: Icon, error, children }: {
-  label: string;
-  icon: React.ElementType;
-  error?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <Label className="text-sm font-medium text-brand-text flex items-center gap-1.5">
-        <Icon className="w-3.5 h-3.5 text-brand-muted" />
-        {label}
-      </Label>
-      {children}
-      {error && <p className="text-xs text-red-500 mt-0.5">{error}</p>}
-    </div>
-  );
-}
-
-function SuccessState() {
-  return (
-    <div className="flex flex-col items-center justify-center text-center py-16 px-6 gap-6">
-      <div className="w-20 h-20 rounded-full bg-brand/10 flex items-center justify-center">
-        <CheckCircle2 className="w-10 h-10 text-brand" />
-      </div>
-      <div className="flex flex-col gap-2">
-        <h2 className="text-2xl font-bold text-brand-text">Quote Request Received!</h2>
-        <p className="text-brand-muted text-sm max-w-sm leading-relaxed">
-          Thanks for reaching out! We&apos;ll review your details and send a
-          personalised quote to your email within 2 hours.
-        </p>
-      </div>
-      <div className="flex flex-col sm:flex-row gap-3 mt-2">
-        <Button asChild className="bg-brand hover:bg-brand-dark text-white">
-          <Link href="/">Back to Home</Link>
-        </Button>
-        <Button asChild variant="outline" className="border-brand-border">
-          <Link href={ROUTES.BOOKING}>Book Directly Instead</Link>
-        </Button>
-      </div>
-    </div>
-  );
-}
+const NOT_SURE = "Not sure — need advice";
+const STEPS = ["What you need", "Your details"];
+const STEP_FIELDS: (keyof QuoteFormData)[][] = [["service", "message"], ["name", "email", "phone", "address"]];
+const TAB_LABELS: Record<string, string> = { "hosts-tenants": "Hosts & tenants", businesses: "Business", homes: "Homes" };
+const QUICK_FILLS = ["1–2 bedrooms", "3+ bedrooms", "Has pets", "One-off", "Weekly / fortnightly", "Needed ASAP"];
 
 export default function QuoteForm() {
+  const searchParams = useSearchParams();
+  // Service pages link here as /quote?service=<slug> to preselect that service.
+  const preselected = SERVICES[searchParams.get("service") ?? ""]?.title ?? "";
+
+  const [step, setStep] = useState(0);
+  const [tab, setTab] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const {
+    control,
     register,
     handleSubmit,
     setValue,
+    trigger,
     formState: { errors, isSubmitting },
   } = useForm<QuoteFormData>({
     resolver: zodResolver(quoteSchema),
+    defaultValues: { service: preselected, message: "" },
   });
+
+  const service = useWatch({ control, name: "service" });
+  const message = useWatch({ control, name: "message" }) ?? "";
+  // Open on the tab holding the chosen service (e.g. from ?service=), else the first.
+  const selectedGroupId = SERVICE_GROUPS.find((g) => g.slugs.some((slug) => SERVICES[slug].title === service))?.id;
+  const activeTab = tab || selectedGroupId || SERVICE_GROUPS[0].id;
+  const activeGroup = SERVICE_GROUPS.find((g) => g.id === activeTab) ?? SERVICE_GROUPS[0];
+
+  const next = async () => {
+    if (await trigger(STEP_FIELDS[step])) setStep((s) => s + 1);
+  };
+
+  const addQuickFill = (text: string) => {
+    const trimmed = message.trim();
+    setValue("message", trimmed ? `${trimmed.replace(/[.,]$/, "")}, ${text.toLowerCase()}` : text, { shouldValidate: !!errors.message });
+  };
 
   const onSubmit = async (data: QuoteFormData) => {
     setSubmitError(null);
 
     const response = await fetch("/api/quote", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
 
@@ -101,97 +89,140 @@ export default function QuoteForm() {
     setSubmitted(true);
   };
 
-  if (submitted) return <SuccessState />;
+  if (submitted) {
+    return (
+      <SuccessPanel
+        title="Quote request received!"
+        message="Thanks for reaching out. We'll review your details and email you a personalised quote within 2 hours."
+        actions={[
+          { label: "Back to Home", href: ROUTES.HOME, primary: true },
+          { label: "Book a Home Clean", href: ROUTES.BOOKING },
+        ]}
+      />
+    );
+  }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="p-8 flex flex-col gap-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="p-5 sm:p-8 flex flex-col gap-6" noValidate>
+      <Stepper steps={STEPS} current={step} />
 
-      {/* Personal details */}
-      <div>
-        <p className="text-xs font-semibold text-brand-muted uppercase tracking-widest mb-4">
-          Your Details
-        </p>
+      {/* ── Step 1: what you need ── */}
+      <div className={step === 0 ? "flex flex-col gap-6" : "hidden"}>
+        <div>
+          <h2 className="text-xl font-bold text-brand-text">What do you need cleaned?</h2>
+          <p className="text-sm text-brand-muted mt-1">Pick the closest match. Not sure? We&apos;ll help you choose.</p>
+        </div>
+
+        {/* One group at a time (tabs) instead of all 13 services in a list */}
+        <div className="flex flex-col gap-3">
+          <SegmentedTabs
+            label="Service type"
+            active={activeTab}
+            onChange={setTab}
+            tabs={SERVICE_GROUPS.map((g) => ({
+              id: g.id,
+              label: TAB_LABELS[g.id] ?? g.label,
+              badge: g.slugs.some((slug) => SERVICES[slug].title === service),
+            }))}
+          />
+          <div role="radiogroup" aria-label="Service" className="grid grid-cols-2 gap-2">
+            {activeGroup.slugs.map((slug) => {
+              const s = SERVICES[slug];
+              return (
+                <OptionTile
+                  key={slug}
+                  icon={s.icon}
+                  title={serviceShortName(s).replace(/ Cleaning$/, "")}
+                  selected={service === s.title}
+                  onSelect={() => setValue("service", s.title, { shouldValidate: true })}
+                />
+              );
+            })}
+          </div>
+          <OptionTile
+            icon={HelpCircle}
+            title="Not sure, help me choose"
+            selected={service === NOT_SURE}
+            onSelect={() => setValue("service", NOT_SURE, { shouldValidate: true })}
+          />
+          {errors.service?.message && <FormAlert>{errors.service.message}</FormAlert>}
+        </div>
+
+        <FormField
+          label="Tell us about the job"
+          htmlFor="quote-message"
+          error={errors.message?.message}
+        >
+          <div className="flex flex-wrap gap-1.5 mb-1">
+            {QUICK_FILLS.map((text) => (
+              <button
+                key={text}
+                type="button"
+                onClick={() => addQuickFill(text)}
+                className="inline-flex items-center gap-1 rounded-full border border-brand-border bg-brand-bg px-3 py-1.5 text-xs font-medium text-brand-text hover:border-brand-accent hover:text-brand-accent-dark transition-colors"
+              >
+                <Plus className="w-3 h-3" /> {text}
+              </button>
+            ))}
+          </div>
+          <TextArea
+            id="quote-message"
+            {...register("message")}
+            invalid={!!errors.message}
+            rows={4}
+            placeholder="Size of the space, how often, and anything special (pets, stairs, access)"
+          />
+        </FormField>
+
+        <StickyActions>
+          <Button type="button" onClick={next} className={primarySubmitClass}>
+            Next: your details <ArrowRight className="w-4 h-4" />
+          </Button>
+        </StickyActions>
+      </div>
+
+      {/* ── Step 2: your details ── */}
+      <div className={step === 1 ? "flex flex-col gap-5" : "hidden"}>
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <h2 className="text-xl font-bold text-brand-text">Where should we send your quote?</h2>
+            {service && (
+              <p className="text-sm text-brand-muted mt-1">
+                For: <span className="font-semibold text-brand-text">{service === NOT_SURE ? "Not sure yet" : service}</span>
+              </p>
+            )}
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <FieldWrapper label="Full Name" icon={User} error={errors.name?.message}>
-            <Input
-              {...register("name")}
-              placeholder="Jane Smith"
-              className="border-brand-border focus:border-brand focus:ring-brand"
-            />
-          </FieldWrapper>
-          <FieldWrapper label="Email Address" icon={Mail} error={errors.email?.message}>
-            <Input
-              {...register("email")}
-              type="email"
-              placeholder="jane@email.com"
-              className="border-brand-border focus:border-brand focus:ring-brand"
-            />
-          </FieldWrapper>
-          <FieldWrapper label="Phone Number" icon={Phone} error={errors.phone?.message}>
-            <Input
-              {...register("phone")}
-              type="tel"
-              placeholder="+61 4XX XXX XXX"
-              className="border-brand-border focus:border-brand focus:ring-brand"
-            />
-          </FieldWrapper>
-          <FieldWrapper label="Address / Suburb" icon={MapPin} error={errors.address?.message}>
-            <Input
-              {...register("address")}
-              placeholder="Richmond, VIC"
-              className="border-brand-border focus:border-brand focus:ring-brand"
-            />
-          </FieldWrapper>
+          <FormField label="Full name" htmlFor="quote-name" error={errors.name?.message}>
+            <TextInput id="quote-name" icon={User} autoComplete="name" placeholder="First and last name" invalid={!!errors.name} {...register("name")} />
+          </FormField>
+          <FormField label="Phone" htmlFor="quote-phone" error={errors.phone?.message}>
+            <TextInput id="quote-phone" icon={Phone} type="tel" inputMode="tel" autoComplete="tel" placeholder="04XX XXX XXX" invalid={!!errors.phone} {...register("phone")} />
+          </FormField>
+          <FormField label="Email" htmlFor="quote-email" error={errors.email?.message}>
+            <TextInput id="quote-email" icon={Mail} type="email" inputMode="email" autoComplete="email" placeholder="Where we'll send your quote" invalid={!!errors.email} {...register("email")} />
+          </FormField>
+          <FormField label="Suburb" htmlFor="quote-address" error={errors.address?.message} hint="Or full address if you prefer.">
+            <TextInput id="quote-address" icon={MapPin} autoComplete="address-level2" placeholder="e.g. Berwick" invalid={!!errors.address} {...register("address")} />
+          </FormField>
         </div>
+
+        {submitError && <FormAlert>{submitError}</FormAlert>}
+
+        <p className="text-center text-xs text-brand-muted">No commitment, and we&apos;ll never spam you.</p>
+        <StickyActions>
+          <div className="flex items-center gap-3">
+            <Button type="button" variant="outline" onClick={() => setStep(0)} aria-label="Back" className="h-12 w-12 shrink-0 rounded-xl border-brand-border p-0">
+              <ArrowLeft className="w-4 h-4" />
+            </Button>
+            <Button type="submit" disabled={isSubmitting} className={`${primarySubmitClass} w-auto flex-1`}>
+              {isSubmitting ? "Sending..." : <>Get my free quote <ArrowRight className="w-4 h-4" /></>}
+            </Button>
+          </div>
+        </StickyActions>
       </div>
-
-      <div className="h-px bg-brand-border" />
-
-      {/* Service & message */}
-      <div>
-        <p className="text-xs font-semibold text-brand-muted uppercase tracking-widest mb-4">
-          Service Details
-        </p>
-        <div className="flex flex-col gap-4">
-          <FieldWrapper label="Service Interested In" icon={Sparkles} error={errors.service?.message}>
-            <Select onValueChange={(v) => setValue("service", v, { shouldValidate: true })}>
-              <SelectTrigger className="w-full border-brand-border focus:border-brand focus:ring-brand">
-                <SelectValue placeholder="Select a service" />
-              </SelectTrigger>
-              <SelectContent>
-                {SERVICE_OPTIONS.map((s) => (
-                  <SelectItem key={s} value={s}>{s}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </FieldWrapper>
-          <FieldWrapper label="Tell us more" icon={MessageSquare} error={errors.message?.message}>
-            <Textarea
-              {...register("message")}
-              placeholder="E.g. 3 bedroom house in Richmond, needs fortnightly clean, have a dog..."
-              rows={5}
-              className="border-brand-border focus:border-brand focus:ring-brand resize-none"
-            />
-          </FieldWrapper>
-        </div>
-      </div>
-
-      {/* Submit */}
-      <Button
-        type="submit"
-        disabled={isSubmitting}
-        className="w-full bg-brand-accent hover:bg-brand-accent-dark text-white font-semibold h-12 text-base shadow-lg shadow-brand-accent/30"
-      >
-        {isSubmitting ? "Sending..." : "Request My Free Quote →"}
-      </Button>
-
-      {submitError && (
-        <p className="text-center text-sm text-red-600">{submitError}</p>
-      )}
-
-      <p className="text-center text-xs text-brand-muted">
-        No commitment required. We&apos;ll never spam you.
-      </p>
     </form>
   );
 }

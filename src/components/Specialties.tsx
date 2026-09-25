@@ -108,7 +108,7 @@ function SpecialtyCard({ card }: { card: Card }) {
         {/* CTA row — every specialty is quote-only */}
         <div className="mt-auto pt-4 border-t border-brand-border flex items-center gap-3 flex-wrap">
           <Button asChild className="h-10 bg-brand-accent hover:bg-brand-accent-dark text-white font-semibold gap-1.5">
-            <Link href={ROUTES.QUOTE}>
+            <Link href={`${ROUTES.QUOTE}?service=${service.slug}`}>
               Get a Free Quote <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </Button>

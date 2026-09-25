@@ -231,3 +231,11 @@
 .dark :is(.bg-brand, .bg-brand-accent, .from-brand.to-brand-accent) [class*="text-white"] {
   color: #0A1220;
 }
+
+/* Multi-step forms pin their own action bar (StickyActions); the back-to-top
+   button would sit on top of it on phones, so hide it there. */
+@media (max-width: 767px) {
+  body:has([data-sticky-form]) [data-back-to-top] {
+    display: none;
+  }
+}
