@@ -101,18 +101,20 @@ export default function Hero() {
                 size="lg"
                 className="rounded-full bg-brand-accent hover:bg-brand-accent-dark text-white font-semibold shadow-lg shadow-black/20 gap-2 px-6"
               >
-                <Link href={ROUTES.BOOKING}>
-                  Book Now
+                <Link href={ROUTES.QUOTE}>
+                  Get a Free Quote
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </Button>
+              {/* Only home cleans (and bins) are bookable online; the Airbnb and
+                  end-of-lease specialties above are quote-only. */}
               <Button
                 asChild
                 size="lg"
                 variant="outline"
                 className="rounded-full bg-white/5 hover:bg-white/15 text-white border-white/40 font-semibold px-6 backdrop-blur-sm"
               >
-                <Link href={ROUTES.QUOTE}>Get a Free Quote</Link>
+                <Link href={ROUTES.BOOKING}>Book a Home Clean</Link>
               </Button>
             </motion.div>
           </motion.div>
