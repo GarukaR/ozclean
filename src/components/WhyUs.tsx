@@ -39,7 +39,7 @@ export default function WhyUs() {
   return (
     <section className="bg-brand-bg py-10 sm:py-20">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <Reveal className="max-w-xl mx-auto sm:mx-0 mb-6 sm:mb-10 text-center sm:text-left">
+        <Reveal className="max-w-xl mx-auto lg:mx-0 mb-6 sm:mb-10 text-center lg:text-left">
           <h2 className="text-3xl sm:text-4xl font-bold text-brand-text leading-tight tracking-tight">
             Why people choose <span className="text-brand-accent-dark">OzClean.</span>
           </h2>
