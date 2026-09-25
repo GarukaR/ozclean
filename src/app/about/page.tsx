@@ -32,7 +32,7 @@ const VALUES = [
   {
     icon: Star,
     title: "Results That Speak",
-    desc: "1,000+ cleans and a 4.75-star average rating. Our work earns repeat customers, not just one-off bookings.",
+    desc: "1,000+ cleans completed. Our work earns repeat customers, not just one-off bookings.",
   },
 ];
 
@@ -72,7 +72,7 @@ const STATS = [
   { value: "2019", label: "Founded" },
   { value: "1000+", label: "Cleans completed" },
   { value: "100+", label: "Happy customers" },
-  { value: "4.75★", label: "Average rating" },
+  { value: "10", label: "Suburbs served" },
 ];
 // ─────────────────────────────────────────────────────────────────────────────
 

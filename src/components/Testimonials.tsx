@@ -121,18 +121,8 @@ export default function Testimonials() {
             {""}.
           </h2>
 
-          {/* Overall rating */}
-          <div className="mt-6 inline-flex items-center gap-3 bg-brand-surface border border-brand-border rounded-2xl px-5 py-3 shadow-sm">
-            <div className="flex items-center gap-0.5">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
-              ))}
-            </div>
-            <div className="w-px h-5 bg-brand-border" />
-            <p className="text-sm font-bold text-brand-text">4.75 / 5</p>
-            <div className="w-px h-5 bg-brand-border" />
-            <p className="text-sm text-brand-muted">100+ reviews</p>
-          </div>
+          {/* No overall rating badge until the Google Business Profile has
+              10-15 genuine reviews to show — an unverifiable average reads as fake. */}
         </Reveal>
       </div>
 
