@@ -1,4 +1,5 @@
 // src/lib/seo.ts
+import { BUSINESS_CLOSES, BUSINESS_OPENING_DAYS, BUSINESS_OPENS } from "@/lib/business";
 // ─── Base site metadata — update once, applies everywhere ────────────────────
 
 export const SITE_NAME = "OzClean";
@@ -116,6 +117,12 @@ export function localBusinessJsonLd(phone: string, email: string) {
       addressCountry: "AU",
     },
     areaServed: SERVICE_AREAS.map((name) => ({ "@type": "Place", name: `${name}, VIC` })),
+    openingHoursSpecification: {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: BUSINESS_OPENING_DAYS,
+      opens: BUSINESS_OPENS,
+      closes: BUSINESS_CLOSES,
+    },
   };
 }
 

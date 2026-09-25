@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { generatePageMeta } from "@/lib/seo";
+import { SERVICES } from "@/lib/services";
 import { ROUTES } from "@/lib/routes";
 import Reveal from "@/components/Reveal";
 
@@ -24,11 +25,11 @@ const SITEMAP = [
     category: "Services",
     links: [
       { label: "All Services", href: ROUTES.SERVICES, desc: "Overview of everything we offer" },
-      { label: "Commercial Cleaning", href: "/services/commercial", desc: "Office and business cleaning" },
-      { label: "Residential Cleaning", href: "/services/residential", desc: "Regular home cleaning" },
-      { label: "Deep Cleaning", href: "/services/deep-clean", desc: "Thorough top-to-bottom clean" },
-      { label: "Move In / Move Out", href: "/services/move", desc: "End of lease and bond cleans" },
-      { label: "Window Cleaning", href: "/services/windows", desc: "Streak-free window cleaning" },
+      ...Object.values(SERVICES).map(({ slug, title, description }) => ({
+        label: title,
+        href: `${ROUTES.SERVICES}/${slug}`,
+        desc: description,
+      })),
     ],
   },
   {

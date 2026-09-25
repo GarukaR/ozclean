@@ -1,4 +1,4 @@
-import { Building2, Home, Sparkles, ArrowLeftRight, Wind, Trash2, LucideIcon } from "lucide-react";
+import { Building, Building2, Home, Sparkles, ArrowLeftRight, Wind, Trash2, Store, Stethoscope, Layers, Sofa, BedDouble, LucideIcon } from "lucide-react";
 
 export type Service = {
   slug: string;
@@ -9,6 +9,8 @@ export type Service = {
   seoTitle: string;
   tagline: string;
   description: string;
+  // Optional longer "who it's for / how we work" copy for the detail page.
+  intro?: string[];
   price: string;
   priceLabel: string;
   priceNote: string;
@@ -74,7 +76,7 @@ export const HOME_PROMO_OFFERS: PromoOffer[] = [
   },
 ];
 
-export const SERVICES: Record<string, Service> = {
+const SERVICE_CATALOG: Record<string, Service> = {
   commercial: {
     slug: "commercial",
     icon: Building2,
@@ -419,6 +421,368 @@ export const SERVICES: Record<string, Service> = {
     ],
   },
 
+  "retail-cleaning": {
+    slug: "retail-cleaning",
+    icon: Store,
+    title: "Retail & Shop Cleaning",
+    seoTitle: "Retail & Shop Cleaning in South East Melbourne",
+    tagline: "A shop floor that sells. Every morning.",
+    description: "Before-open or after-close cleaning for shops, boutiques and showrooms.",
+    intro: [
+      "Customers judge a shop in the first few seconds: smudged glass, dusty shelves or a grubby fitting room can cost you a sale before anyone says hello. We clean boutiques, clothing stores, gift shops, salons, showrooms and other small retail spaces so your floor looks its best when the doors open.",
+      "We work around your trading hours, early morning before you open or in the evening after you close, so there's never a mop bucket in the way of a customer. Choose daily, a few times a week or weekly, and we'll build a checklist around your fit-out, your floors and your busiest days.",
+    ],
+    price: "Free quote",
+    priceLabel: "tailored to your shop",
+    priceNote: "Every shop is different, so we quote on your floor size, fit-out and how often you need us. No lock-in contracts.",
+    bookable: false,
+    heroImage: "https://images.pexels.com/photos/37941666/pexels-photo-37941666.jpeg",
+    included: [
+      "Shopfront glass, entry doors & window displays",
+      "Shelving, racks & display units dusted",
+      "Counters & checkout area wiped & sanitised",
+      "Fitting rooms, mirrors & curtains refreshed",
+      "Floors vacuumed, swept & mopped",
+      "Staff room & kitchenette cleaned",
+      "Customer & staff bathrooms sanitised",
+      "Bins emptied & liners replaced",
+      "High-touch points like door handles & EFTPOS disinfected",
+    ],
+    highlights: [
+      { icon: "🕐", label: "Before open or after close" },
+      { icon: "🪟", label: "Streak-free shopfront glass" },
+      { icon: "📋", label: "Checklist built for your store" },
+    ],
+    faqs: [
+      {
+        q: "Can you clean before we open or after we close?",
+        a: "Yes, that's how most retail businesses prefer it. We can come early in the morning or after closing so cleaning never gets in the way of customers.",
+      },
+      {
+        q: "What types of shops do you clean?",
+        a: "Boutiques, clothing and shoe stores, gift shops, salons, showrooms and other small to medium retail spaces across South East Melbourne.",
+      },
+      {
+        q: "How often should a shop be cleaned?",
+        a: "Busy stores usually need a daily or every-second-day clean, while quieter shops often do well with two or three visits a week. We'll recommend a schedule when we quote.",
+      },
+      {
+        q: "Do we need to be there while you clean?",
+        a: "No. Many shops give us a key or alarm code so we can clean after hours. All our cleaners are police-checked and insured.",
+      },
+      {
+        q: "Are we locked into a contract?",
+        a: "No lock-in contracts. You can change your schedule or cancel with reasonable notice.",
+      },
+    ],
+    related: [
+      { slug: "commercial", title: "Office & Commercial Cleaning", desc: "Regular cleaning for offices and workspaces." },
+      { slug: "windows", title: "Window Cleaning", desc: "Crystal-clear glass inside and out." },
+      { slug: "carpet-cleaning", title: "Carpet Cleaning", desc: "Deep steam cleaning for carpeted floors." },
+    ],
+  },
+
+  "medical-centre-cleaning": {
+    slug: "medical-centre-cleaning",
+    icon: Stethoscope,
+    title: "Medical Centre & Clinic Cleaning",
+    seoTitle: "Medical Centre & Clinic Cleaning in South East Melbourne",
+    tagline: "Clinic-clean for your patients. Every visit.",
+    description: "Hygiene-focused cleaning for GP clinics, dental, physio and allied health practices.",
+    intro: [
+      "Patients notice a clinic's cleanliness straight away, and in a healthcare setting it matters more than anywhere. We clean GP clinics, dental surgeries, physiotherapy and allied health practices, and specialist consulting rooms, with a focus on the high-touch surfaces and shared areas where germs spread.",
+      "We use hospital-grade disinfectants and colour-coded cloths and mops, so cloths used in bathrooms are never used on reception or treatment-room surfaces. Cleaning happens after hours or between sessions to suit your appointment book, with the same team each visit so they learn your rooms and your requirements.",
+    ],
+    price: "Free quote",
+    priceLabel: "tailored to your practice",
+    priceNote: "Quoted on the number of rooms, how often you need us and any special requirements. No lock-in contracts.",
+    bookable: false,
+    heroImage: "https://images.pexels.com/photos/7108351/pexels-photo-7108351.jpeg",
+    included: [
+      "Waiting room chairs, tables & reception counters",
+      "Treatment & consult room surfaces wiped & disinfected",
+      "Examination beds & chairs cleaned (non-clinical surfaces)",
+      "High-touch points: door handles, light switches, pens, EFTPOS",
+      "Bathrooms scrubbed, sanitised & restocked",
+      "Hard floors vacuumed & mopped with disinfectant",
+      "Staff kitchen & break room cleaned",
+      "General waste & recycling bins emptied",
+      "Colour-coded cloths to prevent cross-contamination",
+    ],
+    highlights: [
+      { icon: "🧴", label: "Hospital-grade disinfectants" },
+      { icon: "🎨", label: "Colour-coded cleaning system" },
+      { icon: "🌙", label: "After-hours cleaning" },
+    ],
+    faqs: [
+      {
+        q: "What kinds of practices do you clean?",
+        a: "GP clinics, medical centres, dental surgeries, physiotherapy, chiropractic, podiatry, psychology and other allied health or specialist consulting rooms.",
+      },
+      {
+        q: "Do you handle clinical or sharps waste?",
+        a: "No. Clinical, sharps and other regulated medical waste should stay with your licensed waste contractor. We take care of general waste and recycling.",
+      },
+      {
+        q: "Can you clean outside of our consulting hours?",
+        a: "Yes. Most practices prefer us to come after the last appointment or before the first, so patients are never disturbed.",
+      },
+      {
+        q: "How do you prevent cross-contamination?",
+        a: "We use a colour-coded system for cloths and mops, so each area such as bathrooms, reception and treatment rooms has its own set. High-touch surfaces are disinfected on every visit.",
+      },
+      {
+        q: "Are your cleaners police-checked?",
+        a: "Yes. Every OzClean cleaner is police-checked and insured, and we can send the same team each visit.",
+      },
+    ],
+    related: [
+      { slug: "commercial", title: "Office & Commercial Cleaning", desc: "Regular cleaning for offices and workspaces." },
+      { slug: "carpet-cleaning", title: "Carpet Cleaning", desc: "Steam cleaning for waiting-room carpets." },
+      { slug: "upholstery-cleaning", title: "Couch & Upholstery Cleaning", desc: "Refresh fabric waiting-room chairs." },
+    ],
+  },
+
+  "strata-cleaning": {
+    slug: "strata-cleaning",
+    icon: Building,
+    title: "Strata & Common Area Cleaning",
+    seoTitle: "Strata & Owners Corporation Cleaning in South East Melbourne",
+    tagline: "Shared spaces residents are proud of.",
+    description: "Scheduled common-area cleaning for owners corporations, apartments and townhouse complexes.",
+    intro: [
+      "Lobbies, hallways and stairwells are the first thing residents, buyers and visitors see. We keep common areas clean for owners corporations, apartment blocks, townhouse complexes and small mixed-use buildings, on a weekly, fortnightly or monthly schedule that suits your budget.",
+      "We work to an agreed checklist for your building and can send the owners corporation manager a short photo report after each visit, so committee members know exactly what was done without having to check. Small office tenancies and shared business spaces can be added to the same visit.",
+    ],
+    price: "Free quote",
+    priceLabel: "tailored to your building",
+    priceNote: "Quoted on the size of your common areas and how often you need us. We're happy to quote directly to your owners corporation manager.",
+    bookable: false,
+    heroImage: "https://images.pexels.com/photos/7031907/pexels-photo-7031907.jpeg",
+    included: [
+      "Entry lobbies, foyers & glass entry doors",
+      "Hallways & corridors vacuumed or mopped",
+      "Stairwells & handrails cleaned",
+      "Lift interiors, buttons & mirrors wiped",
+      "Letterbox & mail areas dusted",
+      "Bin rooms swept & bin areas hosed (where accessible)",
+      "Car park & driveway litter pick-up and sweeping",
+      "Cobweb removal from ceilings & light fittings",
+      "Photo report to your OC manager after each visit",
+    ],
+    highlights: [
+      { icon: "📅", label: "Weekly or fortnightly schedule" },
+      { icon: "📸", label: "Photo report after each visit" },
+      { icon: "🏢", label: "Apartments & townhouse complexes" },
+    ],
+    faqs: [
+      {
+        q: "What's the difference between strata, body corporate and owners corporation cleaning?",
+        a: "They're the same thing. In Victoria the legal term is owners corporation, while other states say strata or body corporate. It covers cleaning of the shared areas of a building rather than individual units.",
+      },
+      {
+        q: "How often should common areas be cleaned?",
+        a: "Most small to medium buildings do well with a weekly or fortnightly clean. High-traffic buildings may need more. We'll recommend a schedule when we inspect and quote.",
+      },
+      {
+        q: "Can you quote directly to our owners corporation manager?",
+        a: "Yes. We can send the quote, schedule and checklist straight to your OC manager, and invoice the owners corporation directly.",
+      },
+      {
+        q: "Do you clean small offices as well?",
+        a: "Yes. We clean small offices and shared workspaces, either on their own or combined with a building's common-area visit.",
+      },
+      {
+        q: "How will we know the clean has been done?",
+        a: "After each visit we can send a short photo report of the areas cleaned, so the committee has a record without needing to check in person.",
+      },
+    ],
+    related: [
+      { slug: "commercial", title: "Office & Commercial Cleaning", desc: "Regular cleaning for small offices." },
+      { slug: "windows", title: "Window Cleaning", desc: "Entry glass and common-area windows." },
+      { slug: "wheely-bin", title: "Wheelie Bin Cleaning", desc: "Fresh, odour-free bins for the whole building." },
+    ],
+  },
+
+  "carpet-cleaning": {
+    slug: "carpet-cleaning",
+    icon: Layers,
+    title: "Carpet Steam Cleaning",
+    seoTitle: "Carpet Steam Cleaning in South East Melbourne",
+    tagline: "Carpets that look and feel fresh again.",
+    description: "Hot water extraction (steam) cleaning for homes, rentals and end of lease.",
+    intro: [
+      "Everyday vacuuming picks up surface dirt, but the grit, oils and allergens that make carpet look flat and grey sit deep in the pile. We use hot water extraction, the method most people call steam cleaning, to flush that out and lift the fibres again.",
+      "It pairs well with an end of lease clean: if your lease or agent asks for professional carpet cleaning, we can do both on the same day and give you an invoice for your records. We also clean carpets in homes, Airbnb properties, offices and waiting rooms.",
+    ],
+    price: "Free quote",
+    priceLabel: "per room or whole home",
+    priceNote: "Quoted on the number of rooms or total area and the condition of the carpet. Ask about combining it with an end of lease clean.",
+    bookable: false,
+    heroImage: "https://images.pexels.com/photos/4107278/pexels-photo-4107278.jpeg",
+    included: [
+      "Pre-vacuum of all carpeted areas",
+      "Pre-treatment of high-traffic areas",
+      "Spot treatment of common stains",
+      "Hot water extraction (steam) cleaning",
+      "Deodorising treatment on request",
+      "Pet odour treatment on request",
+      "Furniture moved and replaced where practical",
+      "Invoice provided for end of lease records",
+    ],
+    highlights: [
+      { icon: "💧", label: "Hot water extraction method" },
+      { icon: "🔑", label: "Pairs with end of lease cleans" },
+      { icon: "🐾", label: "Pet odour treatment available" },
+    ],
+    faqs: [
+      {
+        q: "Is steam cleaning the same as hot water extraction?",
+        a: "Yes. Steam cleaning is the everyday name for hot water extraction, where hot water and cleaning solution are sprayed into the carpet and extracted straight back out along with the dirt.",
+      },
+      {
+        q: "How long does carpet take to dry?",
+        a: "Usually a few hours, depending on the carpet, the weather and ventilation. Opening windows or running a fan or air conditioner helps it dry faster.",
+      },
+      {
+        q: "Do I need carpet cleaning for my end of lease?",
+        a: "It depends on your lease and the condition of the carpet. If your agent asks for it, we can do it together with your end of lease clean and give you an invoice.",
+      },
+      {
+        q: "Can you remove every stain?",
+        a: "We treat common stains like food, drinks, mud and pet accidents, and most come out or fade significantly. Some old or set-in stains, such as dyes or bleach marks, may be permanent. We'll tell you honestly before we start.",
+      },
+      {
+        q: "Do I need to move my furniture?",
+        a: "We can move light furniture ourselves. Please move fragile items and anything small off the floor before we arrive.",
+      },
+    ],
+    related: [
+      { slug: "move", title: "End of Lease Cleaning", desc: "Bond-back clean for moving day." },
+      { slug: "upholstery-cleaning", title: "Couch & Upholstery Cleaning", desc: "Refresh fabric couches and chairs." },
+      { slug: "mattress-cleaning", title: "Mattress Cleaning", desc: "Deep clean and deodorise your mattress." },
+    ],
+  },
+
+  "upholstery-cleaning": {
+    slug: "upholstery-cleaning",
+    icon: Sofa,
+    title: "Couch & Upholstery Cleaning",
+    seoTitle: "Couch & Upholstery Cleaning in South East Melbourne",
+    tagline: "Bring your couch back to life.",
+    description: "Deep cleaning for fabric couches, lounges, dining chairs and cushions.",
+    intro: [
+      "Couches soak up everything: spills, body oils, pet hair and the everyday grime that slowly dulls the fabric. We deep clean fabric sofas, sectionals, recliners, armchairs, dining chairs, ottomans and cushions to lift out dirt and odours and brighten the colour again.",
+      "Every fabric is different, so we check the care label and test a hidden spot before we start, then choose the right method and solution for your upholstery. It's a popular add-on for Airbnb hosts between guests and for families with kids or pets.",
+    ],
+    price: "Free quote",
+    priceLabel: "per seat or piece",
+    priceNote: "Quoted on the number of seats or pieces, the fabric type and any stains. Combine it with carpet cleaning and save on a single visit.",
+    bookable: false,
+    heroImage: "https://images.pexels.com/photos/9462191/pexels-photo-9462191.jpeg",
+    included: [
+      "Fabric type check & colourfast test",
+      "Thorough vacuum including crevices & under cushions",
+      "Pre-treatment of arms, headrests & high-contact areas",
+      "Spot treatment of common stains",
+      "Deep clean with a fabric-appropriate method",
+      "Deodorising treatment on request",
+      "Removable cushions cleaned both sides",
+      "Dining chairs, ottomans & armchairs",
+    ],
+    highlights: [
+      { icon: "🛋️", label: "Sofas, chairs & cushions" },
+      { icon: "🧪", label: "Fabric tested before cleaning" },
+      { icon: "🐾", label: "Pet hair & odour treatment" },
+    ],
+    faqs: [
+      {
+        q: "What types of upholstery do you clean?",
+        a: "Most fabric and microfibre upholstery, including sofas, sectionals, recliners, armchairs, dining chairs, ottomans and cushions. For leather or delicate fabrics like silk and velvet, please mention it when you ask for a quote.",
+      },
+      {
+        q: "How long does a couch take to dry?",
+        a: "Usually a few hours, depending on the fabric and ventilation. We recommend not sitting on it until it's fully dry.",
+      },
+      {
+        q: "Will it remove pet smells?",
+        a: "We treat pet odours as part of the clean and can add a deodorising treatment. Heavy or long-term odours may need more than one treatment.",
+      },
+      {
+        q: "Is it safe for kids and pets?",
+        a: "Yes. We use products suited to household furniture and make sure they're properly extracted, so no harsh residue is left behind.",
+      },
+      {
+        q: "Can I combine it with carpet or mattress cleaning?",
+        a: "Yes, and it's the most cost-effective way to do it. Mention everything you'd like cleaned when you ask for a quote.",
+      },
+    ],
+    related: [
+      { slug: "carpet-cleaning", title: "Carpet Cleaning", desc: "Deep steam cleaning for carpets." },
+      { slug: "mattress-cleaning", title: "Mattress Cleaning", desc: "Deep clean and deodorise your mattress." },
+      { slug: "airbnb", title: "Airbnb Cleaning", desc: "Fast turnovers between guest stays." },
+    ],
+  },
+
+  "mattress-cleaning": {
+    slug: "mattress-cleaning",
+    icon: BedDouble,
+    title: "Mattress Cleaning",
+    seoTitle: "Mattress Cleaning in South East Melbourne",
+    tagline: "A fresher, cleaner night's sleep.",
+    description: "Deep mattress cleaning to lift stains, odours, dust and allergens.",
+    intro: [
+      "You spend about a third of your life on your mattress, and over time it collects sweat, skin flakes, dust and spills that a sheet change never reaches. A deep clean lifts stains and odours and helps reduce the dust and allergens that build up inside.",
+      "We clean single, double, queen and king mattresses in homes, rentals and Airbnb properties. It's a good idea once or twice a year, after an illness or accident, when moving into a new place, or for hosts who want guests to sleep on a genuinely fresh bed.",
+    ],
+    price: "Free quote",
+    priceLabel: "per mattress",
+    priceNote: "Quoted by mattress size and number of mattresses, and whether one or both sides need cleaning.",
+    bookable: false,
+    heroImage: "https://images.pexels.com/photos/8089076/pexels-photo-8089076.jpeg",
+    included: [
+      "Thorough vacuum of the top, sides & seams",
+      "Stain pre-treatment (sweat, drinks, urine & more)",
+      "Deep clean of the sleeping surface",
+      "Odour neutralising treatment",
+      "Sanitising treatment",
+      "Second side cleaned on request",
+      "Single, double, queen & king sizes",
+    ],
+    highlights: [
+      { icon: "🛏️", label: "All mattress sizes" },
+      { icon: "🌬️", label: "Odour & stain treatment" },
+      { icon: "🤧", label: "Helps reduce dust & allergens" },
+    ],
+    faqs: [
+      {
+        q: "How often should a mattress be cleaned?",
+        a: "Once or twice a year works for most homes. More often if you have allergies, pets on the bed or young children, or after an illness or accident.",
+      },
+      {
+        q: "How long before I can sleep on it?",
+        a: "Usually a few hours, depending on ventilation and the weather. We'll let you know on the day, and it's best to make the bed once it's completely dry.",
+      },
+      {
+        q: "Can you remove urine or sweat stains?",
+        a: "We treat these common stains and odours, and most improve significantly. Very old or deep stains may not disappear completely, and we'll be upfront about that before we start.",
+      },
+      {
+        q: "Does it get rid of dust mites?",
+        a: "A deep clean removes a lot of the dust and debris dust mites feed on and helps reduce allergens. No clean can make a mattress permanently mite-free, so regular cleaning and washing bedding hot is the best approach.",
+      },
+      {
+        q: "Do you clean mattresses for Airbnb hosts?",
+        a: "Yes. Hosts often book mattress cleaning between guests or alongside a deep clean of the property. Ask about combining it with your turnover cleans.",
+      },
+    ],
+    related: [
+      { slug: "upholstery-cleaning", title: "Couch & Upholstery Cleaning", desc: "Refresh fabric couches and chairs." },
+      { slug: "carpet-cleaning", title: "Carpet Cleaning", desc: "Deep steam cleaning for carpets." },
+      { slug: "airbnb", title: "Airbnb Cleaning", desc: "Fast turnovers between guest stays." },
+    ],
+  },
+
   "wheely-bin": {
     slug: "wheely-bin",
     icon: Trash2,
@@ -474,6 +838,29 @@ export const SERVICES: Record<string, Service> = {
     ],
   },
 };
+
+// Display order everywhere services are listed (services page, mobile menu,
+// quote form): specialties first, then the business and upholstery services
+// the owner wants to push, then the everyday home services.
+const SERVICE_ORDER = [
+  "airbnb",
+  "move",
+  "retail-cleaning",
+  "medical-centre-cleaning",
+  "strata-cleaning",
+  "commercial",
+  "carpet-cleaning",
+  "upholstery-cleaning",
+  "mattress-cleaning",
+  "residential",
+  "deep-clean",
+  "windows",
+  "wheely-bin",
+] as const;
+
+export const SERVICES: Record<string, Service> = Object.fromEntries(
+  SERVICE_ORDER.map((slug) => [slug, SERVICE_CATALOG[slug]])
+);
 
 // Helper to get all slugs, used by generateStaticParams
 export const getAllServiceSlugs = () => Object.keys(SERVICES);

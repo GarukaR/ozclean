@@ -7,8 +7,7 @@ import {
   BUSINESS_EMAIL,
   BUSINESS_EMAIL_HREF,
   BUSINESS_PHONE,
-  BUSINESS_PHONE_HREF,
-} from "@/lib/business";
+  BUSINESS_PHONE_HREF, BUSINESS_HOURS, BUSINESS_HOURS_SUMMARY } from "@/lib/business";
 import ContactForm from "./ContactForm";
 import Reveal from "@/components/Reveal";
 
@@ -25,7 +24,7 @@ const CONTACT_DETAILS = [
     label: "Phone",
     value: BUSINESS_PHONE,
     href: BUSINESS_PHONE_HREF,
-    sub: "Mon–Sat, 8am–6pm",
+    sub: BUSINESS_HOURS_SUMMARY,
   },
   {
     icon: Mail,
@@ -41,13 +40,6 @@ const CONTACT_DETAILS = [
     href: "#map",
     sub: "South East Melbourne centered around Hampton Park",
   },
-];
-
-const BUSINESS_HOURS = [
-  { day: "Monday – Friday", hours: "7:00 AM – 7:00 PM" },
-  { day: "Saturday", hours: "8:00 AM – 5:00 PM" },
-  { day: "Sunday", hours: "9:00 AM – 3:00 PM" },
-  { day: "Public Holidays", hours: "By appointment" },
 ];
 
 const CONNECT_OPTIONS = [

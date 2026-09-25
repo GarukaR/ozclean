@@ -9,9 +9,18 @@ import Reveal from "@/components/Reveal";
 // ─── Homepage shows a curated subset of the full catalog ──────────────────────
 // Source of truth for title/price/description is lib/services.ts (shared with
 // the /services listing and /services/[slug] detail pages) so pricing can't
-// drift between pages. Window & wheely-bin cleaning are intentionally left off
-// this shortlist — see the full catalog at /services.
-const HOME_SLUGS = ["airbnb", "move", "residential", "commercial", "deep-clean"] as const;
+// drift between pages. The rest of the catalog (office, upholstery, mattress,
+// deep, window, wheelie bin) lives on the full /services page.
+// Owner wants the business and upholstery services ahead of everyday home cleans.
+const HOME_SLUGS = [
+  "airbnb",
+  "move",
+  "retail-cleaning",
+  "medical-centre-cleaning",
+  "strata-cleaning",
+  "carpet-cleaning",
+  "residential",
+] as const;
 const FEATURED_SLUG: (typeof HOME_SLUGS)[number] = "airbnb";
 
 function FeaturedCard({ service }: { service: Service }) {

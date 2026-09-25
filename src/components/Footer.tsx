@@ -21,10 +21,13 @@ function TikTokIcon({ className }: { className?: string }) {
 // ─── Config ───────────────────────────────────────────────────────────────────
 const FOOTER_LINKS = {
   "Popular Services": [
-    { label: "AirBnB Cleaning", href: "/services/airbnb" },
-    { label: "Move In / Move Out", href: "/services/move" },
-    { label: "Residential Cleaning", href: "/services/residential" },
-    { label: "Office & Commercial Cleaning", href: "/services/commercial" },
+    { label: "Airbnb Cleaning", href: "/services/airbnb" },
+    { label: "End of Lease Cleaning", href: "/services/move" },
+    { label: "Retail & Shop Cleaning", href: "/services/retail-cleaning" },
+    { label: "Medical Centre Cleaning", href: "/services/medical-centre-cleaning" },
+    { label: "Strata & Common Areas", href: "/services/strata-cleaning" },
+    { label: "Carpet, Couch & Mattress", href: "/services/carpet-cleaning" },
+    { label: "All Services", href: "/services" },
   ],
   Company: [
     { label: "About Us", href: "/about" },

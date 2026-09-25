@@ -8,7 +8,7 @@ import Reveal from "@/components/Reveal";
 
 export const metadata = generatePageMeta({
   title: "Our Services",
-  description: "Airbnb, end of lease, house, office, deep, window and wheelie bin cleaning across Hampton Park, Berwick, Cranbourne and South East Melbourne. Free quotes.",
+  description: "Airbnb, end of lease, retail, medical centre, strata, office, carpet, couch, mattress and house cleaning across Hampton Park, Berwick, Cranbourne and South East Melbourne. Free quotes.",
   path: ROUTES.SERVICES,
 });
 

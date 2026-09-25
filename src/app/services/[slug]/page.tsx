@@ -173,6 +173,26 @@ export default async function ServicePage({
       {/* ── What's Included ── */}
       <section className="bg-brand-surface py-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          {service.intro && (
+            <Reveal className="max-w-3xl mb-16 pb-16 border-b border-brand-border">
+              <p className="text-brand text-sm font-semibold uppercase tracking-widest mb-3">
+                About the Service
+              </p>
+              <h2 className="text-3xl sm:text-4xl font-bold text-brand-text leading-tight mb-6">
+                {service.title} across {SERVICE_REGION}
+              </h2>
+              <div className="flex flex-col gap-4">
+                {service.intro.map((paragraph) => (
+                  <p key={paragraph.slice(0, 24)} className="text-brand-muted text-base sm:text-lg leading-relaxed">
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
+              <p className="text-sm text-brand-muted mt-6">
+                Serving {SERVICE_AREAS.join(", ")}.
+              </p>
+            </Reveal>
+          )}
           <div className="grid lg:grid-cols-2 gap-12 items-start">
             <Reveal>
               <p className="text-brand text-sm font-semibold uppercase tracking-widest mb-3">
