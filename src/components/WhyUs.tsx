@@ -1,81 +1,55 @@
-import { Zap, CalendarClock, Leaf, ShieldCheck } from "lucide-react";
+import { RotateCcw, ShieldCheck, Leaf, CalendarClock } from "lucide-react";
 import Reveal from "@/components/Reveal";
 
-// ─── Feature data ─────────────────────────────────────────────────────────────
+// ─── Four plain promises, no stat numbers ────────────────────────────────────
+// Each point is something OzClean actually commits to (the re-clean guarantee
+// is the same one in every service FAQ), phrased the way a customer would say
+// it. Deliberately no percentages or counts we can't back up.
 const FEATURES = [
   {
-    icon: Zap,
-    title: "Fast & Reliable Service",
-    description: "On time, every time, without cutting corners.",
-    stat: "98%",
-    statLabel: "On-time arrival rate",
-    accent: "bg-brand/10 text-brand",
-  },
-  {
-    icon: CalendarClock,
-    title: "Flexible Scheduling",
-    description: "Early mornings, evenings, weekends. Book and reschedule online anytime.",
-    stat: "Easy and Quick",
-    statLabel: "Booking available",
-    accent: "bg-brand-accent/10 text-brand-accent",
-  },
-  {
-    icon: Leaf,
-    title: "Eco-Friendly Products",
-    description: "Non-toxic, biodegradable products, safe for family and pets.",
-    stat: "100%",
-    statLabel: "Non-toxic products",
-    accent: "bg-brand-accent-bg text-brand-accent",
+    icon: RotateCcw,
+    title: "Not happy? We come back",
+    description: "Tell us within 24 hours if anything was missed and we'll return to fix it, free.",
   },
   {
     icon: ShieldCheck,
-    title: "Insured & Vetted Staff",
-    description: "Police-checked, fully insured, and trained to our standards.",
-    stat: "Punctual & Friendly",
-    statLabel: "Verified professionals",
-    accent: "bg-brand/10 text-brand",
+    title: "Police-checked & insured",
+    description: "Every cleaner is police-checked and insured, so you can hand over the keys with confidence.",
+  },
+  {
+    icon: Leaf,
+    title: "Safe for kids & pets",
+    description: "Non-toxic, biodegradable products that don't leave harsh fumes behind.",
+  },
+  {
+    icon: CalendarClock,
+    title: "Fits around you",
+    description: "While you're at work, before your shop opens or between guests. We work to your schedule.",
   },
 ];
 
 export default function WhyUs() {
   return (
-    <section className="bg-brand-surface py-12 sm:py-16">
+    <section className="bg-brand-bg py-14 sm:py-20">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-
-        {/* ── Section Header ── */}
-        <Reveal className="max-w-2xl mb-16">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-brand-text leading-tight tracking-tight">
-            Cleaning you can{" "}
-            <span className="text-brand-accent-dark">count on,</span>
-            <br />every single visit.
+        <Reveal className="max-w-xl mx-auto sm:mx-0 mb-8 sm:mb-10 text-center sm:text-left">
+          <h2 className="text-3xl sm:text-4xl font-bold text-brand-text leading-tight tracking-tight">
+            Why people choose <span className="text-brand-accent-dark">OzClean.</span>
           </h2>
         </Reveal>
 
-        {/* ── Feature List ── */}
-        {/* Divided list rather than another card grid — Services and HowItWorks
-            below already own the bordered-card visual language. */}
-        <div className="divide-y divide-brand-border border-t border-brand-border">
-          {FEATURES.map(({ icon: Icon, title, description, stat, statLabel, accent }, index) => (
-            <Reveal key={title} delay={index * 0.08}>
-              <div className="group py-8 flex flex-col sm:flex-row sm:items-center gap-6">
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110 ${accent}`}>
-                  <Icon className="w-6 h-6" />
-                </div>
-
-                <div className="flex-1 flex flex-col gap-1">
-                  <h3 className="text-xl font-bold text-brand-text">{title}</h3>
-                  <p className="text-brand-muted text-sm leading-relaxed max-w-2xl">{description}</p>
-                </div>
-
-                <div className="text-left sm:text-right shrink-0">
-                  <p className="text-2xl font-bold text-brand-text leading-none">{stat}</p>
-                  <p className="text-xs text-brand-muted mt-1">{statLabel}</p>
-                </div>
+        {/* Centred on phones (short copy reads fine centred), left-aligned grid from sm up. */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-6 sm:gap-y-8">
+          {FEATURES.map(({ icon: Icon, title, description }, index) => (
+            <Reveal key={title} delay={index * 0.08} className="flex flex-col items-center text-center sm:items-start sm:text-left gap-2.5 sm:gap-3 border-t border-brand-border pt-6">
+              <div className="w-11 h-11 rounded-2xl bg-brand-accent-bg flex items-center justify-center">
+                <Icon className="w-5 h-5 text-brand-accent-dark" />
               </div>
+              <h3 className="text-lg font-bold text-brand-text">{title}</h3>
+              <p className="text-brand-muted text-sm leading-relaxed max-w-xs sm:max-w-none">{description}</p>
             </Reveal>
           ))}
         </div>
-
       </div>
     </section>
   );

@@ -7,7 +7,12 @@ import { Badge } from "@/components/ui/badge";
 import { SERVICES, getAllServiceSlugs } from "@/lib/services";
 import { ROUTES, bookingWithService } from "@/lib/routes";
 import Reveal from "@/components/Reveal";
+import ResidentialPriceTable from "@/components/ResidentialPriceTable";
 import { BUSINESS_ID, SERVICE_AREAS, SERVICE_REGION, SITE_URL, toJsonLd } from "@/lib/seo";
+
+// The House Cleaning page renders live prices from the booking catalogue;
+// refresh hourly so price changes show up without a redeploy.
+export const revalidate = 3600;
 
 // ─── Static params for Next.js static export ─────────────────────────────────
 export function generateStaticParams() {
@@ -236,6 +241,9 @@ export default async function ServicePage({
           </div>
         </div>
       </section>
+
+      {/* ── Full price list (home cleans are the only per-bedroom priced service) ── */}
+      {service.slug === "residential" && <ResidentialPriceTable />}
 
       {/* ── FAQs ── */}
       <section className="bg-brand-bg py-20">

@@ -7,134 +7,84 @@ import Reveal from "@/components/Reveal";
 // ─── Steps config ─────────────────────────────────────────────────────────────
 const STEPS = [
   {
-    step: "01",
     icon: Phone,
-    title: "Call Us or Get a Quote",
-    description: "Tell us what you need. We'll recommend the right service.",
-    cta: { label: "Get a Free Quote", href: ROUTES.QUOTE },
-    alt: {
-      label: "Or browse services first",
-      href: ROUTES.SERVICES,
-    },
+    title: "Tell us what you need",
+    description: "Call us or request a free quote online. We'll recommend the right service for your space.",
   },
   {
-    step: "02",
     icon: CalendarCheck,
-    title: "Book Your Clean",
-    description: "Pick a date and time, and confirm online in minutes.",
-    cta: { label: "Book Now", href: ROUTES.BOOKING },
-    alt: null,
+    title: "Get your quote & pick a time",
+    description: "We send a clear, upfront price and lock in a time that suits you. Home cleans can be booked online straight away.",
   },
   {
-    step: "03",
     icon: Sparkles,
-    title: "We Clean, You Relax",
-    description: "We arrive on time and get to work. Spotless, guaranteed.",
-    cta: null,
-    alt: null,
+    title: "We clean, you relax",
+    description: "We turn up on time with everything we need and leave your space spotless.",
   },
 ];
 // ─────────────────────────────────────────────────────────────────────────────
 
+// A vertical timeline on phones (number left, text right) and three columns on
+// desktop, with one shared CTA row instead of a button per step — the old
+// per-step cards stacked to roughly three screens tall on mobile.
 export default function HowItWorks() {
   return (
-    <section className="bg-brand-bg py-16 sm:py-24 lg:py-32 overflow-hidden">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+    <section className="bg-brand-surface py-14 sm:py-20 lg:py-24">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6">
 
-        {/* ── Section Header ── */}
-        <Reveal className="text-center max-w-2xl mx-auto mb-16">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-brand-text leading-tight tracking-tight">
-            Clean your space in{" "}
-            <span className="text-brand">3 simple steps.</span>
+        {/* ── Header ── */}
+        <Reveal className="text-center max-w-2xl mx-auto mb-10 lg:mb-14">
+          <p className="text-brand text-sm font-semibold uppercase tracking-widest mb-3">
+            How It Works
+          </p>
+          <h2 className="text-3xl sm:text-4xl font-bold text-brand-text leading-tight tracking-tight">
+            Sorted in <span className="text-brand">3 simple steps.</span>
           </h2>
         </Reveal>
 
         {/* ── Steps ── */}
-        <div className="relative">
+        <ol className="grid grid-cols-1 lg:grid-cols-3 lg:gap-8 max-w-md mx-auto lg:max-w-none">
+          {STEPS.map(({ icon: Icon, title, description }, index) => (
+            <li key={title} className="relative">
+              {/* Connector to the next step: vertical on phones, horizontal on desktop */}
+              {index < STEPS.length - 1 && (
+                <>
+                  <span aria-hidden="true" className="lg:hidden absolute left-6 top-14 bottom-2 border-l-2 border-dashed border-brand/25" />
+                  <span aria-hidden="true" className="hidden lg:block absolute top-7 left-[calc(50%+2.75rem)] right-[calc(-50%+0.75rem)] border-t-2 border-dashed border-brand/25" />
+                </>
+              )}
 
-          {/* Connector line — desktop only */}
-          <div className="hidden lg:block absolute top-[52px] left-[calc(16.67%+24px)] right-[calc(16.67%+24px)] h-px">
-            <div className="w-full h-full border-t-2 border-dashed border-brand/25" />
-            {/* Moving dot animation */}
-            <div className="absolute top-1/2 -translate-y-1/2 left-0 w-2 h-2 rounded-full bg-brand animate-pulse" />
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-6 items-stretch">
-            {STEPS.map(({ step, icon: Icon, title, description, cta, alt }, index) => (
-              <Reveal key={step} delay={index * 0.12} className="relative flex flex-col items-center text-center lg:items-center gap-5 h-full">
-
-                {/* Mobile connector */}
-                {index < STEPS.length - 1 && (
-                  <div className="lg:hidden absolute top-[52px] left-1/2 -translate-x-1/2 w-px h-full border-l-2 border-dashed border-brand/20 -z-10" />
-                )}
-
-
-
-                {/* Content card */}
-                <div className="w-full h-full bg-brand-surface rounded-3xl border border-brand-border p-7 flex flex-col gap-4 shadow-sm hover:shadow-md hover:border-brand/30 hover:-translate-y-1 motion-reduce:hover:translate-y-0 transition-all duration-300">
-                  {/* Step circle */}
-                  <div className="relative shrink-0 flex items-center justify-center mx-auto">
-                    <div className="w-16 h-16 rounded-2xl bg-brand-surface border border-brand/15 shadow-sm flex items-center justify-center transition-colors">
-                      <Icon className="w-7 h-7 text-brand" />
-                    </div>
-                    {/* Step number badge */}
-                    <div className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-brand flex items-center justify-center border-2 border-brand-surface shadow-sm">
-                      <span className="text-white text-[10px] font-bold leading-none">{step}</span>
-                    </div>
-                  </div>
-                  {/* Step content */}
-                  <div className="flex flex-col gap-2">
-                    <h3 className="text-xl font-bold text-brand-text">{title}</h3>
-                    <p className="text-brand-muted text-sm leading-relaxed">{description}</p>
-                  </div>
-
-                  {/* CTAs */}
-                  {(cta || alt) && (
-                    <div className="pt-2 flex flex-col gap-2 mt-auto">
-                      {cta && (
-                        <Button
-                          asChild
-                          className="bg-brand hover:bg-brand-dark text-white font-semibold w-full gap-1.5"
-                        >
-                          <Link href={cta.href}>
-                            {cta.label} <ArrowRight className="w-3.5 h-3.5" />
-                          </Link>
-                        </Button>
-                      )}
-                      {alt && (
-                        <Link
-                          href={alt.href}
-                          className="text-xs text-brand-muted hover:text-brand transition-colors text-center"
-                        >
-                          {alt.label} →
-                        </Link>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Step 3 — end result highlight */}
-                  {index === STEPS.length - 1 && (
-                    <div className="mt-2 rounded-xl bg-brand/8 border border-brand/15 px-4 py-3 flex items-center gap-2">
-                      <div className="w-5 h-5 rounded-full bg-brand/20 flex items-center justify-center shrink-0">
-                        <svg className="w-3 h-3 text-brand" fill="none" viewBox="0 0 10 10">
-                          <path d="M2 5l2.5 2.5L8 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      </div>
-                      <p className="text-xs font-medium text-brand">
-                        100% satisfaction guarantee or we re-clean for free
-                      </p>
-                    </div>
-                  )}
+              <Reveal delay={index * 0.1} className="flex gap-4 pb-8 lg:pb-0 lg:flex-col lg:items-center lg:text-center">
+                {/* Icon with step number */}
+                <div className="relative z-10 shrink-0 w-12 h-12 lg:w-14 lg:h-14 rounded-2xl bg-brand-surface border border-brand/15 shadow-sm flex items-center justify-center">
+                  <Icon className="w-5 h-5 lg:w-6 lg:h-6 text-brand" />
+                  <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-brand border-2 border-brand-surface flex items-center justify-center text-white text-[10px] font-bold leading-none">
+                    {index + 1}
+                  </span>
                 </div>
 
+                <div className="flex flex-col gap-1.5 pt-1 lg:pt-2">
+                  <h3 className="text-lg font-bold text-brand-text">{title}</h3>
+                  <p className="text-brand-muted text-sm leading-relaxed lg:max-w-xs">{description}</p>
+                </div>
               </Reveal>
-            ))}
-          </div>
-        </div>
+            </li>
+          ))}
+        </ol>
 
-        {/* ── Bottom note ── */}
-        <p className="text-center text-brand-muted text-sm mt-12">
-          Questions before booking?{" "}
+        {/* ── One CTA row for all steps ── */}
+        <div className="mt-4 lg:mt-12 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <Button asChild size="lg" className="w-full sm:w-auto bg-brand-accent hover:bg-brand-accent-dark text-white font-semibold gap-2">
+            <Link href={ROUTES.QUOTE}>
+              Get a Free Quote <ArrowRight className="w-4 h-4" />
+            </Link>
+          </Button>
+          <Button asChild size="lg" variant="outline" className="w-full sm:w-auto border-brand-accent-border text-brand-text hover:border-brand-accent hover:text-brand-accent-dark font-semibold">
+            <Link href={ROUTES.BOOKING}>Book a Home Clean</Link>
+          </Button>
+        </div>
+        <p className="text-center text-brand-muted text-sm mt-5">
+          Questions first?{" "}
           <Link href={ROUTES.CONTACT} className="text-brand font-semibold hover:underline underline-offset-2">
             Talk to our team →
           </Link>
