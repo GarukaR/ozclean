@@ -4,6 +4,7 @@ import Script from "next/script";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import BackToTop from "@/components/BackToTop";
 import { BASE_METADATA, localBusinessJsonLd, toJsonLd } from "@/lib/seo";
 import { BUSINESS_EMAIL, BUSINESS_PHONE } from "@/lib/business";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -49,6 +50,7 @@ export default function RootLayout({
         {/* Pages render their own <main>; this is only the floating-pill-navbar offset. */}
         <div className="pt-20 sm:pt-24">{children}</div>
         <Footer />
+        <BackToTop />
         <SpeedInsights />
       </body>
     </html>

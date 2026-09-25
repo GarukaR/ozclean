@@ -864,3 +864,28 @@ export const SERVICES: Record<string, Service> = Object.fromEntries(
 
 // Helper to get all slugs, used by generateStaticParams
 export const getAllServiceSlugs = () => Object.keys(SERVICES);
+// Keyword-led display name without the region suffix, e.g. "End of Lease
+// Cleaning", "Wheelie Bin Cleaning" — the words people actually search.
+export const serviceShortName = (service: Service) => service.seoTitle.replace(/ in South East Melbourne$/, "");
+
+// Audience groups used by the /services page.
+export const SERVICE_GROUPS: { id: string; label: string; blurb: string; slugs: string[] }[] = [
+  {
+    id: "hosts-tenants",
+    label: "For hosts & tenants",
+    blurb: "Turnovers between guests, bond-back cleans and deep refreshes for carpets, couches and mattresses.",
+    slugs: ["airbnb", "move", "carpet-cleaning", "upholstery-cleaning", "mattress-cleaning"],
+  },
+  {
+    id: "businesses",
+    label: "For businesses",
+    blurb: "Scheduled cleaning for offices, shops, clinics and shared building areas, around your trading hours.",
+    slugs: ["commercial", "retail-cleaning", "medical-centre-cleaning", "strata-cleaning"],
+  },
+  {
+    id: "homes",
+    label: "For homes",
+    blurb: "Regular or one-off house cleaning, seasonal deep cleans, windows and bins.",
+    slugs: ["residential", "deep-clean", "windows", "wheely-bin"],
+  },
+];

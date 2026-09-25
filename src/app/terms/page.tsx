@@ -60,7 +60,7 @@ export default function TermsPage() {
       {/* bg-brand-bg (not brand-surface) to match the body background the
           seamless floating navbar sits on — avoids a mismatched color strip
           in the navbar's clearance gap above this band. */}
-      <section className="bg-brand-bg pt-32 pb-16 border-b border-brand-border">
+      <section className="bg-brand-bg pt-6 sm:pt-10 pb-12 border-b border-brand-border">
         <Reveal className="max-w-3xl mx-auto px-4 sm:px-6">
           <p className="text-brand text-sm font-semibold uppercase tracking-widest mb-3">Legal</p>
           <h1 className="text-4xl font-bold text-brand-text mb-3">Terms of Service</h1>

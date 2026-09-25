@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Phone } from "lucide-react";
+import { Menu, X, Phone, ChevronRight } from "lucide-react";
 import { ROUTES } from "@/lib/routes";
 import { SERVICES } from "@/lib/services";
 import { BUSINESS_PHONE, BUSINESS_PHONE_HREF } from "@/lib/business";
@@ -11,7 +11,6 @@ import ThemeToggle from "@/components/ThemeToggle";
 import Logo from "@/components/Logo";
 
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import {
   Sheet,
   SheetContent,
@@ -19,12 +18,6 @@ import {
   SheetClose,
   SheetTitle,
 } from "@/components/ui/sheet";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 
 // ─── Nav links config — edit here to add/remove links ────────────────────────
 const NAV_LINKS = [
@@ -33,21 +26,33 @@ const NAV_LINKS = [
   { label: "Contact", href: ROUTES.CONTACT },
 ];
 
-const SERVICE_LINKS = Object.values(SERVICES).map(({ slug, title }) => ({
-  slug,
-  label: title,
-  href: `${ROUTES.SERVICES}/${slug}`,
-}));
+// Mobile menu shows six popular services as tiles plus "All services", not
+// the whole 13-item catalogue (which made the drawer longer than the screen).
+// Light version of the Why Us tile styling: the two specialties are solid,
+// the rest softly tinted, so the menu stays quick to scan.
+const TILE_TONES = {
+  // Ink text in dark mode, where the accent becomes bright mint.
+  solid: { tile: "bg-gradient-to-br from-brand-accent to-brand-accent-dark border-transparent", chip: "bg-white/20 dark:bg-black/10", icon: "text-white dark:text-[#0A1220]", label: "text-white dark:text-[#0A1220]" },
+  blue: { tile: "bg-brand/10 border-brand/15", chip: "bg-brand-surface", icon: "text-brand", label: "text-brand-text" },
+  teal: { tile: "bg-brand-accent-bg border-brand-accent-border", chip: "bg-brand-surface", icon: "text-brand-accent-dark", label: "text-brand-text" },
+} as const;
 
-// Airbnb turnovers and Move In/Out are the two services OzClean is built
-// around — group them together in the mobile menu so that framing carries
-// through the nav, not just the homepage.
-const SPECIALTY_SLUGS = new Set(["airbnb", "move"]);
+const POPULAR_SERVICES = (
+  [
+    { slug: "airbnb", label: "Airbnb", tone: "solid" },
+    { slug: "move", label: "End of Lease", tone: "solid" },
+    { slug: "residential", label: "House Cleaning", tone: "blue" },
+    { slug: "commercial", label: "Office", tone: "teal" },
+    { slug: "strata-cleaning", label: "Strata", tone: "teal" },
+    { slug: "carpet-cleaning", label: "Carpet & Couch", tone: "blue" },
+  ] as const
+).map(({ slug, label, tone }) => ({ label, href: `${ROUTES.SERVICES}/${slug}`, icon: SERVICES[slug].icon, tone: TILE_TONES[tone] }));
 
-const GROUPED_SERVICE_LINKS = {
-  specialty: SERVICE_LINKS.filter((service) => SPECIALTY_SLUGS.has(service.slug)),
-  home: SERVICE_LINKS.filter((service) => !SPECIALTY_SLUGS.has(service.slug)),
-};
+const MOBILE_PAGE_LINKS = [
+  { label: "About", href: ROUTES.ABOUT },
+  { label: "Contact", href: ROUTES.CONTACT },
+  { label: "FAQ", href: "/faq" },
+];
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function Navbar() {
@@ -55,7 +60,6 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-  const isServicesPath = pathname === ROUTES.SERVICES || pathname.startsWith(`${ROUTES.SERVICES}/`);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -165,166 +169,98 @@ export default function Navbar() {
 
           <SheetContent
             side="right"
-            // Narrower than the shadcn default so a visible slice of the
-            // page — including the logo, which stays on the pill above —
-            // always remains in view instead of the drawer swallowing most
-            // of the screen. Capped both ends: min-width keeps the
-            // accordion's longer service names from wrapping awkwardly on
-            // small phones, max-width stops it stretching too wide on
-            // larger ones.
-            className="w-[66%] min-w-[248px] max-w-[320px] p-0"
+            // Wide enough for a 2-column tile grid while still leaving a
+            // slice of the page visible beside it.
+            className="w-[82%] max-w-[360px] p-0"
             showCloseButton={false}
           >
             {/* Required for accessibility */}
             <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
 
             {/* Top padding clears the floating navbar pill, which sits
-                above this drawer (z-60 vs z-40) rather than a logo header
-                repeated inside the drawer itself. */}
-            <div className="flex flex-col h-full pt-24 sm:pt-28">
-              {/* Mobile Links */}
-              <nav className="flex flex-col gap-1 px-4 pb-2">
-                {NAV_LINKS.map(({ label, href }) => (
-                  label === "Services" ? (
-                    <Accordion
-                      type="single"
-                      collapsible
-                      defaultValue={isServicesPath ? "mobile-services" : undefined}
-                      key={label}
-                      className="px-1"
-                    >
-                      <AccordionItem value="mobile-services" className="border-0">
-                        <AccordionTrigger
-                          className={`
-                            px-3 py-3 rounded-lg text-sm font-semibold no-underline hover:no-underline
-                            ${(pathname === href || pathname.startsWith(href + "/"))
-                              ? "bg-brand/10 text-brand"
-                              : "text-brand-text hover:text-brand hover:bg-brand/5"
-                            }
-                          `}
+                above this drawer (z-60 vs z-40). The middle scrolls on short
+                screens; the CTAs stay pinned at the bottom. */}
+            <div className="flex flex-col h-full pt-20 sm:pt-24">
+              <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-4 pb-4">
+
+                {/* Popular services */}
+                <div className="flex items-center justify-between mb-2 px-1">
+                  <p className="text-[11px] font-semibold uppercase tracking-widest text-brand-muted">Popular services</p>
+                  <SheetClose asChild>
+                    <Link href={ROUTES.SERVICES} className="text-xs font-semibold text-brand-accent-dark hover:underline underline-offset-2">
+                      All services →
+                    </Link>
+                  </SheetClose>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  {POPULAR_SERVICES.map(({ label, href, icon: Icon, tone }) => {
+                    const active = pathname === href;
+                    return (
+                      <SheetClose asChild key={href}>
+                        <Link
+                          href={href}
+                          aria-current={active ? "page" : undefined}
+                          className={`flex flex-col gap-2 rounded-2xl border px-3 py-3 transition-transform active:scale-[0.97] ${tone.tile} ${
+                            active ? "ring-2 ring-brand-accent ring-offset-2 ring-offset-brand-surface" : ""
+                          }`}
                         >
-                          Services
-                        </AccordionTrigger>
-                        <AccordionContent className="pb-1">
-                          <div className="mt-1 ml-2 pl-3 border-l border-brand/15 flex flex-col gap-2">
-                            <SheetClose asChild>
-                              <Link
-                                href={ROUTES.SERVICES}
-                                className={`
-                                  px-3 py-2 rounded-md text-sm transition-colors
-                                  ${pathname === ROUTES.SERVICES
-                                    ? "bg-brand/10 text-brand font-semibold"
-                                    : "text-brand-text/90 hover:text-brand hover:bg-brand/5"
-                                  }
-                                `}
-                              >
-                                All services
-                              </Link>
-                            </SheetClose>
+                          <span className={`w-8 h-8 rounded-lg flex items-center justify-center ${tone.chip}`}>
+                            <Icon className={`w-4 h-4 ${tone.icon}`} />
+                          </span>
+                          <span className={`text-sm font-bold leading-tight ${tone.label}`}>{label}</span>
+                        </Link>
+                      </SheetClose>
+                    );
+                  })}
+                </div>
 
-                            <div className="mt-1 px-3">
-                              <p className="text-[11px] font-semibold uppercase tracking-wide text-brand/70">
-                                Our Specialties
-                              </p>
-                              <div className="mt-1 flex flex-col gap-1">
-                                {GROUPED_SERVICE_LINKS.specialty.map(({ label: serviceLabel, href: serviceHref }) => (
-                                  <SheetClose asChild key={serviceHref}>
-                                    <Link
-                                      href={serviceHref}
-                                      className={`
-                                        px-3 py-2 rounded-md text-sm transition-colors
-                                        ${(pathname === serviceHref || pathname.startsWith(serviceHref + "/"))
-                                          ? "bg-brand/10 text-brand font-semibold"
-                                          : "text-brand-text/90 hover:text-brand hover:bg-brand/5"
-                                        }
-                                      `}
-                                    >
-                                      {serviceLabel}
-                                    </Link>
-                                  </SheetClose>
-                                ))}
-                              </div>
-                            </div>
+                {/* Other pages */}
+                <nav className="mt-5 flex flex-col border-t border-brand-border">
+                  {MOBILE_PAGE_LINKS.map(({ label, href }) => {
+                    const active = pathname === href;
+                    return (
+                      <SheetClose asChild key={href}>
+                        <Link
+                          href={href}
+                          className={`flex items-center justify-between px-1 py-3.5 border-b border-brand-border text-sm font-semibold transition-colors ${
+                            active ? "text-brand" : "text-brand-text hover:text-brand"
+                          }`}
+                        >
+                          {label}
+                          <ChevronRight className="w-4 h-4 text-brand-muted" />
+                        </Link>
+                      </SheetClose>
+                    );
+                  })}
+                </nav>
 
-                            <div className="mt-1 px-3">
-                              <p className="text-[11px] font-semibold uppercase tracking-wide text-brand/70">
-                                Other Services
-                              </p>
-                              <div className="mt-1 flex flex-col gap-1">
-                                {GROUPED_SERVICE_LINKS.home.map(({ label: serviceLabel, href: serviceHref }) => (
-                                  <SheetClose asChild key={serviceHref}>
-                                    <Link
-                                      href={serviceHref}
-                                      className={`
-                                        px-3 py-2 rounded-md text-sm transition-colors
-                                        ${(pathname === serviceHref || pathname.startsWith(serviceHref + "/"))
-                                          ? "bg-brand/10 text-brand font-semibold"
-                                          : "text-brand-text/90 hover:text-brand hover:bg-brand/5"
-                                        }
-                                      `}
-                                    >
-                                      {serviceLabel}
-                                    </Link>
-                                  </SheetClose>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                        </AccordionContent>
-                      </AccordionItem>
-                    </Accordion>
-                  ) : (
-                    <SheetClose asChild key={label}>
-                      <Link
-                        href={href}
-                        className={`
-                          px-4 py-3 rounded-lg text-sm font-medium transition-colors
-                          ${pathname === href || pathname.startsWith(href + "/")
-                            ? "bg-brand/10 text-brand font-semibold"
-                            : "text-brand-text hover:text-brand hover:bg-brand/5"
-                          }
-                        `}
-                      >
-                        {label}
-                      </Link>
-                    </SheetClose>
-                  )
-                ))}
-              </nav>
-
-              {/* Fills what used to be dead space below a short link list
-                  with content a visitor actually wants mid-decision: a
-                  direct call option instead of an empty void before the
-                  CTAs. */}
-              <div className="flex-1 flex flex-col justify-end px-4 py-4">
+                {/* Call card */}
                 <a
                   href={BUSINESS_PHONE_HREF}
-                  className="flex items-center gap-3 rounded-xl border border-brand-border bg-brand-bg px-4 py-3 transition-colors hover:border-brand-accent"
+                  className="mt-5 flex items-center gap-3 rounded-xl border border-brand-border bg-brand-bg px-4 py-3 transition-colors hover:border-brand-accent"
                 >
                   <span className="w-9 h-9 rounded-full bg-brand-accent-bg flex items-center justify-center shrink-0">
                     <Phone className="w-4 h-4 text-brand-accent-dark" />
                   </span>
                   <span className="flex flex-col min-w-0">
-                    <span className="text-[11px] font-semibold uppercase tracking-wide text-brand-muted">
-                      Call us
-                    </span>
-                    <span className="text-sm font-semibold text-brand-text truncate">
-                      {BUSINESS_PHONE}
-                    </span>
+                    <span className="text-[11px] font-semibold uppercase tracking-wide text-brand-muted">Call us</span>
+                    <span className="text-sm font-semibold text-brand-text truncate">{BUSINESS_PHONE}</span>
                   </span>
                 </a>
               </div>
 
-              <Separator />
-
-              {/* Mobile CTA */}
-              <div className="p-4 flex flex-col gap-2">
-                <Button asChild className="w-full bg-brand-accent hover:bg-brand-accent-dark text-white shadow-sm shadow-brand-accent/25">
-                  <Link href={ROUTES.QUOTE}>Get a Free Quote</Link>
-                </Button>
-                <Button asChild className="w-full bg-brand hover:bg-brand-dark text-white">
-                  <Link href={ROUTES.BOOKING}>Book Now</Link>
-                </Button>
+              {/* Pinned CTAs */}
+              <div className="p-4 border-t border-brand-border flex flex-col gap-2">
+                <SheetClose asChild>
+                  <Button asChild className="w-full bg-brand-accent hover:bg-brand-accent-dark text-white shadow-sm shadow-brand-accent/25">
+                    <Link href={ROUTES.QUOTE}>Get a Free Quote</Link>
+                  </Button>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Button asChild variant="outline" className="w-full border-brand-accent-border text-brand-text">
+                    <Link href={ROUTES.BOOKING}>Book a Home Clean</Link>
+                  </Button>
+                </SheetClose>
               </div>
             </div>
           </SheetContent>

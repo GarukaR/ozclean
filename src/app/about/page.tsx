@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Heart, Leaf, ShieldCheck, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { generatePageMeta } from "@/lib/seo";
+import { SERVICE_AREAS, generatePageMeta } from "@/lib/seo";
 import { ROUTES } from "@/lib/routes";
 import Reveal from "@/components/Reveal";
 
@@ -53,20 +53,6 @@ const TEAM = [
   },
 ];
 
-// Shortened list of service areas (simple list of names).
-// Includes Hampton Park and nearby suburbs.
-const SERVICE_AREAS = [
-  "Hampton Park",
-  "Hallam",
-  "Endeavour Hills",
-  "Dandenong",
-  "Noble Park",
-  "Keysborough",
-  "Springvale",
-  "Cranbourne",
-  "Narre Warren",
-  "Berwick",
-];
 
 const STATS = [
   { value: "2019", label: "Founded" },
@@ -89,7 +75,7 @@ export default function AboutPage() {
           and its negative top offset can bleed upward past this section's
           edge into the navbar's clearance gap, fading out naturally instead
           of being hard-cropped at a seam. */}
-      <section className="bg-brand-bg pt-16 pb-20 relative">
+      <section className="bg-brand-bg pt-6 sm:pt-10 pb-20 relative">
         <div className="absolute -top-32 right-0 w-[min(500px,88vw)] h-[min(500px,88vw)] rounded-full bg-brand/8 blur-3xl pointer-events-none" />
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
           <div className="grid lg:grid-cols-2 gap-12 items-center">

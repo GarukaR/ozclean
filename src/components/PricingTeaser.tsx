@@ -16,8 +16,9 @@ export default async function PricingTeaser() {
   return (
     <section className="bg-brand-surface py-14 sm:py-16">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <Reveal className="rounded-3xl border border-brand-accent-border bg-brand-accent-bg/40 p-6 sm:p-10 flex flex-col lg:flex-row lg:items-center gap-8 lg:gap-12">
+        <Reveal className="rounded-3xl border border-brand-accent-border bg-brand-accent-bg/40 p-6 sm:p-10 flex flex-col items-center text-center lg:flex-row lg:items-center lg:text-left gap-6 sm:gap-8 lg:gap-12">
           <div className="flex-1 max-w-xl">
+            {/* Centred on phones and tablets, left-aligned in the desktop row. */}
             <p className="text-brand text-sm font-semibold uppercase tracking-widest mb-3">House Cleaning Prices</p>
             <h2 className="text-2xl sm:text-3xl font-bold text-brand-text leading-tight">
               Simple, upfront prices for home cleans.
@@ -28,7 +29,7 @@ export default async function PricingTeaser() {
           </div>
 
           {(fromFlat || fromHourly) && (
-            <div className="flex gap-3 sm:gap-4">
+            <div className="flex justify-center gap-3 sm:gap-4">
               {fromFlat && (
                 <div className="rounded-2xl bg-brand-surface border border-brand-accent-border px-5 py-4 min-w-[8.5rem]">
                   <p className="text-xs text-brand-muted">Flat rate from</p>
@@ -44,7 +45,7 @@ export default async function PricingTeaser() {
             </div>
           )}
 
-          <div className="flex flex-col sm:flex-row lg:flex-col gap-3 shrink-0">
+          <div className="flex flex-col sm:flex-row lg:flex-col gap-3 shrink-0 w-full sm:w-auto">
             <Button asChild className="bg-brand-accent hover:bg-brand-accent-dark text-white font-semibold gap-2">
               <Link href={ROUTES.BOOKING}>
                 Book a Home Clean <ArrowRight className="w-4 h-4" />

@@ -1,6 +1,6 @@
 import Hero from "@/components/Hero";
 import WhyUs from "@/components/WhyUs";
-import AllServices from "@/components/AllServices";
+import AreaCheckerSection from "@/components/AreaCheckerSection";
 import Specialties from "@/components/Specialties";
 import HowItWorks from "@/components/HowItWorks";
 import Testimonials from "@/components/Testimonials";
@@ -22,14 +22,15 @@ export default function Home() {
   return (
     <div>
       <main>
-        {/* What we do (specialties) → how it works → why us → price → full
-            catalogue → proof. Sections alternate bg / surface from here down. */}
+        {/* What we do (specialties) → how it works → why us → price → do we
+            cover you → proof. Sections alternate bg / surface from here down.
+            The full catalogue lives on /services. */}
         <Hero />
         <Specialties />
         <HowItWorks />
         <WhyUs />
         <PricingTeaser />
-        <AllServices />
+        <AreaCheckerSection />
         <Testimonials />
       </main>
     </div>

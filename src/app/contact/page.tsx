@@ -10,6 +10,7 @@ import {
   BUSINESS_PHONE_HREF, BUSINESS_HOURS, BUSINESS_HOURS_SUMMARY } from "@/lib/business";
 import ContactForm from "./ContactForm";
 import Reveal from "@/components/Reveal";
+import AreaChecker from "@/components/AreaChecker";
 
 export const metadata = generatePageMeta({
   title: "Contact Us",
@@ -72,50 +73,6 @@ const CONNECT_OPTIONS = [
   },
 ];
 
-const SERVICE_AREAS = [
-  { name: "Hampton Park", travelCharges: false },
-  { name: "Hallam", travelCharges: false },
-  { name: "Endeavour Hills", travelCharges: false },
-  { name: "Dandenong", travelCharges: false },
-  { name: "Dandenong North", travelCharges: false },
-  { name: "Noble Park", travelCharges: false },
-  { name: "Clyde", travelCharges: false },
-  { name: "Clyde North", travelCharges: false },
-  { name: "Springvale", travelCharges: false },
-  { name: "Springvale South", travelCharges: false },
-  { name: "Lynbrook", travelCharges: false },
-  { name: "Lyndhurst", travelCharges: false },
-  { name: "Keysborough", travelCharges: false },
-  { name: "Carrum Downs", travelCharges: false },
-  { name: "Brighton East", travelCharges: false },
-  { name: "Narre Warren", travelCharges: false },
-  { name: "Narre Warren South", travelCharges: false },
-  { name: "Cranbourne", travelCharges: false },
-  { name: "Cranbourne North", travelCharges: false },
-  { name: "Cranbourne East", travelCharges: false },
-  { name: "Cranbourne West", travelCharges: false },
-  { name: "Junction Village", travelCharges: false },
-  { name: "Officer", travelCharges: false },
-  { name: "Beaconsfield", travelCharges: false },
-  { name: "Pakenham", travelCharges: false },
-  { name: "Berwick", travelCharges: false },
-  { name: "Huntingdale", travelCharges: true },
-  { name: "Clayton", travelCharges: true },
-  { name: "Mulgrave", travelCharges: true },
-  { name: "Mount Waverley", travelCharges: true },
-  { name: "Glen Waverley", travelCharges: true },
-  { name: "Rowville", travelCharges: true },
-  { name: "Cockatoo", travelCharges: true },
-  { name: "Gembrook", travelCharges: true },
-  { name: "Emerald", travelCharges: true },
-  { name: "Pakenham Upper", travelCharges: true },
-  { name: "Seaford", travelCharges: true },
-  { name: "Frankston", travelCharges: true },
-  { name: "Chelsea", travelCharges: true },
-  { name: "Mordialloc", travelCharges: true },
-  { name: "Mentone", travelCharges: true },
-  { name: "Cheltenham", travelCharges: true },
-];
 
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -129,7 +86,7 @@ export default function ContactPage() {
           gap the navbar clears shows as a mismatched color strip above a
           white band. The border-b below still marks where the next
           section begins. */}
-      <section className="bg-brand-bg pt-16 pb-16 border-b border-brand-border">
+      <section className="bg-brand-bg pt-6 sm:pt-10 pb-12 border-b border-brand-border">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <Reveal className="max-w-2xl">
             <p className="text-brand text-sm font-semibold uppercase tracking-widest mb-3">Contact Us</p>
@@ -230,24 +187,11 @@ export default function ContactPage() {
       <section id="map" className="pb-24">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <Reveal className="bg-brand-surface rounded-3xl border border-brand-border p-8 shadow-sm">
-            <h2 className="text-2xl font-bold text-brand-text mb-2">Service Areas</h2>
+            <h2 className="text-2xl font-bold text-brand-text mb-2">Do we cover your area?</h2>
             <p className="text-brand-muted mb-6">
-              We proudly serve the areas listed below. If you&apos;re unsure if we cover your area, just ask!
+              Type your suburb or postcode. If you&apos;re just outside our list, ask anyway.
             </p>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-              {SERVICE_AREAS.map(({name, travelCharges}) => (
-                <li
-                  key={name}
-                  className="flex items-center gap-2 px-3 py-2 rounded-lg bg-brand-accent-bg text-brand-text border border-brand-accent-border"
-                >
-                  <MapPin className="w-4 h-4 text-brand-accent-dark" />
-                  <span className="text-sm">{name}</span>
-                  {travelCharges && (
-                    <span className="text-xs text-brand-muted ml-auto">(Travel Charges Apply)</span>
-                  )}
-                </li>
-              ))}
-            </ul>
+            <AreaChecker />
           </Reveal>
         </div>
       </section>

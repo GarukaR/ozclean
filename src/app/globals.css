@@ -212,3 +212,22 @@
     animation: none !important;
   }
 }
+/* Service pages pin a CTA bar to the bottom on phones (StickyServiceCTA):
+   pad the page so it never covers the footer, and lift back-to-top above it. */
+@media (max-width: 767px) {
+  body:has([data-sticky-cta]) {
+    padding-bottom: 4.75rem;
+  }
+  body:has([data-sticky-cta]) [data-back-to-top] {
+    bottom: 5.75rem;
+  }
+}
+
+/* Dark mode turns --brand and --brand-accent into bright mint (#00D9B5),
+   where white text fails contrast. Anything filled with those colours (teal
+   buttons, badges, the blue→teal gradient bands) switches to ink text there.
+   Solid tiles that set their own dark:text-* colour are unaffected. */
+.dark :is(.bg-brand, .bg-brand-accent, .from-brand.to-brand-accent):is([class*="text-white"]),
+.dark :is(.bg-brand, .bg-brand-accent, .from-brand.to-brand-accent) [class*="text-white"] {
+  color: #0A1220;
+}

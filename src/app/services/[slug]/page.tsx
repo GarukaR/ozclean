@@ -4,10 +4,15 @@ import { notFound } from "next/navigation";
 import { ArrowRight, CheckCircle2, ChevronDown, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { SERVICES, getAllServiceSlugs } from "@/lib/services";
-import { ROUTES, bookingWithService } from "@/lib/routes";
+import { SERVICES, getAllServiceSlugs, serviceShortName } from "@/lib/services";
+import { ROUTES } from "@/lib/routes";
 import Reveal from "@/components/Reveal";
+import ServiceCTAs, { primaryAction } from "@/components/ServiceCTAs";
+import StickyServiceCTA from "@/components/StickyServiceCTA";
+import { BUSINESS_PHONE_HREF } from "@/lib/business";
 import ResidentialPriceTable from "@/components/ResidentialPriceTable";
+import AreaChecker from "@/components/AreaChecker";
+import { ALL_SERVICE_AREAS } from "@/lib/service-areas";
 import { BUSINESS_ID, SERVICE_AREAS, SERVICE_REGION, SITE_URL, toJsonLd } from "@/lib/seo";
 
 // The House Cleaning page renders live prices from the booking catalogue;
@@ -66,6 +71,7 @@ export default async function ServicePage({
   if (!service) notFound();
 
   const Icon = service.icon;
+  const primary = primaryAction(service);
 
   return (
     <main className="min-h-screen">
@@ -80,12 +86,13 @@ export default async function ServicePage({
             description: service.description,
             url: `${SITE_URL}${ROUTES.SERVICES}/${service.slug}`,
             provider: { "@id": BUSINESS_ID },
-            areaServed: SERVICE_AREAS.map((name) => ({ "@type": "Place", name: `${name}, VIC` })),
+            areaServed: ALL_SERVICE_AREAS.map(({ name }) => ({ "@type": "Place", name: `${name}, VIC` })),
           }),
         }}
       />
       {/* ── Hero ── */}
-      {/* No overflow-hidden here — CSS only lets one axis clip independently
+      {/* Top padding is small because the root layout already offsets the
+          floating navbar. No overflow-hidden here — CSS only lets one axis clip independently
           if you accept the other one silently becoming "auto" (which still
           clips), so a same-axis fix isn't possible. Instead both glows sit
           flush at right-0/left-0 with width capped at 88vw, so neither can
@@ -95,7 +102,7 @@ export default async function ServicePage({
           naturally instead of being hard-cropped at a seam. The bottom
           glow bleeding past this section's bottom edge is simply painted
           over by the next section's own background. */}
-      <section className="bg-brand-bg pt-32 pb-20 relative">
+      <section className="bg-brand-bg pt-6 sm:pt-10 pb-16 sm:pb-20 relative">
         <div className="absolute -top-32 right-0 w-[min(600px,88vw)] h-[min(600px,88vw)] rounded-full bg-brand/8 blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 left-0 w-[min(420px,88vw)] h-[min(420px,88vw)] rounded-full bg-brand-accent/10 blur-3xl pointer-events-none" />
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
@@ -138,45 +145,51 @@ export default async function ServicePage({
               </div>
 
               {/* CTAs */}
-              <div className="flex flex-wrap gap-3 pt-1">
-                {service.bookable && (
-                  <Button
-                    asChild
-                    size="lg"
-                      className="bg-brand-accent hover:bg-brand-accent-dark text-white font-semibold gap-2 shadow-lg shadow-brand-accent/25"
-                  >
-                    <Link href={bookingWithService(service.slug)}>
-                      Book Now <ArrowRight className="w-4 h-4" />
-                    </Link>
-                  </Button>
-                )}
-
-                <Button
-                  asChild
-                  size="lg"
-                  variant="outline"
-                    className="border-brand-accent-border text-brand-text hover:border-brand-accent hover:text-brand-accent-dark font-semibold"
-                >
-                  <Link href={ROUTES.QUOTE}>Get a Free Quote</Link>
-                </Button>
+              <div className="pt-1">
+                <ServiceCTAs service={service} />
               </div>
             </Reveal>
 
             {/* Right — image */}
+            {/* Price sits on the photo (frosted gradient panel) so it's seen with
+                the headline, instead of in a separate card further down. */}
             <Reveal delay={0.15} className="relative rounded-3xl overflow-hidden aspect-[4/3] shadow-xl shadow-brand/15">
               <Image
                 src={service.heroImage}
                 alt={`${service.title} by OzClean in ${SERVICE_REGION}`}
                 className="object-cover"
                 fill
+                priority
+                sizes="(min-width: 1024px) 560px, 100vw"
               />
+              {/* Bottom scrim so the panel reads on any photo */}
+              <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
+              {/* "Liquid glass": a light tint + heavy blur/saturation lets the photo show
+                  through, while the scrim underneath and a soft text shadow keep
+                  the price crisp. The inset highlight gives the glass edge. */}
+              <div className="absolute inset-x-3 bottom-3 sm:inset-x-4 sm:bottom-4 rounded-2xl border border-white/25 bg-gradient-to-br from-white/20 via-[#0C1A2E]/30 to-[#0F766E]/40 backdrop-blur-xl backdrop-saturate-150 px-4 py-3.5 sm:px-5 sm:py-4 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_10px_30px_-10px_rgba(0,0,0,0.45)] [text-shadow:0_1px_2px_rgba(0,0,0,0.35)]">
+                <div className="flex items-end justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest text-white/65">Pricing</p>
+                    <p className="text-2xl sm:text-3xl font-black leading-tight">{service.price}</p>
+                    <p className="text-xs text-white/70">{service.priceLabel}</p>
+                  </div>
+                  {service.slug === "residential" && (
+                    <a href="#pricing" className="shrink-0 text-xs font-semibold text-[#5EEAD4] hover:underline underline-offset-2">
+                      See all prices ↓
+                    </a>
+                  )}
+                </div>
+                {/* Note hidden on phones so the panel doesn't cover most of the photo */}
+                <p className="hidden sm:block mt-2 text-xs text-white/75 leading-snug line-clamp-2">{service.priceNote}</p>
+              </div>
             </Reveal>
           </div>
         </div>
       </section>
 
       {/* ── What's Included ── */}
-      <section className="bg-brand-surface py-20">
+      <section className="bg-brand-surface py-14 sm:py-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           {service.intro && (
             <Reveal className="max-w-3xl mb-16 pb-16 border-b border-brand-border">
@@ -194,51 +207,26 @@ export default async function ServicePage({
                 ))}
               </div>
               <p className="text-sm text-brand-muted mt-6">
-                Serving {SERVICE_AREAS.join(", ")}.
+                Serving {SERVICE_AREAS.join(", ")} and {ALL_SERVICE_AREAS.length - SERVICE_AREAS.length}+ more South East Melbourne suburbs.
               </p>
             </Reveal>
           )}
-          <div className="grid lg:grid-cols-2 gap-12 items-start">
-            <Reveal>
-              <p className="text-brand text-sm font-semibold uppercase tracking-widest mb-3">
-                What&apos;s Included
-              </p>
-              <h2 className="text-3xl sm:text-4xl font-bold text-brand-text leading-tight mb-8">
-                Everything covered,
-                <br />
-                nothing missed.
-              </h2>
-              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {service.included.map((item) => (
-                  <li key={item} className="flex items-start gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-brand shrink-0 mt-0.5" />
-                    <span className="text-sm text-brand-text">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
-
-            {/* Pricing card */}
-            <Reveal delay={0.15} className="bg-gradient-to-br from-brand to-brand-accent rounded-3xl p-8 flex flex-col gap-5 relative overflow-hidden">
-              <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/10 pointer-events-none" />
-              <div className="relative flex flex-col gap-4">
-                <p className="text-white/70 text-xs font-semibold uppercase tracking-widest">
-                  Pricing
-                </p>
-                <div>
-                  <p className="text-4xl font-black text-white">
-                    {service.price}
-                  </p>
-                  <p className="text-white/60 text-sm mt-1">
-                    {service.priceLabel}
-                  </p>
-                </div>
-                <p className="text-white/75 text-sm leading-relaxed">
-                  {service.priceNote}
-                </p>
-              </div>
-            </Reveal>
-          </div>
+          <Reveal>
+            <p className="text-brand text-sm font-semibold uppercase tracking-widest mb-3">
+              What&apos;s Included
+            </p>
+            <h2 className="text-3xl sm:text-4xl font-bold text-brand-text leading-tight mb-8">
+              Everything covered, nothing missed.
+            </h2>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-3">
+              {service.included.map((item) => (
+                <li key={item} className="flex items-start gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-brand shrink-0 mt-0.5" />
+                  <span className="text-sm text-brand-text">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </Reveal>
         </div>
       </section>
 
@@ -279,6 +267,50 @@ export default async function ServicePage({
           </div>
         </div>
       </section>
+
+      {/* ── Do we cover your area? ── */}
+      <section className="bg-brand-surface py-14 border-b border-brand-border">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6">
+          <Reveal>
+            <h2 className="text-2xl sm:text-3xl font-bold text-brand-text mb-2">
+              {serviceShortName(service)} in your area?
+            </h2>
+            <p className="text-brand-muted mb-6">Check your suburb or postcode.</p>
+            <AreaChecker showAllAreas={false} />
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ── Closing call to action ── */}
+      <section className="bg-brand-bg pt-14 sm:pt-16">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          {/* Fixed dark gradient band, independent of the theme toggle (same as the Services page). */}
+          <Reveal className="bg-gradient-to-r from-[#0C1A2E] to-[#0F766E] rounded-3xl px-6 sm:px-10 py-8 sm:py-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div>
+              <h2 className="text-2xl sm:text-3xl font-bold text-white">Ready for a spotless result?</h2>
+              <p className="text-white/70 mt-2 text-sm sm:text-base">
+                {service.bookable
+                  ? "Book online in a few minutes, or ask us for a quote."
+                  : "Tell us about your space and we'll send a clear, upfront quote."}
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3 shrink-0">
+              <Button asChild size="lg" className="h-12 px-7 bg-brand-accent hover:bg-brand-accent-dark text-white font-semibold gap-2 shadow-lg shadow-brand-accent/40">
+                <Link href={primary.href}>
+                  {primary.label} <ArrowRight className="w-4 h-4" />
+                </Link>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="h-12 px-6 bg-transparent border-white/30 text-white hover:bg-white/10 hover:text-white font-semibold gap-2">
+                <a href={BUSINESS_PHONE_HREF}>
+                  <Phone className="w-4 h-4" /> Call us
+                </a>
+              </Button>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      <StickyServiceCTA label={primary.label} href={primary.href} />
 
       {/* ── Related Services ── */}
       <section className="bg-brand-surface py-16">
