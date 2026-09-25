@@ -5,12 +5,8 @@ import Image from "next/image";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Star } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { ROUTES } from "@/lib/routes";
-
-// Single real, checkable trust signal — same 4.75/100+ figure used in the
-// Testimonials section, rather than a row of unverifiable adjective cards.
-const RATING = { value: "4.75 / 5", label: "from 100+ reviews" };
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -66,16 +62,17 @@ export default function Hero() {
             animate="visible"
             variants={container}
           >
-            <motion.div variants={item}>
+            {/* Keyword-led <h1> for search; the big serif line below is display copy. */}
+            <motion.h1 variants={item}>
               <Badge
-                className="bg-white/10 text-white border-white/25 font-medium px-3 py-1 text-xs tracking-wide uppercase backdrop-blur-sm"
+                className="bg-white/10 text-white border-white/25 font-medium px-3 py-1 text-xs tracking-wide uppercase backdrop-blur-sm whitespace-normal text-center"
                 variant="outline"
               >
-                Airbnb Turnover &amp; Move-Out Specialists
+                Airbnb &amp; End of Lease Cleaning · South East Melbourne
               </Badge>
-            </motion.div>
+            </motion.h1>
 
-            <motion.h1
+            <motion.p
               variants={item}
               className="font-[family-name:var(--font-libre-caslon-display)] font-normal text-white leading-[1.1] text-3xl sm:text-4xl md:text-5xl text-balance"
             >
@@ -92,7 +89,7 @@ export default function Hero() {
                   transition={{ duration: 0.55, delay: 0.75, ease: [0.65, 0, 0.35, 1] }}
                 />
               </span>
-            </motion.h1>
+            </motion.p>
 
             <motion.p variants={item} className="text-white/85 text-base sm:text-lg leading-relaxed max-w-md">
               Fast Airbnb turnovers and bond-back move-out cleans across Melbourne.
@@ -119,27 +116,6 @@ export default function Hero() {
               </Button>
             </motion.div>
           </motion.div>
-        </motion.div>
-
-        {/* ── Rating card, floating over the bottom seam of the capsule ── */}
-        <motion.div
-          className="relative -mt-6 sm:-mt-7 flex justify-center"
-          initial={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.85, ease: EASE }}
-        >
-          <div className="bg-brand-surface rounded-xl shadow-lg shadow-brand-text/10 border border-brand-border px-4 py-3 flex items-center gap-2.5">
-            <div className="flex items-center gap-0.5">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-              ))}
-            </div>
-            <div className="w-px h-6 bg-brand-border" />
-            <div>
-              <p className="text-brand-text font-bold text-sm leading-none">{RATING.value}</p>
-              <p className="text-brand-muted text-xs mt-1">{RATING.label}</p>
-            </div>
-          </div>
         </motion.div>
       </div>
     </section>

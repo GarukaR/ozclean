@@ -4,6 +4,9 @@ export type Service = {
   slug: string;
   icon: LucideIcon;
   title: string;
+  // Keyword-led name used for the page's <h1> and <title>, phrased the way
+  // people actually search (e.g. "end of lease", "wheelie bin").
+  seoTitle: string;
   tagline: string;
   description: string;
   price: string;
@@ -76,6 +79,7 @@ export const SERVICES: Record<string, Service> = {
     slug: "commercial",
     icon: Building2,
     title: "Office & Commercial Cleaning",
+    seoTitle: "Office & Commercial Cleaning in South East Melbourne",
     tagline: "A workspace your team deserves.",
     description: "Reliable office and retail cleaning, scheduled around your business hours.",
     price: "From $150",
@@ -132,6 +136,7 @@ export const SERVICES: Record<string, Service> = {
     slug: "residential",
     icon: Home,
     title: "Residential Cleaning",
+    seoTitle: "House Cleaning in South East Melbourne",
     tagline: "Your home, spotless. Every time.",
     description: "Flexible home cleaning, weekly to one-off, on your schedule.",
     price: "$50–60/hr or $150–280",
@@ -188,12 +193,13 @@ export const SERVICES: Record<string, Service> = {
       slug: "airbnb",
       icon: Building2,
       title: "Airbnb & Short-Term Rental Cleaning",
+      seoTitle: "Airbnb Cleaning in South East Melbourne",
       tagline: "Fast turnovers. Five-star guest impressions.",
       description: "Fast, consistent turnovers between guest stays: reset, restocked, ready.",
       price: "From $60/hr or custom turnover quote",
       priceLabel: "hourly or turnover rate",
       priceNote: "Flexible pricing for same-day, next-day, or scheduled changeovers. Request a custom quote based on property size and turnaround needs.",
-      bookable: true,
+      bookable: false,
       heroImage:
         "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?auto=format&fit=crop&w=800&q=80",
       included: [
@@ -244,6 +250,7 @@ export const SERVICES: Record<string, Service> = {
     slug: "deep-clean",
     icon: Sparkles,
     title: "Spring Deep Cleaning",
+    seoTitle: "Deep Cleaning in South East Melbourne",
     tagline: "The clean your home actually needs.",
     description: "A top-to-bottom reset: ovens, fridges, grout, every missed spot.",
     price: "From $200",
@@ -302,6 +309,7 @@ export const SERVICES: Record<string, Service> = {
     slug: "move",
     icon: ArrowLeftRight,
     title: "Move In / Move Out",
+    seoTitle: "End of Lease Cleaning in South East Melbourne",
     tagline: "Get your bond back. Guaranteed.",
     description: "End-of-lease cleaning that follows the real estate checklist.",
     price: "From $180",
@@ -358,6 +366,7 @@ export const SERVICES: Record<string, Service> = {
     slug: "windows",
     icon: Wind,
     title: "Window Cleaning",
+    seoTitle: "Window Cleaning in South East Melbourne",
     tagline: "See the world crystal clear.",
     description: "Streak-free windows, inside and out, guaranteed.",
     price: "From $250",
@@ -414,6 +423,7 @@ export const SERVICES: Record<string, Service> = {
     slug: "wheely-bin",
     icon: Trash2,
     title: "Wheely Bin Cleaning",
+    seoTitle: "Wheelie Bin Cleaning in South East Melbourne",
     tagline: "Fresh bins. Cleaner property.",
     description: "High-pressure cleaning and sanitising to keep bins fresh.",
     price: "From $35",

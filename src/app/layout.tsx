@@ -4,7 +4,8 @@ import Script from "next/script";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { BASE_METADATA } from "@/lib/seo";
+import { BASE_METADATA, localBusinessJsonLd, toJsonLd } from "@/lib/seo";
+import { BUSINESS_EMAIL, BUSINESS_PHONE } from "@/lib/business";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { THEME_INIT_SCRIPT } from "@/lib/theme";
 
@@ -40,6 +41,10 @@ export default function RootLayout({
         </Script>
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} ${libreCaslonDisplay.variable} antialiased flex flex-col justify-between min-h-screen`}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: toJsonLd(localBusinessJsonLd(BUSINESS_PHONE, BUSINESS_EMAIL)) }}
+        />
         <Navbar />
         {/* Pages render their own <main>; this is only the floating-pill-navbar offset. */}
         <div className="pt-20 sm:pt-24">{children}</div>

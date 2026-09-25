@@ -8,8 +8,10 @@ import { generatePageMeta } from "@/lib/seo";
 import Pricing from "@/components/Pricing";
 
 export const metadata = generatePageMeta({
-  title: "OzClean | Airbnb Turnover & Move-Out Cleaning Specialists Melbourne",
-  description: "OzClean specialises in Airbnb turnover cleans and bond-back move-out cleaning across Melbourne, plus residential and commercial services. Book online in minutes, 100% satisfaction guaranteed.",
+  // The "%s | OzClean" template only applies to child routes, so the home
+  // page carries the brand itself.
+  title: "Airbnb & End of Lease Cleaning South East Melbourne | OzClean",
+  description: "OzClean specialises in Airbnb turnover cleans and bond-back end of lease cleaning across Hampton Park, Narre Warren, Berwick, Cranbourne and South East Melbourne, plus home and commercial cleaning. Free quotes, 100% satisfaction guaranteed.",
   path: "/",
 });
 

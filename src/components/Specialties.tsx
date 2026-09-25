@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ROUTES, bookingWithService } from "@/lib/routes";
+import { ROUTES } from "@/lib/routes";
 import { SERVICES } from "@/lib/services";
 import Reveal from "@/components/Reveal";
 
@@ -84,8 +84,8 @@ export default function Specialties() {
             <div className="p-5 sm:p-6 flex flex-col gap-3">
               <p className="text-lg font-black text-brand-text">{airbnb.price}</p>
               <Button asChild size="sm" className="w-full bg-brand-accent hover:bg-brand-accent-dark text-white font-semibold gap-1.5">
-                <Link href={bookingWithService(airbnb.slug)}>
-                  Book Now <ArrowRight className="w-3.5 h-3.5" />
+                <Link href={ROUTES.QUOTE}>
+                  Get a Free Quote <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </Button>
             </div>

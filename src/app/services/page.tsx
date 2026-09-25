@@ -8,7 +8,7 @@ import Reveal from "@/components/Reveal";
 
 export const metadata = generatePageMeta({
   title: "Our Services",
-  description: "Residential, commercial, deep cleaning, move in/out, window, and wheely bin cleaning across Melbourne. Starting from $35 — book online today.",
+  description: "Airbnb, end of lease, house, office, deep, window and wheelie bin cleaning across Hampton Park, Berwick, Cranbourne and South East Melbourne. Free quotes.",
   path: ROUTES.SERVICES,
 });
 

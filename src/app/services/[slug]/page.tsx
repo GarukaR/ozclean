@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { SERVICES, getAllServiceSlugs } from "@/lib/services";
 import { ROUTES, bookingWithService } from "@/lib/routes";
 import Reveal from "@/components/Reveal";
+import { BUSINESS_ID, SERVICE_AREAS, SERVICE_REGION, SITE_URL, toJsonLd } from "@/lib/seo";
 
 // ─── Static params for Next.js static export ─────────────────────────────────
 export function generateStaticParams() {
@@ -22,9 +23,14 @@ export async function generateMetadata({
   const { slug } = await params;
   const service = SERVICES[slug];
   if (!service) return {};
+  const path = `${ROUTES.SERVICES}/${service.slug}`;
+  const description = `${service.description} Serving ${SERVICE_AREAS.slice(0, 4).join(", ")} and ${SERVICE_REGION}.`;
+  // Bare title — the root layout's "%s | OzClean" template adds the brand.
   return {
-    title: `${service.title} | OzClean`,
-    description: service.description,
+    title: service.seoTitle,
+    description,
+    alternates: { canonical: path },
+    openGraph: { title: `${service.seoTitle} | OzClean`, description, url: `${SITE_URL}${path}` },
   };
 }
 // ─────────────────────────────────────────────────────────────────────────────
@@ -58,6 +64,21 @@ export default async function ServicePage({
 
   return (
     <main className="min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: toJsonLd({
+            "@context": "https://schema.org",
+            "@type": "Service",
+            name: service.seoTitle,
+            serviceType: service.title,
+            description: service.description,
+            url: `${SITE_URL}${ROUTES.SERVICES}/${service.slug}`,
+            provider: { "@id": BUSINESS_ID },
+            areaServed: SERVICE_AREAS.map((name) => ({ "@type": "Place", name: `${name}, VIC` })),
+          }),
+        }}
+      />
       {/* ── Hero ── */}
       {/* No overflow-hidden here — CSS only lets one axis clip independently
           if you accept the other one silently becoming "auto" (which still
@@ -76,18 +97,22 @@ export default async function ServicePage({
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left — text */}
             <Reveal className="flex flex-col gap-6">
-              <Badge className="bg-brand-accent-bg text-brand-accent-dark border-brand-accent-border w-fit gap-1.5">
-                <Icon className="w-3.5 h-3.5" />
-                {service.title}
-              </Badge>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-brand-text leading-[1.1] tracking-tight">
+              {/* The keyword-led name is the real <h1> (what Google reads as the
+                  page topic); the big tagline below is display copy. */}
+              <h1 className="w-fit">
+                <Badge className="bg-brand-accent-bg text-brand-accent-dark border-brand-accent-border w-fit gap-1.5 whitespace-normal text-left">
+                  <Icon className="w-3.5 h-3.5 shrink-0" />
+                  {service.seoTitle}
+                </Badge>
+              </h1>
+              <p className="text-4xl sm:text-5xl lg:text-6xl font-bold text-brand-text leading-[1.1] tracking-tight">
                 {service.tagline.split(".")[0]}.{" "}
                 {service.tagline.split(".")[1] && (
                   <span className="text-brand-accent-dark">
                     {service.tagline.split(".")[1].trim()}.
                   </span>
                 )}
-              </h1>
+              </p>
                 <p className="text-brand-muted text-lg leading-relaxed max-w-md">
                 {service.description}
               </p>
@@ -136,7 +161,7 @@ export default async function ServicePage({
             <Reveal delay={0.15} className="relative rounded-3xl overflow-hidden aspect-[4/3] shadow-xl shadow-brand/15">
               <Image
                 src={service.heroImage}
-                alt={service.title}
+                alt={`${service.title} by OzClean in ${SERVICE_REGION}`}
                 className="object-cover"
                 fill
               />
