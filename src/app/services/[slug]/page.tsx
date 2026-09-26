@@ -207,7 +207,11 @@ export default async function ServicePage({
                 ))}
               </div>
               <p className="text-sm text-brand-muted mt-6">
-                Serving {SERVICE_AREAS.join(", ")} and {ALL_SERVICE_AREAS.length - SERVICE_AREAS.length}+ more South East Melbourne suburbs.
+                Serving {SERVICE_AREAS.join(", ")} and{" "}
+                <Link href={ROUTES.AREAS} className="font-semibold text-brand-accent-dark hover:underline underline-offset-2">
+                  {ALL_SERVICE_AREAS.length - SERVICE_AREAS.length}+ more South East Melbourne suburbs
+                </Link>
+                .
               </p>
             </Reveal>
           )}

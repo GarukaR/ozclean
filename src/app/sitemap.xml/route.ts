@@ -14,6 +14,7 @@ type SitemapEntry = {
 const ENTRIES: SitemapEntry[] = [
   { path: ROUTES.HOME, changeFrequency: "weekly", priority: 1.0 },
   { path: ROUTES.SERVICES, changeFrequency: "monthly", priority: 0.9 },
+  { path: ROUTES.AREAS, changeFrequency: "monthly", priority: 0.8 },
   { path: ROUTES.BOOKING, changeFrequency: "monthly", priority: 0.9 },
   { path: ROUTES.QUOTE, changeFrequency: "monthly", priority: 0.8 },
   { path: ROUTES.ABOUT, changeFrequency: "yearly", priority: 0.6 },

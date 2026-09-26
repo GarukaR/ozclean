@@ -7,8 +7,8 @@ import { generatePageMeta } from "@/lib/seo";
 import Reveal from "@/components/Reveal";
 
 export const metadata = generatePageMeta({
-  title: "FAQ",
-  description: "Answers to common questions about OzClean: booking, our cleaners, products, pricing, and our satisfaction guarantee.",
+  title: "Cleaning FAQs: Booking, Pricing, Services & Areas",
+  description: "Answers to common questions about OzClean in South East Melbourne: booking, service areas, medical, strata and carpet cleaning, our cleaners, pricing and our re-clean guarantee.",
   path: "/faq",
 });
 
@@ -32,6 +32,35 @@ const FAQ_CATEGORIES = [
       {
         q: "Do you offer recurring bookings?",
         a: "Absolutely. We offer weekly and fortnightly recurring cleans at a discounted rate. You can set this up when booking online or mention it when you call.",
+      },
+    ],
+  },
+  {
+    category: "Services & Areas",
+    faqs: [
+      {
+        q: "Which suburbs do you cover?",
+        a: "We're based in Hampton Park and cover 42 suburbs across South East Melbourne, including Narre Warren, Berwick, Cranbourne, Dandenong, Keysborough and Pakenham. A small travel charge applies in a few outer suburbs. Check your suburb or postcode on our Areas page.",
+      },
+      {
+        q: "Do you clean medical centres and clinics?",
+        a: "Yes. We clean GP clinics, dental, physio and allied health practices after hours, using hospital-grade disinfectants and colour-coded cloths. Clinical and sharps waste stays with your licensed waste contractor.",
+      },
+      {
+        q: "Do you clean strata and owners corporation common areas?",
+        a: "Yes. We clean lobbies, hallways, stairwells, lifts, bin rooms and car parks on a weekly or fortnightly schedule, and can send your owners corporation manager a photo report after each visit.",
+      },
+      {
+        q: "Do you clean shops and retail stores?",
+        a: "Yes. We clean boutiques, shops and showrooms before opening or after closing, including shopfront glass, fitting rooms, counters and floors.",
+      },
+      {
+        q: "Do you do carpet, couch and mattress cleaning?",
+        a: "Yes. We steam clean carpets using hot water extraction and deep clean fabric couches and mattresses. Carpet cleaning can be done on the same day as an end of lease clean.",
+      },
+      {
+        q: "Which services can I book online?",
+        a: "House cleaning and wheelie bin cleaning can be booked and paid online. For everything else, including Airbnb, end of lease, business and carpet cleaning, request a free quote and we'll get back to you within 2 hours.",
       },
     ],
   },

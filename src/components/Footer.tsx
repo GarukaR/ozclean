@@ -35,6 +35,7 @@ const FOOTER_LINKS = {
   ],
   Support: [
     { label: "Contact Us", href: "/contact" },
+    { label: "Areas We Serve", href: "/areas" },
     { label: "FAQ", href: "/faq" },
     { label: "Get a Free Quote", href: "/quote" },
   ],

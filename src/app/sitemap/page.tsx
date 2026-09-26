@@ -25,6 +25,7 @@ const SITEMAP = [
     category: "Services",
     links: [
       { label: "All Services", href: ROUTES.SERVICES, desc: "Overview of everything we offer" },
+      { label: "Areas We Serve", href: ROUTES.AREAS, desc: "Suburbs we cover across South East Melbourne" },
       ...Object.values(SERVICES).map(({ slug, title, description }) => ({
         label: title,
         href: `${ROUTES.SERVICES}/${slug}`,
