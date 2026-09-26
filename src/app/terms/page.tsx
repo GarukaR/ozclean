@@ -38,7 +38,7 @@ const SECTIONS = [
   },
   {
     title: "Payment",
-    content: `Payment is collected in full when you complete your booking, unless otherwise agreed in writing. For recurring bookings, each clean is paid in full at the time of booking. All prices are in Australian Dollars (AUD) and include GST. We reserve the right to change our pricing at any time, with notice provided to existing recurring customers.`,
+    content: `Payment is collected in full when you complete your booking, unless otherwise agreed in writing. For recurring bookings, each clean is paid in full at the time of booking. All prices are in Australian Dollars (AUD). OzClean is not currently registered for GST, so no GST is charged. We reserve the right to change our pricing at any time, with notice provided to existing recurring customers.`,
   },
   {
     title: "Privacy",
@@ -71,7 +71,7 @@ export default function TermsPage() {
       <section className="py-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 flex flex-col gap-10">
           <p className="text-brand-muted text-sm leading-relaxed">
-            Please read these Terms of Service carefully before using OzClean&apos;s services. These terms constitute a legally binding agreement between you and OzClean ABN 00 000 000 000.
+            Please read these Terms of Service carefully before using OzClean&apos;s services. These terms constitute a legally binding agreement between you and OzClean (ABN 49 595 600 465).
           </p>
 
           {SECTIONS.map(({ title, content }) => (

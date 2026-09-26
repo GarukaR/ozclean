@@ -2,6 +2,8 @@
 export const BUSINESS_PHONE = "+61 428 276 935";
 export const BUSINESS_PHONE_HREF = "tel:+61428276935";
 export const BUSINESS_EMAIL = "info@ozclean.au";
+// Verified on ABN Lookup (abr.business.gov.au), sole trader, VIC 3976, not registered for GST.
+export const BUSINESS_ABN = "49 595 600 465";
 export const BUSINESS_EMAIL_HREF = `mailto:${BUSINESS_EMAIL}`;
 
 // Opening hours — must match the Google Business Profile exactly.

@@ -7,6 +7,7 @@ import {
   BUSINESS_EMAIL_HREF,
   BUSINESS_PHONE,
   BUSINESS_PHONE_HREF,
+  BUSINESS_ABN,
 } from "@/lib/business";
 
 // Lucide has no TikTok glyph — this is the real TikTok mark, not a placeholder shape.
@@ -164,7 +165,7 @@ export default function Footer() {
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/40">
           <div className="flex flex-wrap items-center justify-center gap-3">
-            <p>© {new Date().getFullYear()} OzClean. All rights reserved.</p>
+            <p>© {new Date().getFullYear()} OzClean · ABN {BUSINESS_ABN}</p>
             <a
               href={CREATOR_GITHUB_URL}
               target="_blank"

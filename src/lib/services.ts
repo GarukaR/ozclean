@@ -16,6 +16,9 @@ export type Service = {
   priceNote: string;
   bookable: boolean;
   heroImage: string;
+  // Real OzClean job photos (optional). Shown in a "Real results" section.
+  beforeAfter?: { before: string; after: string; label: string }[];
+  gallery?: { src: string; alt: string }[];
   included: string[];
   highlights: { icon: string; label: string }[];
   faqs: { q: string; a: string }[];
@@ -153,8 +156,7 @@ const SERVICE_CATALOG: Record<string, Service> = {
     priceLabel: "hourly or flat-rate",
     priceNote: "Hourly rates from $50–60/hr (depending on frequency). Flat-rates from $150–280 based on bedrooms. No commitment required.",
     bookable: true,
-    heroImage:
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+    heroImage: "/images/work/airbnb-dining-room.jpg",
     included: [
       "All bedrooms cleaned & dusted",
       "Kitchen surfaces, sink & stovetop",
@@ -214,8 +216,14 @@ const SERVICE_CATALOG: Record<string, Service> = {
       priceLabel: "hourly or turnover rate",
       priceNote: "Flexible pricing for same-day, next-day, or scheduled changeovers. Request a custom quote based on property size and turnaround needs.",
       bookable: false,
-      heroImage:
-        "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?auto=format&fit=crop&w=800&q=80",
+      heroImage: "/images/work/airbnb-bedroom-made-bed-towels.jpg",
+      gallery: [
+        { src: "/images/work/airbnb-second-bedroom.jpg", alt: "Airbnb bedroom reset with fresh linen and rolled towels" },
+        { src: "/images/work/airbnb-living-room.jpg", alt: "Airbnb living room vacuumed and tidied for the next guest" },
+        { src: "/images/work/airbnb-dining-room.jpg", alt: "Airbnb dining area with floors cleaned after a turnover" },
+        { src: "/images/work/airbnb-kitchen-laundry.jpg", alt: "Airbnb kitchen and laundry cleaned between guests" },
+        { src: "/images/work/airbnb-deck-washed.jpg", alt: "Airbnb deck washed down during a turnover clean" },
+      ],
       included: [
         "Bedrooms reset, dusted & vacuumed",
         "Beds made with fresh linen",
@@ -275,8 +283,7 @@ const SERVICE_CATALOG: Record<string, Service> = {
     priceLabel: "per session",
     priceNote: "Exact quote provided upfront based on property size.",
     bookable: false,
-    heroImage:
-      "https://images.pexels.com/photos/6195951/pexels-photo-6195951.jpeg",
+    heroImage: "/images/work/end-of-lease-bedroom-floorboards.jpg",
     included: [
       "Inside oven, microwave & fridge",
       "Behind & under all appliances",
@@ -338,8 +345,16 @@ const SERVICE_CATALOG: Record<string, Service> = {
     priceLabel: "per property",
     priceNote: "Exact quote based on number of rooms and property condition.",
     bookable: false,
-    heroImage:
-      "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80",
+    heroImage: "/images/work/end-of-lease-bedroom-fireplace.jpg",
+    beforeAfter: [
+      { before: "/images/work/end-of-lease-toilet-floor-before.jpg", after: "/images/work/end-of-lease-toilet-floor-after.jpg", label: "Toilet floor and skirting" },
+      { before: "/images/work/end-of-lease-bath-taps-before.jpg", after: "/images/work/end-of-lease-bath-taps-after.jpg", label: "Bath, taps and fittings" },
+      { before: "/images/work/end-of-lease-bathroom-floor-before.jpg", after: "/images/work/end-of-lease-bathroom-after.jpg", label: "Bathroom floor" },
+    ],
+    gallery: [
+      { src: "/images/work/end-of-lease-bedroom-floorboards.jpg", alt: "Empty bedroom with polished floorboards after an end of lease clean" },
+      { src: "/images/work/end-of-lease-glass-doors.jpg", alt: "Streak-free glass doors after an end of lease clean" },
+    ],
     included: [
       "Full kitchen deep clean including oven",
       "Bathroom & toilet scrubbed & sanitised",
@@ -399,8 +414,7 @@ const SERVICE_CATALOG: Record<string, Service> = {
     priceLabel: "per storey",
     priceNote: "Pricing calculated based on your property's storeys and window count. Multi-storey access available.",
     bookable: false,
-    heroImage:
-      "https://images.pexels.com/photos/31435403/pexels-photo-31435403.jpeg",
+    heroImage: "/images/work/end-of-lease-glass-doors.jpg",
     included: [
       "Inside & outside all windows",
       "Streak-free finish guaranteed",

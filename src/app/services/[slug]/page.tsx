@@ -12,6 +12,7 @@ import StickyServiceCTA from "@/components/StickyServiceCTA";
 import { BUSINESS_PHONE_HREF } from "@/lib/business";
 import ResidentialPriceTable from "@/components/ResidentialPriceTable";
 import AreaChecker from "@/components/AreaChecker";
+import RealResults from "@/components/RealResults";
 import { ALL_SERVICE_AREAS } from "@/lib/service-areas";
 import { BUSINESS_ID, SERVICE_AREAS, SERVICE_REGION, SITE_URL, toJsonLd } from "@/lib/seo";
 
@@ -197,7 +198,7 @@ export default async function ServicePage({
                 About the Service
               </p>
               <h2 className="text-3xl sm:text-4xl font-bold text-brand-text leading-tight mb-6">
-                {service.title} across {SERVICE_REGION}
+                {serviceShortName(service)} across {SERVICE_REGION}
               </h2>
               <div className="flex flex-col gap-4">
                 {service.intro.map((paragraph) => (
@@ -233,6 +234,9 @@ export default async function ServicePage({
           </Reveal>
         </div>
       </section>
+
+      {/* ── Real job photos (before/after + gallery), where we have them ── */}
+      <RealResults service={service} />
 
       {/* ── Full price list (home cleans are the only per-bedroom priced service) ── */}
       {service.slug === "residential" && <ResidentialPriceTable />}
