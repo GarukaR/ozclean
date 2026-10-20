@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Phone, Mail, MapPin, Facebook, Instagram, Github } from "lucide-react";
+import { Phone, Mail, MapPin, Facebook, Instagram } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import Logo from "@/components/Logo";
 import {
@@ -50,7 +50,7 @@ const SOCIAL_LINKS = [
   { icon: TikTokIcon, href: "https://www.tiktok.com/@oz.clean.au?_r=1&_t=ZS-96DcjiQnrcr", label: "TikTok" },
 ];
 
-const CREATOR_GITHUB_URL = "https://github.com/GarukaR";
+const BUILDER_URL = "https://www.truetheorem.com";
 
 const CONTACT_INFO = [
   { icon: Phone, text: BUSINESS_PHONE, href: BUSINESS_PHONE_HREF },
@@ -171,13 +171,12 @@ export default function Footer() {
           <div className="flex flex-wrap items-center justify-center gap-3">
             <p>© {new Date().getFullYear()} OzClean · ABN {BUSINESS_ABN}</p>
             <a
-              href={CREATOR_GITHUB_URL}
+              href={BUILDER_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 rounded-full bg-white/5 px-2.5 py-1 text-white/60 transition-colors hover:bg-brand-accent hover:text-[#06231e]"
             >
-              <Github className="w-3.5 h-3.5 shrink-0" />
-              Site built by GarukaR
+              Built by True Theorem
             </a>
           </div>
           <div className="flex items-center gap-4">
