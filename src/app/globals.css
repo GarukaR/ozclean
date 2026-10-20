@@ -212,14 +212,27 @@
     animation: none !important;
   }
 }
+/* Phones show a floating WhatsApp button bottom-right (FloatingWhatsApp);
+   back-to-top stacks above it, centred on the same line. */
+@media (max-width: 767px) {
+  [data-back-to-top] {
+    bottom: 5.5rem;
+    right: 1.5rem;
+  }
+}
+
 /* Service pages pin a CTA bar to the bottom on phones (StickyServiceCTA):
-   pad the page so it never covers the footer, and lift back-to-top above it. */
+   pad the page so it never covers the footer, and lift the floating
+   buttons above it. */
 @media (max-width: 767px) {
   body:has([data-sticky-cta]) {
     padding-bottom: 4.75rem;
   }
-  body:has([data-sticky-cta]) [data-back-to-top] {
+  body:has([data-sticky-cta]) [data-floating-whatsapp] {
     bottom: 5.75rem;
+  }
+  body:has([data-sticky-cta]) [data-back-to-top] {
+    bottom: 10rem;
   }
 }
 
@@ -232,10 +245,11 @@
   color: #0A1220;
 }
 
-/* Multi-step forms pin their own action bar (StickyActions); the back-to-top
-   button would sit on top of it on phones, so hide it there. */
+/* Multi-step forms pin their own action bar (StickyActions); the floating
+   buttons would sit on top of it on phones, so hide them there. */
 @media (max-width: 767px) {
-  body:has([data-sticky-form]) [data-back-to-top] {
+  body:has([data-sticky-form]) [data-back-to-top],
+  body:has([data-sticky-form]) [data-floating-whatsapp] {
     display: none;
   }
 }

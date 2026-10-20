@@ -6,7 +6,8 @@ import { usePathname } from "next/navigation";
 import { Menu, X, Phone, ChevronRight } from "lucide-react";
 import { ROUTES } from "@/lib/routes";
 import { SERVICES } from "@/lib/services";
-import { BUSINESS_PHONE, BUSINESS_PHONE_HREF } from "@/lib/business";
+import { BUSINESS_PHONE, BUSINESS_PHONE_HREF, BUSINESS_WHATSAPP_HREF } from "@/lib/business";
+import WhatsAppIcon from "@/components/WhatsAppIcon";
 import ThemeToggle from "@/components/ThemeToggle";
 import Logo from "@/components/Logo";
 
@@ -245,6 +246,22 @@ export default function Navbar() {
                   <span className="flex flex-col min-w-0">
                     <span className="text-[11px] font-semibold uppercase tracking-wide text-brand-muted">Call us</span>
                     <span className="text-sm font-semibold text-brand-text truncate">{BUSINESS_PHONE}</span>
+                  </span>
+                </a>
+
+                {/* WhatsApp card */}
+                <a
+                  href={BUSINESS_WHATSAPP_HREF}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-2 flex items-center gap-3 rounded-xl border border-brand-border bg-brand-bg px-4 py-3 transition-colors hover:border-[#25D366]"
+                >
+                  <span className="w-9 h-9 rounded-full bg-[#25D366] flex items-center justify-center shrink-0">
+                    <WhatsAppIcon className="w-4 h-4 text-white" />
+                  </span>
+                  <span className="flex flex-col min-w-0">
+                    <span className="text-[11px] font-semibold uppercase tracking-wide text-brand-muted">WhatsApp</span>
+                    <span className="text-sm font-semibold text-brand-text truncate">Message us</span>
                   </span>
                 </a>
               </div>

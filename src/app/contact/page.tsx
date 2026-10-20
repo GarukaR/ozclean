@@ -5,14 +5,15 @@ import {
   BUSINESS_EMAIL,
   BUSINESS_EMAIL_HREF,
   BUSINESS_PHONE,
-  BUSINESS_PHONE_HREF, BUSINESS_HOURS, BUSINESS_HOURS_SUMMARY } from "@/lib/business";
+  BUSINESS_PHONE_HREF, BUSINESS_WHATSAPP_HREF, BUSINESS_HOURS, BUSINESS_HOURS_SUMMARY } from "@/lib/business";
+import WhatsAppIcon from "@/components/WhatsAppIcon";
 import ContactForm from "./ContactForm";
 import Reveal from "@/components/Reveal";
 import AreaChecker from "@/components/AreaChecker";
 
 export const metadata = generatePageMeta({
   title: "Contact Us",
-  description: "Get in touch with OzClean. Call, email, or send a message and we'll get back to you within 2 hours.",
+  description: "Get in touch with OzClean. Call, WhatsApp, email, or send a message and we'll get back to you within 2 hours.",
   path: "/contact",
 });
 
@@ -24,6 +25,13 @@ const CONTACT_DETAILS = [
     value: BUSINESS_PHONE,
     href: BUSINESS_PHONE_HREF,
     sub: BUSINESS_HOURS_SUMMARY,
+  },
+  {
+    icon: WhatsAppIcon,
+    label: "WhatsApp",
+    value: BUSINESS_PHONE,
+    href: BUSINESS_WHATSAPP_HREF,
+    sub: "Handy for sending photos of the job",
   },
   {
     icon: Mail,
@@ -50,6 +58,15 @@ const CONNECT_OPTIONS = [
     href: BUSINESS_PHONE_HREF,
     style: "bg-gradient-to-br from-brand to-brand-accent text-white",
     btnStyle: "bg-white text-brand-accent-dark hover:bg-brand-accent-bg",
+  },
+  {
+    icon: WhatsAppIcon,
+    title: "WhatsApp Us",
+    desc: "Send a message or photos of the job and we'll reply soon.",
+    action: "Chat on WhatsApp",
+    href: BUSINESS_WHATSAPP_HREF,
+    style: "bg-brand-accent-bg border border-brand-accent-border",
+    btnStyle: "bg-[#25D366] hover:bg-[#1EBE5A] text-white",
   },
   {
     icon: Mail,
@@ -102,7 +119,7 @@ export default function ContactPage() {
       {/* ── Connect Options ── */}
       <section className="py-8 sm:py-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
             {CONNECT_OPTIONS.map(({ icon: Icon, title, desc, action, href, style, btnStyle }, index) => {
               const isDarkCard = style.includes("text-white");
               return (
@@ -111,6 +128,7 @@ export default function ContactPage() {
                       chevron; wider screens get the full card with a button. */}
                   <a
                     href={href}
+                    {...(href.startsWith("http") && { target: "_blank", rel: "noopener noreferrer" })}
                     className={`group h-full rounded-2xl sm:rounded-3xl p-4 sm:p-7 flex flex-row sm:flex-col items-center sm:items-stretch gap-3 sm:gap-4 hover:-translate-y-1 motion-reduce:hover:translate-y-0 transition-transform duration-300 ${style}`}
                   >
                     <div className={`w-10 h-10 rounded-xl shrink-0 flex items-center justify-center ${isDarkCard ? "bg-white/20" : "bg-brand/10"}`}>
@@ -154,7 +172,11 @@ export default function ContactPage() {
                 <ul className="flex flex-col gap-4">
                   {CONTACT_DETAILS.map(({ icon: Icon, label, value, href, sub }) => (
                     <li key={label}>
-                      <a href={href} className="flex items-start gap-3 group">
+                      <a
+                        href={href}
+                        {...(href.startsWith("http") && { target: "_blank", rel: "noopener noreferrer" })}
+                        className="flex items-start gap-3 group"
+                      >
                         <div className="w-9 h-9 rounded-xl bg-brand-accent-bg border border-brand-accent-border flex items-center justify-center shrink-0 group-hover:bg-brand-accent/10 transition-colors">
                           <Icon className="w-4 h-4 text-brand-accent-dark" />
                         </div>
