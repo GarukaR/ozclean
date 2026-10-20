@@ -5,6 +5,10 @@ export const BUSINESS_EMAIL = "info@ozclean.au";
 // Verified on ABN Lookup (abr.business.gov.au), sole trader, VIC 3976, not registered for GST.
 export const BUSINESS_ABN = "49 595 600 465";
 export const BUSINESS_EMAIL_HREF = `mailto:${BUSINESS_EMAIL}`;
+// WhatsApp goes to the same mobile as BUSINESS_PHONE; the text pre-fills the chat.
+export const BUSINESS_WHATSAPP_HREF = `https://wa.me/61428276935?text=${encodeURIComponent(
+  "Hi OzClean, I'd like to ask about a clean."
+)}`;
 
 // Opening hours — must match the Google Business Profile exactly.
 export const BUSINESS_HOURS_SUMMARY = "Mon–Sat, 9am–5pm";

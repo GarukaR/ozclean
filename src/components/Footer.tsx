@@ -7,8 +7,10 @@ import {
   BUSINESS_EMAIL_HREF,
   BUSINESS_PHONE,
   BUSINESS_PHONE_HREF,
+  BUSINESS_WHATSAPP_HREF,
   BUSINESS_ABN,
 } from "@/lib/business";
+import WhatsAppIcon from "@/components/WhatsAppIcon";
 
 // Lucide has no TikTok glyph — this is the real TikTok mark, not a placeholder shape.
 function TikTokIcon({ className }: { className?: string }) {
@@ -52,6 +54,7 @@ const CREATOR_GITHUB_URL = "https://github.com/GarukaR";
 
 const CONTACT_INFO = [
   { icon: Phone, text: BUSINESS_PHONE, href: BUSINESS_PHONE_HREF },
+  { icon: WhatsAppIcon, text: "Chat on WhatsApp", href: BUSINESS_WHATSAPP_HREF },
   { icon: Mail, text: BUSINESS_EMAIL, href: BUSINESS_EMAIL_HREF },
   { icon: MapPin, text: "Hampton Park, VIC, Australia", href: "#" },
 ];
@@ -123,6 +126,7 @@ export default function Footer() {
                 <li key={text}>
                   <a
                     href={href}
+                    {...(href.startsWith("http") && { target: "_blank", rel: "noopener noreferrer" })}
                     className="flex items-center gap-3 text-sm text-white/60 hover:text-white transition-colors group"
                   >
                     <div className="w-8 h-8 rounded-lg bg-white/5 group-hover:bg-brand/30 flex items-center justify-center transition-colors shrink-0">
